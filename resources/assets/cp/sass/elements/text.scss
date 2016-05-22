@@ -1,0 +1,11 @@
+h1{
+
+}
+
+a{
+	color:$brand-darker;
+	&:hover{
+		color:#333;
+		text-decoration: none;
+	}
+}

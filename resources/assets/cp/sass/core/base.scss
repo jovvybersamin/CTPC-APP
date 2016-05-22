@@ -1,0 +1,26 @@
+body{
+	background:$bg;
+	color:$color_gray_dark;
+	display:flex;
+	font-family: $font_lato;
+	padding-left:$nav-width; // 180px
+}
+
+
+
+
+
+a:hover,
+a:focus,
+a:active{
+	text-decoration:none;
+}
+
+[v-cloak] { display:none }
+
+.z-depth-0 { box-shadow: none !important; }
+.z-depth-1 { box-shadow: 0 2px 3px rgba(0, 0, 0, 0.24);}
+.z-depth-2 { box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 2px 14px 0 rgba(0, 0, 0, 0.2); }
+.z-depth-3 { box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); } // Not deep enough
+.z-depth-4 { box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); } // Really not deep enough
+

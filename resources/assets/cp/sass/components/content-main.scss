@@ -1,0 +1,27 @@
+.content{
+	flex:1;
+	display:flex;
+	flex-direction:column;
+}
+
+
+.cp-head{
+	@extend .z-depth-1;
+	position:relative;
+	height:53px;
+	background:#fff;
+	padding:10px 30px;
+	font-size:14px;
+
+	.view{
+		font-size:14px;
+		position:absolute;
+		right:32px;
+		top:16px;
+
+		.icon{
+			position:relative;
+			padding-right:5px;
+		}
+	}
+}
