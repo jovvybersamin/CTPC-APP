@@ -13,6 +13,12 @@
 					<span class="icon icon-eye"></span>View Site
 				</a>
 			</div>
+
+			<div class="page-wrapper">
+
+				@yield('content')
+
+			</div>
 		</div>
 
 		@include('cp.partials.scripts')
