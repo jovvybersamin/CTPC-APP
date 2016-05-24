@@ -19,11 +19,11 @@ class CreateUsersTable extends Migration
             $table->string('username')->unique();
             $table->string('password')->nullable();
             $table->tinyInteger('status');
-            $table->string('confirmation_code');
+            $table->string('confirmation_code')->nullable();
             $table->boolean('confirmed')->default(config('access.users.confirm_email') ? false : true);
             $table->rememberToken();
-            $table->text('about');
-            $table->string('profile');
+            $table->text('about')->nullable();
+            $table->string('profile')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at');
             $table->softDeletes();
