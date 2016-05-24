@@ -38,14 +38,21 @@ nav.nav-main{
             }
 
             > ul {
-                // Subnavs hidden by defualt
-                display: none;
                 margin: 0;
 
                 li {
                     font-size: 13px;
                     line-height: 26px;
                 }
+            }
+
+            > ul:not('.nav-open') {
+                // Subnavs hidden by defualt
+                display: none;
+            }
+
+            > ul:is('.nav-open'){
+                display:block;
             }
 
             // Opened subnav
@@ -127,6 +134,10 @@ nav.nav-main{
     > .nav-users > a { @extend .icon-users; }
     > .nav-forms > a { @extend .icon-download; }
     > .nav-fieldsets > a { @extend .icon-text-document-inverted; }
+}
+
+.nav-main .nav-open{
+    display:block !important;
 }
 
 .nav-main li span.icon{

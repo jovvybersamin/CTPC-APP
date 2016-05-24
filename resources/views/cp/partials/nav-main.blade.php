@@ -24,17 +24,17 @@
 		</li>
 		<li class="section">CONTENT</li>
 		<li class="section">CONFIGURE</li>
-		<li class="nav-users root has-sub">
+		<li class="nav-users root has-sub {{ nav_is('cp.users.*') ? 'active' : '' }}">
 			<a href="#" title="Users" >
 				<span class="title">Users</span>
 				<span class="icon icon-chevron-left pull-right"></span>
 			</a>
-			<ul>
-				<li>
-					<a href="#">All Users</a>
+			<ul class="{{ nav_is('cp.users.*') ? 'nav_open' : '' }}">
+				<li class="{{ nav_is('cp.users.index') ? 'active' : '' }}">
+					<a href="{{ route('cp.users.index') }}">All Users</a>
 				</li>
-				<li>
-					<a href="#">Add New User</a>
+				<li class="{{ nav_is('cp.users.create') ? 'active' : '' }}">
+					<a href="{{ route('cp.users.create') }}">Add New User</a>
 				</li>
 			</ul>
 		</li>

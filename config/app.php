@@ -156,6 +156,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+
+        /**
+         * Third Party Service Providers...
+         */
+
+        HieuLe\Active\ActiveServiceProvider::class,
+
     ],
 
     /*
@@ -201,6 +208,12 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        /**
+         * Third Party Class Aliases..
+         */
+
+        'Active' => HieuLe\Active\Facades\Active::class,
 
     ],
 

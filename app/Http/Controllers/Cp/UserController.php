@@ -12,11 +12,21 @@ class UserController extends Controller
 	/**
 	 * Show the user listings page.
 	 *
-	 * @return [type] [description]
+	 * @return Response.
 	 */
 	public function index()
 	{
 		return view('cp.users.index');
+	}
+
+	/**
+	 * Show the user creation page.
+	 *
+	 * @return Response.
+	 */
+	public function create()
+	{
+		return view('cp.users.create');
 	}
 
 }

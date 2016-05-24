@@ -18,20 +18,24 @@ $(function() {
 	$.Theme.tree('.nav-main');
 });
 
+
 function _init(){
 
+	// TODO Update this tree plugin.
+	// Date 5-24-2016
 	$.Theme.tree = function(menu){
+
 		var _this = this;
 		var animationSpeed = $.Theme.options.animationSpeed;
 		var iconLeft = $.Theme.options.iconLeft;
 		var iconDown = $.Theme.options.iconDown;
 
 		$('li.has-sub a',$(menu)).on('click', function(e){
-			e.preventDefault();
+
 			var $this = $(this);
 			var nextElement = $this.next();
-
 			if(nextElement.is('ul') && nextElement.is('ul.nav-open')){
+				e.preventDefault();
 				nextElement.slideUp(animationSpeed, function(){
 					nextElement.removeClass('nav-open');
 				});
@@ -41,6 +45,7 @@ function _init(){
 				// liParent.find('span.icon').removeClass(iconDown).addClass(iconLeft);
 			}
 			else if( nextElement.is('ul')  && !nextElement.is('ul.nav-open')){
+				e.preventDefault();
 				// Now lets get the parent menu to close the open item.
 				var parent = $this.parents('ul').first();
 				// Close all open menus within the parent.
@@ -62,9 +67,8 @@ function _init(){
 					// liParent.find('span.icon')
 					// 	    .removeClass(iconLeft)
 					// 	    .addClass(iconDown);
+
 				});
-
-
 			}
 		});
 

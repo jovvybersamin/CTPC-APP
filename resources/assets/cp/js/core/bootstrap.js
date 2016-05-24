@@ -4,9 +4,13 @@
  * Vue is the javascript framework use by CTPC
  */
 
+
+
 if(window.Vue == undefined){
 	window.Vue = require('vue');
 }
+
+Vue.config.debug = true;
 
 require('vue-resource');
 
