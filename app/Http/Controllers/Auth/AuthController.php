@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace OneStop\Http\Controllers\Auth;
 
-use App\User;
+use OneStop\User;
 use Validator;
-use App\Http\Controllers\Controller;
+use OneStop\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 

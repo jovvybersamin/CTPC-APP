@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace OneStop\Events;
 
 abstract class Event
 {

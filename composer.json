@@ -24,7 +24,7 @@
             "app/Support/helpers.php"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "OneStop\\": "app/"
         }
     },
     "autoload-dev": {

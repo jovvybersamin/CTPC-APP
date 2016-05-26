@@ -1,8 +1,8 @@
 <?php
-namespace App\Database\Seeder\Users;
+namespace OneStop\Database\Seeder\Users;
 
-use App\Role;
-use App\User;
+use OneStop\Core\Models\Role;
+use OneStop\Core\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 

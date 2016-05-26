@@ -151,11 +151,15 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        OneStop\Providers\AppServiceProvider::class,
+        OneStop\Providers\AuthServiceProvider::class,
+        OneStop\Providers\EventServiceProvider::class,
+        OneStop\Providers\RouteServiceProvider::class,
 
+        /**
+         * Core Service Providers...
+         */
+        OneStop\Core\Providers\RepositoryServiceProvider::class,
 
         /**
          * Third Party Service Providers...
