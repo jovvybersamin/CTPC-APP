@@ -1,6 +1,7 @@
 
 //Base
 @import 'core/fonts';
+@import 'core/mixins';
 @import 'core/settings';
 
 // Vendors
@@ -9,10 +10,13 @@
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables";
 
 @import 'core/base';
+@import 'core/typography';
 
 // Components
+@import 'components/cards.scss';
 @import 'components/content-main';
 @import 'components/nav-main';
+
 
 
 // Elements

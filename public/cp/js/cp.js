@@ -23840,7 +23840,6 @@ module.exports = Vue;
 'use strict';
 
 // Mixins
-
 module.exports = {
 
 	data: function data() {
@@ -23865,7 +23864,33 @@ module.exports = {
 
 module.exports = {
 
-	template: require('./table.template.html')
+	template: require('./table.template.html'),
+
+	props: ['options'],
+
+	data: function data() {
+		return {
+			items: [],
+			columns: []
+		};
+	},
+
+	components: {},
+
+	computed: {
+
+		hasItems: function hasItems() {
+			return this.$parent.hasItems;
+		}
+
+	},
+
+	ready: function ready() {
+		this.items = this.$parent.items;
+		this.columns = this.$parent.columns;
+	},
+
+	methods: {}
 
 };
 

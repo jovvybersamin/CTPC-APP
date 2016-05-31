@@ -19,7 +19,6 @@ module.exports = {
 
 	computed:{
 
-
 		hasItems: function(){
 			return this.$parent.hasItems;
 		}

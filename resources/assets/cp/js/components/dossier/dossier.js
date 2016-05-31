@@ -1,5 +1,4 @@
 // Mixins
-
 module.exports = {
 
 	data: function(){

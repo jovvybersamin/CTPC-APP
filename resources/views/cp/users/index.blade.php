@@ -6,7 +6,7 @@
 		<div class="card">
 
 			<div class="head">
-
+				<h1>Users</h1>
 			</div>
 
 			<hr>

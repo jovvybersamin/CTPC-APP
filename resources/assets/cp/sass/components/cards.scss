@@ -1,0 +1,27 @@
+.card{
+	@extends .z-depth-1;
+	background:white;
+	border-radius:2px;
+	margin-bottom:20px;
+	padding:15px 30px;
+}
+
+
+.card .head,
+.card .actions{
+	@include clearfix;
+}
+
+.card .head{
+	display:flex;
+	flex-wrap:wrap;
+	h1 {flex:1;}
+}
+
+.card .head .actions{
+	padding:15px 25px;
+}
+
+.card.flat-bottom{
+
+}
