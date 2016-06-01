@@ -1,0 +1,24 @@
+<div>
+	<div class="actions">
+
+	</div>
+
+	<table class="dossier">
+		<thead v-if="hasHeader">
+			<th></th>
+			<th v-for="column in columns">
+				{{ column }}
+			</th>
+		</thead>
+		<tbody>
+			<tr v-for="item in items">
+
+				<td></td>
+				<td v-for="column in columns">
+					<partial name="cell"></partial>
+				</td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -11,7 +11,7 @@
 
 			<hr>
 
-			<dossier-table></dossier-table>
+			<dossier-table  :columns.sync="columns" :items.sync="items" :options="tableOptions"></dossier-table>
 
 		</div>
 	</user-listing>

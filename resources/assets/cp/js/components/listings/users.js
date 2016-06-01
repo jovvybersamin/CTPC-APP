@@ -5,8 +5,11 @@ module.exports = {
 	data:function(){
 		return {
 			ajax: {
-				get:'',
+				get:cp_url('users/get'),
 				delete:''
+			},
+			tableOptions:{
+				hasHeader:true
 			}
 		}
 	}

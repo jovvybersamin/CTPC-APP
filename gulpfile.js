@@ -28,7 +28,7 @@ elixir(function(mix) {
 function cp(mix){
 	mix.sass('../cp/sass/cp.scss','public/cp/css/cp.css')
 	   .copy('../cp/fonts','public/cp/fonts/') // This is not working I do not why.
-	   .browserify('../cp/js/cp.js','public/cp/js/cp.js')
+	   .browserify('../cp/js/app.js','public/cp/js/cp.js')
 	   .version(['cp/css/cp.css','cp/js/cp.js']);
 }
 

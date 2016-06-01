@@ -43,4 +43,24 @@ class UserController extends Controller
 		return view('cp.users.create');
 	}
 
+
+	/**
+	 *
+	 *
+	 * @return [type] [description]
+	 */
+	public function get()
+	{
+
+		$users = $this->userRepo->getAll()->supplement('checked',function(){
+			return false;
+		});
+
+		$data = [
+			'columns' => ['name','username'],
+			'items' => $users
+		];
+
+		return $data;
+	}
 }

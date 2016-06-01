@@ -4,12 +4,11 @@ module.exports = {
 
 	template:require('./table.template.html'),
 
-	props:['options'],
+	props:['options','items','columns'],
 
 	data: function(){
 		return {
-			items:[],
-			columns:[]
+
 		}
 	},
 
@@ -17,20 +16,40 @@ module.exports = {
 
 	},
 
+	partials:{
+
+		'cell':`
+			<a v-if="$index === 0">
+				<span class="status status-{{ (item.status) ? 'live' : 'hidden' }}"
+					  :title=""
+				></span>
+				{{ item[column] }}
+			</a>
+			<span v-else>
+				{{ item[column] }}
+			</span>
+			`
+	},
+
 	computed:{
 
 		hasItems: function(){
-			return this.$parent.hasItems;
+			return this.items.length;
+		},
+
+		hasHeader: function(){
+			return this.options.hasHeader;
 		}
 
 	},
 
-	ready:function(){
-		this.items = this.$parent.items;
-		this.columns = this.$parent.columns;
+
+	ready: function(){
+
 	},
 
 	methods:{
+
 
 
 	}
