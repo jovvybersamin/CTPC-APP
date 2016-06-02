@@ -4,16 +4,27 @@ module.exports = {
 
 	template:require('./table.template.html'),
 
-	props:['options','items','columns'],
+	props:['options','search','columns','items'],
 
 	data: function(){
+		var sortOrders = {};
 		return {
-
+			sortOrders:sortOrders
 		}
 	},
 
 	components:{
-
+		'search':{
+			props:['term'],
+			template:`
+				<input type="text" v-model="term" @keyup.esc="reset" placeholder="Search" class="search" >
+			`,
+			methods:{
+				reset:function(){
+					this.term = '';
+				}
+			}
+		}
 	},
 
 	partials:{
@@ -31,6 +42,12 @@ module.exports = {
 			`
 	},
 
+	ready: function(){
+		console.log(this.$data);
+
+		this.setSortOrders();
+	},
+
 	computed:{
 
 		hasItems: function(){
@@ -39,19 +56,21 @@ module.exports = {
 
 		hasHeader: function(){
 			return this.options.hasHeader;
+		},
+
+		computedSearch: function(){
+			return this.search;
 		}
 
 	},
 
-
-	ready: function(){
-
-	},
-
 	methods:{
-
-
-
+		setSortOrders:function(){
+			console.log(this.columns);
+			_.each(this.columns, function( column ){
+				console.log('FUCK!');
+			});
+		}
 	}
 
 

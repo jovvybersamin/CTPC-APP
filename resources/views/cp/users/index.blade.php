@@ -7,11 +7,12 @@
 
 			<div class="head">
 				<h1>Users</h1>
+				<a href="" class="btn btn-primary">Create User</a>
 			</div>
 
 			<hr>
 
-			<dossier-table  :columns.sync="columns" :items.sync="items" :options="tableOptions"></dossier-table>
+			<dossier-table  :columns.sync="columns" :items.sync="items" :options="tableOptions" :search.sync="search"></dossier-table>
 
 		</div>
 	</user-listing>

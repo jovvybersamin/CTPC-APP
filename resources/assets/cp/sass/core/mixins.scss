@@ -43,10 +43,6 @@
 @mixin background($imgpath, $size: 100% 100%, $color: transparent, $position:0 0, $repeat: no-repeat) {
     background: #{$color} url(#{$imgpath}) $repeat $position;
 
-    @media #{$hidpi} {
-		background: #{$color} url(#{hidpiImage($imgpath)}) $repeat $position;
-		background-size: $size;
-    }
 }
 
 // Responsive support

@@ -57,7 +57,7 @@ class UserController extends Controller
 		});
 
 		$data = [
-			'columns' => ['name','username'],
+			'columns' => ['name','username','email'],
 			'items' => $users
 		];
 

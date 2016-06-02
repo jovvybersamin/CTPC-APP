@@ -6,7 +6,7 @@ module.exports = {
 			loading:true,
 			items:[],
 			columns:[],
-			search:null
+			search:''
 		}
 	},
 
@@ -21,17 +21,12 @@ module.exports = {
 	methods: {
 
 		getItems: function(){
-			this.$http.get(this.ajax.get).then(function( response ){
-				var data = response.data,
-					status = response.status,
-					request = response.request;
-
+			this.$http.get(this.ajax.get,function(data,status,request){
 				this.items = data.items;
 				this.columns = data.columns;
-
-			}).catch(function(){
+			}).error(function(){
 				alert('There was a problem retrieving the data. Check your logs.');
-			});
+			}).bind(this);
 		}
 
 	}

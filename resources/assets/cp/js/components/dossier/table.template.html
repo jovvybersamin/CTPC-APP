@@ -1,22 +1,25 @@
 <div>
 	<div class="actions">
 
+
+		<search :term.sync="search"></search>
 	</div>
 
 	<table class="dossier">
 		<thead v-if="hasHeader">
 			<th></th>
-			<th v-for="column in columns">
+			<th v-for="column in columns" class="column-sortable column-{{ column }}">
 				{{ column }}
 			</th>
+			<th></th>
 		</thead>
 		<tbody>
-			<tr v-for="item in items">
+			<tr v-for="item in items | filterBy computedSearch">
 
 				<td></td>
-				<td v-for="column in columns">
-					<partial name="cell"></partial>
-				</td>
+					<td v-for="column in columns">
+						<partial name="cell"></partial>
+					</td>
 				<td></td>
 			</tr>
 		</tbody>
