@@ -1,6 +1,8 @@
 require('./core/bootstrap');
 
+// Mixins.
 window.Dossier = require('./components/dossier/dossier');
+window.Form = require('./components/forms/form');
 
 new Vue({
 	el:'#app',
@@ -9,6 +11,7 @@ new Vue({
 	},
 
 	components:{
+		'user-form':require('./components/forms/user'),
 		'user-listing':require('./components/listings/users')
 	},
 

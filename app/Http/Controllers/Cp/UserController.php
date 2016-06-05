@@ -3,19 +3,21 @@
 namespace OneStop\Http\Controllers\Cp;
 
 use Illuminate\Http\Request;
+use OneStop\Core\Contracts\Repositories\UserRepositoryInterface as UserRepositoryContract;
+use OneStop\Core\Models\Role;
+use OneStop\Core\Models\User;
 use OneStop\Http\Controllers\Controller;
 use OneStop\Http\Requests;
-use OneStop\Core\Contracts\Repositories\UserRepositoryInterface as UserRepositoryContract;
 
 
 class UserController extends Controller
 {
 
-	protected $userRepo;
+	protected $users;
 
 	public function __construct(UserRepositoryContract $users)
 	{
-		$this->userRepo = $users;
+		$this->users = $users;
 	}
 
 	/**
@@ -26,7 +28,7 @@ class UserController extends Controller
 	public function index()
 	{
 
-		$users = $this->userRepo->getAll()->supplement('checked',function( ){
+		$users = $this->users->getAll()->supplement('checked',function( ){
 			return false;
 		});
 
@@ -38,21 +40,45 @@ class UserController extends Controller
 	 *
 	 * @return Response.
 	 */
-	public function create()
+	public function create(Request $request)
 	{
+		if($result = $this->isCreating($request,function($creating){
+			$user = User::with('roles')->where('id',1)->first()->toArray();
+			return [
+					  'headerTitle' => 'Create User',
+					  'user' => null,
+					  'roles' => Role::all()
+				   ];
+		}))
+		{
+			return $result;
+		};
+
 		return view('cp.users.create');
 	}
 
+	/**
+	 * [store description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function store(Request $request)
+	{
+		$this->users->createUserFromBackend($request);
+
+		session()->flash('success','User was successfully created.');
+
+		return response()->json(['path' => route('cp.users.index')]);
+	}
 
 	/**
-	 *
 	 *
 	 * @return [type] [description]
 	 */
 	public function get()
 	{
 
-		$users = $this->userRepo->getAll()->supplement('checked',function(){
+		$users = $this->users->getAll()->supplement('checked',function(){
 			return false;
 		});
 
@@ -62,5 +88,37 @@ class UserController extends Controller
 		];
 
 		return $data;
+	}
+
+
+	/**
+	 *  Determine if the request is creating a new instance.
+	 *  TODO: We can separate this to a trait.
+	 *
+	 * @param  Request $request [description]
+	 * @return Array
+	 */
+	private function isCreating(Request $request,callable $callback){
+		if($request->ajax()){
+
+			$return = [
+				'type' => 'create'
+			];
+
+			if(is_callable($callback)){
+				$return = array_merge($return,call_user_func($callback,[true]) ?: []);
+			}
+
+			return $return;
+		}
+		return false;
+	}
+
+	private function isEditing(Request $request){
+		if($request->ajax()){
+			return [
+					 'type' => 'edit'
+				   ];
+		}
 	}
 }

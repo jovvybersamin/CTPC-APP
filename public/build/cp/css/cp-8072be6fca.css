@@ -7076,7 +7076,7 @@ a:active {
 .z-depth-1, .cp-head {
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.24); }
 
-.z-depth-2, .card, .dropdown-menu {
+.z-depth-2, .alert, .card, .dropdown-menu {
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 2px 14px 0 rgba(0, 0, 0, 0.2); }
 
 .z-depth-3 {
@@ -7101,6 +7101,9 @@ h3 {
 
 .normal {
   font-weight: normal !important; }
+
+.alert {
+  padding: 15px 60px 15px 60px; }
 
 .card {
   background: white;

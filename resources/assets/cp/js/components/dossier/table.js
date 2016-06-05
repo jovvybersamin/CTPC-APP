@@ -4,12 +4,17 @@ module.exports = {
 
 	template:require('./table.template.html'),
 
-	props:['options','search','columns','items'],
+	props:['options'],
 
 	data: function(){
-		var sortOrders = {};
 		return {
-			sortOrders:sortOrders
+			items:[],
+			columns:[],
+			sortCol:this.options.sortCol || null,
+			sortOrder:this.options.sortOrder || 'asc',
+			sortOrders:{},
+			search:'',
+			sortOrders:{}
 		}
 	},
 
@@ -43,15 +48,23 @@ module.exports = {
 	},
 
 	ready: function(){
-		console.log(this.$data);
+		this.items = this.$parent.items;
+		this.columns = this.$parent.columns;
 
 		this.setSortOrders();
+	},
+
+	beforeCompile:function(){
+		var self = this;
+		_.each(this.options.partials, function(value,key){
+			self.$options.partials[key] = value;
+		});
 	},
 
 	computed:{
 
 		hasItems: function(){
-			return this.items.length;
+			return this.$parent.hasItems;
 		},
 
 		hasHeader: function(){
@@ -60,17 +73,42 @@ module.exports = {
 
 		computedSearch: function(){
 			return this.search;
+		},
+
+		computedSortCol: function(){
+			return this.sortCol;
+		},
+
+		computedSortOrder: function(){
+			return this.sortOrders[this.sortCol];
 		}
 
 	},
 
 	methods:{
+		call: function(method){
+			// Call any method from parent component.
+			var args = Array.prototype.slice.call(arguments,1);
+			this.$parent.$options.methods[method].apply(null,args);
+		},
+
 		setSortOrders:function(){
-			console.log(this.columns);
+			var sortOrders = {};
 			_.each(this.columns, function( column ){
-				console.log('FUCK!');
+				sortOrders[column] = 1;
 			});
+			sortOrders[this.sortCol] = (this.sortOrder === 'asc') ? 1 : -1;
+			this.sortOrders = sortOrders;
+		},
+
+		sortBy: function(column){
+			if(this.sortCol == column){
+				this.sortOrders[column] = this.sortOrders[column] * -1;
+			}
+			this.sortCol = column;
+			return this.sortOrders[column];
 		}
+
 	}
 
 

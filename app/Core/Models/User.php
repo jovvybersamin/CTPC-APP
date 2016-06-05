@@ -7,13 +7,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+
+    protected $supplements = [];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'username','password','status',
+        'name', 'email',
+        'username','password','status',
         'confirmation_code','confirmed','about',
         'profile'
     ];
@@ -24,7 +28,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token','confirmation_code','confirmed'
     ];
 
     /**
@@ -37,9 +41,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class,'user_roles');
     }
 
+    /**
+     * [supplement description]
+     * @return [type] [description]
+     */
+    public function supplement()
+    {
+        $this->attributes['edit_url'] = $this->editUrl();
+    }
 
     /**
-     *
      *
      * @param [type] $key [description]
      */
@@ -47,4 +58,26 @@ class User extends Authenticatable
     {
         return $this->attributes[$key] = $value;
     }
+
+    /**
+     * Override the toArray method.
+     *
+     * @return [type] [description]
+     */
+    public function toArray()
+    {
+        $this->supplement();
+        return parent::toArray();
+    }
+
+    /**
+     * Get the edit url for the given user.
+     *
+     * @return string
+     */
+    public function editUrl()
+    {
+        return route('cp.users.edit',$this->username);
+    }
+
 }

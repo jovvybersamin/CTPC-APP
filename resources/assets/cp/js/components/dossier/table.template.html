@@ -1,26 +1,37 @@
 <div>
 	<div class="actions">
-
-
 		<search :term.sync="search"></search>
 	</div>
-
 	<table class="dossier">
 		<thead v-if="hasHeader">
 			<th></th>
-			<th v-for="column in columns" class="column-sortable column-{{ column }}">
+			<th v-for="column in columns"
+			    class="column-sortable column-{{ column }}"
+			    @click="sortBy(column)">
 				{{ column }}
+				<i v-if="sortCol == column"
+				   class="icon icon-chevron-{{ (sortOrders[column] > 0) ? 'up' : 'down' }}"></i>
 			</th>
 			<th></th>
 		</thead>
 		<tbody>
-			<tr v-for="item in items | filterBy computedSearch">
-
+			<tr v-for="item in items | filterBy computedSearch | orderBy computedSortCol computedSortOrder">
 				<td></td>
 					<td v-for="column in columns">
 						<partial name="cell"></partial>
 					</td>
-				<td></td>
+				<td class="column-actions">
+					<div class="btn-group">
+						<button type="button" class="btn-more dropdown-toggle"
+								 data-toggle="dropdown" aria-haspopup="true"
+								 aria-expanded="true" aria-expanded="false">
+							<i class="icon icon-dots-three-vertical"></i>
+						</button>
+						<ul class="dropdown-menu">
+							<partial name="actions"></partial>
+						</ul>
+					</div>
+				</td>
 			</tr>
 		</tbody>
 	</table>

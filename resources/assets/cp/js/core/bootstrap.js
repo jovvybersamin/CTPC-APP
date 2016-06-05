@@ -29,7 +29,13 @@ if(window._ === undefined){
 	window._ = require('underscore');
 }
 
+window.Promise = require('promise');
+
+
 require('bootstrap-sass/assets/javascripts/bootstrap');
+
+// Load the forms.
+require('./forms/bootstrap');
 
 // load the Control Panel functions.
 require('./../cp.js');

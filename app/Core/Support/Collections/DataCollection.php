@@ -20,7 +20,11 @@ abstract class DataCollection extends IlluminateCollection
 		}
 
 		foreach ($this->items as $i => $item) {
-			$this->items[$i]->setSupplement($key,call_user_func($callable));
+			if(is_array($item)) {
+				$this->items[$i][$key] = call_user_func($callable);
+			}elseif($item instanceof \Illuminate\Database\Eloquent\Model){
+				$this->items[$i]->setSupplement($key,call_user_func($callable));
+			}
 		}
 
 		return $this->items;

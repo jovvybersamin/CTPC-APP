@@ -15,6 +15,8 @@
 				</a>
 			</div>
 
+			@include('cp.partials.alerts')
+
 			<div class="page-wrapper">
 
 				@yield('content')

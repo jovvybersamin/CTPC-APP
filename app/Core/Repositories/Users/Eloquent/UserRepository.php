@@ -25,9 +25,33 @@ class UserRepository implements UserRepositoryContract
 	 *
 	 * @return null|
 	 */
-	public function create(Request $request)
+	public function createUserFromBackend(Request $request)
 	{
+		if($user = $this->createNewUser($request)){
+			// Send an event UserCreated
+			return $user;
+		}
+	}
 
+	/**
+	 *
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	protected function createNewUser(Request $request)
+	{
+		$user =  $this->model->create([
+			'name' 		=> 	$request->name,
+			'username' 	=> 	$request->username,
+			'email'	   	=> 	$request->email,
+			'about'	  	=> 	$request->about
+		]);
+
+		if(!empty($request->roles)){
+			$user->roles()->attach($request->roles);
+		}
+
+		return $user;
 	}
 
 	/**
@@ -37,8 +61,6 @@ class UserRepository implements UserRepositoryContract
 	 */
 	public function getAll()
 	{
-		return new UserCollection($this->model->all());
+		return new UserCollection($this->model->all()->toArray());
 	}
-
-
 }

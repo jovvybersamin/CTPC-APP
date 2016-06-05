@@ -9,11 +9,11 @@ interface UserRepositoryInterface
 
 
 	/**
-	 * Create a new user
+	 * Create a new user from backend server.
 	 *
 	 * @return null|
 	 */
-	public function create(Request $request);
+	public function createUserFromBackend(Request $request);
 
 	/**
 	 * Get all the users
