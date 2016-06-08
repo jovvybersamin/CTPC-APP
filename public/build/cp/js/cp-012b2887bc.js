@@ -26388,10 +26388,12 @@ window.Form = require('./components/forms/form');
 new Vue({
 	el: '#app',
 	data: {
-		navVisible: false
+		navVisible: false,
+		errors: []
 	},
 
 	components: {
+		'app-error': require('./components/common/errors'),
 		'user-form': require('./components/forms/user'),
 		'user-listing': require('./components/listings/users')
 	},
@@ -26400,10 +26402,29 @@ new Vue({
 		toggleNav: function toggleNav() {
 			this.navVisible = !this.navVisible;
 		}
+	},
+
+	events: {
+		'errors-changed': function errorsChanged(errors) {
+			this.errors = errors;
+		}
 	}
 });
 
-},{"./components/dossier/dossier":18,"./components/forms/form":21,"./components/forms/user":22,"./components/listings/users":23,"./core/bootstrap":24}],18:[function(require,module,exports){
+},{"./components/common/errors":18,"./components/dossier/dossier":19,"./components/forms/form":22,"./components/forms/user":23,"./components/listings/users":24,"./core/bootstrap":25}],18:[function(require,module,exports){
+'use strict';
+
+// Error Components.
+module.exports = {
+	props: ['errors'],
+	computed: {
+		hasErrors: function hasErrors() {
+			return this.errors.length;
+		}
+	}
+};
+
+},{}],19:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26462,7 +26483,7 @@ module.exports = {
 
 };
 
-},{"./table":19}],19:[function(require,module,exports){
+},{"./table":20}],20:[function(require,module,exports){
 'use strict';
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -26569,13 +26590,13 @@ module.exports = {
 
 };
 
-},{"./table.template.html":20}],20:[function(require,module,exports){
+},{"./table.template.html":21}],21:[function(require,module,exports){
 module.exports = '<div>\n	<div class="actions">\n		<search :term.sync="search"></search>\n	</div>\n	<table class="dossier">\n		<thead v-if="hasHeader">\n			<th></th>\n			<th v-for="column in columns"\n			    class="column-sortable column-{{ column }}"\n			    @click="sortBy(column)">\n				{{ column }}\n				<i v-if="sortCol == column"\n				   class="icon icon-chevron-{{ (sortOrders[column] > 0) ? \'up\' : \'down\' }}"></i>\n			</th>\n			<th></th>\n		</thead>\n		<tbody>\n			<tr v-for="item in items | filterBy computedSearch | orderBy computedSortCol computedSortOrder">\n				<td></td>\n					<td v-for="column in columns">\n						<partial name="cell"></partial>\n					</td>\n				<td class="column-actions">\n					<div class="btn-group">\n						<button type="button" class="btn-more dropdown-toggle"\n								 data-toggle="dropdown" aria-haspopup="true"\n								 aria-expanded="true" aria-expanded="false">\n							<i class="icon icon-dots-three-vertical"></i>\n						</button>\n						<ul class="dropdown-menu">\n							<partial name="actions"></partial>\n						</ul>\n					</div>\n				</td>\n			</tr>\n		</tbody>\n	</table>\n</div>\n';
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 module.exports = {
-
+	props: ['errors'],
 	data: function data() {
 		return {
 			isNew: true,
@@ -26599,12 +26620,17 @@ module.exports = {
 				self.formReady = true;
 			}).catch(function (error) {});
 		}
+	},
 
+	watch: {
+		'form[form.primary].errors.errors': function formFormPrimaryErrorsErrors(newVal, oldVal) {
+			this.$dispatch('errors-changed', this.form[this.form.primary].errors.flatten());
+		}
 	}
 
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26612,6 +26638,7 @@ module.exports = {
 	data: function data() {
 		return {
 			form: {
+				primary: 'user',
 				user: new AppForm({
 					name: '',
 					username: '',
@@ -26671,14 +26698,13 @@ module.exports = {
 	methods: {
 		save: function save() {
 			App.post(this.ajax[this.ajax.method], this.form.user).then(function (response) {
-				window.location = response.data.path;
+				window.location = response.path;
 			});
 		}
 	}
-
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26721,7 +26747,7 @@ module.exports = {
 	}
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 /**
@@ -26764,7 +26790,7 @@ require('./../cp.js');
 // Load the Control Panel JS Theme.
 require('./../theme/theme');
 
-},{"./../cp.js":29,"./../theme/theme":30,"./forms/bootstrap":25,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"underscore":14,"vue":16,"vue-resource":15}],25:[function(require,module,exports){
+},{"./../cp.js":30,"./../theme/theme":31,"./forms/bootstrap":26,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"underscore":14,"vue":16,"vue-resource":15}],26:[function(require,module,exports){
 'use strict';
 
 // Load the AppForm class.
@@ -26775,7 +26801,7 @@ require('./errors');
 
 $.extend(App, require('./http'));
 
-},{"./errors":26,"./http":27,"./instances":28}],26:[function(require,module,exports){
+},{"./errors":27,"./http":28,"./instances":29}],27:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -26785,16 +26811,24 @@ window.AppErrors = function () {
 
 	/**
   * Clear the errors.
-  *
   */
 	this.forget = function () {
 		this.errors = {};
 	};
 
 	/**
-  *
+  * Get the collection of errors.
+  */
+	this.get = function () {
+		return this.errors;
+	};
+
+	this.flatten = function () {
+		return _.flatten(_.toArray(this.errors));
+	};
+
+	/**
   * Set the errors.
-  *
   */
 	this.set = function (errors) {
 		if ((typeof errors === 'undefined' ? 'undefined' : _typeof(errors)) === 'object') {
@@ -26805,7 +26839,7 @@ window.AppErrors = function () {
 	};
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26829,18 +26863,18 @@ module.exports = {
 			form.startProcessing();
 			Vue.http[method](uri, form.data).then(function (response) {
 				form.finishProcessing();
-				fulfill(response);
+				fulfill(response.data);
 			}, function (response) {
-				reject(response);
 				form.busy = false;
-				form.errors.set(response);
+				form.errors.set(response.data);
+				reject(response.data);
 			});
 		});
 	}
 
 };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 "use strict";
 
 window.AppForm = function (data) {
@@ -26871,7 +26905,7 @@ window.AppForm = function (data) {
 	};
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 window.cp_url = function (url) {
@@ -26881,7 +26915,7 @@ window.cp_url = function (url) {
 	return url;
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };

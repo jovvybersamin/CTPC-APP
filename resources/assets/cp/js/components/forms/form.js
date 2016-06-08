@@ -1,5 +1,5 @@
 module.exports = {
-
+	props:['errors'],
 	data:function(){
 		return {
 			isNew:true,
@@ -27,8 +27,14 @@ module.exports = {
 
 			});
 		}
-
 	},
+
+	watch:{
+		'form[form.primary].errors.errors':function(newVal,oldVal){
+			this.$dispatch('errors-changed',this.form[this.form.primary].errors.flatten());
+		}
+	}
+
 
 
 

@@ -1,7 +1,7 @@
 @extends('cp.layout')
 
 @section('content')
-	<user-form inline-template v-cloak>
+	<user-form inline-template v-cloak >
 		<form class="" role="form">
 			<div class="card" v-if="formReady">
 				<div class="head">

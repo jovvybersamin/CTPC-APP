@@ -3,6 +3,7 @@ module.exports = {
 	data:function(){
 		return {
 			form:{
+				primary:'user',
 				user:new AppForm({
 					name:'',
 					username:'',
@@ -63,9 +64,8 @@ module.exports = {
 	methods:{
 		save:function(){
 			App.post(this.ajax[this.ajax.method],this.form.user).then(function( response ){
-				window.location = response.data.path;
+				window.location = response.path;
 			});
 		}
 	}
-
 }

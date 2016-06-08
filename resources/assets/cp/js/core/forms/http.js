@@ -24,11 +24,11 @@ module.exports = {
 			form.startProcessing();
 			Vue.http[method](uri,form.data).then(function( response ){
 				form.finishProcessing();
-				fulfill(response);
+				fulfill( response.data );
 			}, function( response ){
-				reject( response );
 				form.busy = false;
-				form.errors.set( response );
+				form.errors.set( response.data );
+				reject( response.data );
 			});
 
 		});

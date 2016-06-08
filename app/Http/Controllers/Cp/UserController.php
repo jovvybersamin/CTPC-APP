@@ -8,6 +8,7 @@ use OneStop\Core\Models\Role;
 use OneStop\Core\Models\User;
 use OneStop\Http\Controllers\Controller;
 use OneStop\Http\Requests;
+use OneStop\Http\Requests\StoreNewUser;
 
 
 class UserController extends Controller
@@ -62,7 +63,7 @@ class UserController extends Controller
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	public function store(Request $request)
+	public function store(StoreNewUser $request)
 	{
 		$this->users->createUserFromBackend($request);
 
