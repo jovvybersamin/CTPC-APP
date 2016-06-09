@@ -14,9 +14,9 @@ module.exports = {
 				roles:[]
 			},
 			ajax:{
-				method:'create',
-				create:cp_url('users'),
-				update:'',
+				method:'store',
+				store:cp_url('users'),
+				update:cp_url('users/update'),
 				delete:''
 			}
 		}
@@ -56,6 +56,7 @@ module.exports = {
 
 		this.whenReady(function( data ){
 			self.form.user.set( data.user );
+			self.ajax.update = cp_url('users/' + data.user.username);
 			self.form.roles = data.roles;
 		});
 
@@ -63,7 +64,9 @@ module.exports = {
 
 	methods:{
 		save:function(){
-			App.post(this.ajax[this.ajax.method],this.form.user).then(function( response ){
+			var method = this.ajax.method;
+			// Either POST,PUT or DELETE
+			App[method](this.ajax[method],this.form.user).then(function( response ){
 				window.location = response.path;
 			});
 		}

@@ -23,6 +23,7 @@ module.exports = {
 				callback( data );
 				self.ajax.method = data.type;
 				self.formReady = true;
+				self.headerTitle = data.headerTitle;
 			}).catch(function(error){
 
 			});

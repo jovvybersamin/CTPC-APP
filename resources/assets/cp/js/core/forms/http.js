@@ -1,12 +1,19 @@
 module.exports = {
 
+	store:function(uri,form){
+		return App.post(uri,form);
+	},
+
+	update:function(uri,form){
+		return App.put(uri,form);
+	},
 
 	post:function(uri,form){
 		return App.sendForm('post',uri,form);
 	},
 
 	put:function(uri,form){
-
+		return App.sendForm('put',uri,form);
 	},
 
 	delete:function(uri,form){

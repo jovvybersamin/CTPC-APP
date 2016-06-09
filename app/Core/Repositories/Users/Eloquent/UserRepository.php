@@ -63,4 +63,26 @@ class UserRepository implements UserRepositoryContract
 	{
 		return new UserCollection($this->model->all()->toArray());
 	}
+
+	/**
+	 * Get a user by its username.
+	 *
+	 * @param  String $username
+	 * @return User
+	 */
+	public function getUserByUsername($username,$withRoles = false)
+	{
+		if($withRoles){
+			return User::with('roles')->where('username',$username)->first();
+		}
+		return User::where('username',$username)->first();
+	}
+
+	public function updateByUsername($username,Request $request)
+	{
+		$data = array_except($request->all(),['roles','edit_url']);
+		$user = User::where('username',$username)->first();
+		$user->roles()->sync($request->get('roles'));
+		return $user->update($data);
+	}
 }

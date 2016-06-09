@@ -12,10 +12,10 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 		Route::get('create','UserController@create')->name('users.create');
 		Route::get('{users}/edit','UserController@edit')->name('users.edit');
 
-		Route::post('/','UserController@store')->name('users.store');
-		Route::patch('{users}','UserController@update')->name('users.update');
-		Route::delete('{users}','UserController@delete')->name('users.delete');
 
+		Route::put('{users}','UserController@update')->name('users.update');
+		Route::post('/','UserController@store')->name('users.store');
+		Route::delete('{users}','UserController@delete')->name('users.delete');
 	});
 
 });

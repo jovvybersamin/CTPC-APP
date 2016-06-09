@@ -9,6 +9,7 @@ use OneStop\Core\Models\User;
 use OneStop\Http\Controllers\Controller;
 use OneStop\Http\Requests;
 use OneStop\Http\Requests\StoreNewUser;
+use OneStop\Http\Requests\UpdateUser;
 
 
 class UserController extends Controller
@@ -55,19 +56,61 @@ class UserController extends Controller
 			return $result;
 		};
 
-		return view('cp.users.create');
+		return view('cp.users.form');
 	}
 
 	/**
-	 * [store description]
+	 * Store new user to the database.
+	 *
 	 * @param  Request $request [description]
-	 * @return [type]           [description]
+	 * @return JSON
 	 */
 	public function store(StoreNewUser $request)
 	{
 		$this->users->createUserFromBackend($request);
 
 		session()->flash('success','User was successfully created.');
+
+		return response()->json(['path' => route('cp.users.index')]);
+	}
+
+	/**
+	 * Show the Edit User Form.
+	 *
+	 * @param  String $user [description]
+	 * @return View
+	 */
+	public function edit(Request $request,$username)
+	{
+
+		if($result = $this->isEditing($request,function($creating) use ($username){
+			$user = $this->users->getUserByUsername($username,true);
+			return [
+					  'headerTitle' => 'Edit ' . $user->name,
+					  'user' => $user->toArray(),
+					  'roles' => Role::all()
+				   ];
+		}))
+		{
+			return $result;
+		};
+
+		return view('cp.users.form');
+	}
+
+
+	/**
+	 * Update the details of the given user.
+	 *
+	 * @param  Request $request [description]
+	 * @return JSON
+	 */
+	public function update($username,UpdateUser $request)
+	{
+
+		$this->users->updateByUsername($username,$request);
+
+		session()->flash('success','User was successfully updated.');
 
 		return response()->json(['path' => route('cp.users.index')]);
 	}
@@ -103,7 +146,7 @@ class UserController extends Controller
 		if($request->ajax()){
 
 			$return = [
-				'type' => 'create'
+				'type' => 'store'
 			];
 
 			if(is_callable($callback)){
@@ -115,11 +158,19 @@ class UserController extends Controller
 		return false;
 	}
 
-	private function isEditing(Request $request){
+	private function isEditing(Request $request,$callback){
 		if($request->ajax()){
-			return [
-					 'type' => 'edit'
-				   ];
+
+			$return = [
+				'type' => 'update'
+			];
+
+			if(is_callable($callback)){
+				$return = array_merge($return,call_user_func($callback,[true]) ?: []);
+			}
+
+			return $return;
 		}
+		return false;
 	}
 }
