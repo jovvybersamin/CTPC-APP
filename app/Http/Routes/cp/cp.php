@@ -3,6 +3,19 @@
 Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 {
 
+	Route::get('account','UserController@account')->name('account');
+
+	// Login
+	Route::group(['prefix' => 'auth'], function()
+	{
+
+		Route::get('/','AuthController@getLogin');
+		Route::get('login','AuthController@getLogin')->name('auth.login');
+		Route::post('login','AuthController@postLogin');
+		Route::get('logout','AuthController@logout')->name('auth.logout');
+
+	});
+
 	// Users
 	Route::group(['prefix' => 'users'],function()
 	{

@@ -3,6 +3,7 @@
 namespace OneStop\Http\Controllers\Cp;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use OneStop\Core\Contracts\Repositories\UserRepositoryInterface as UserRepositoryContract;
 use OneStop\Core\Models\Role;
 use OneStop\Core\Models\User;
@@ -20,6 +21,15 @@ class UserController extends Controller
 	public function __construct(UserRepositoryContract $users)
 	{
 		$this->users = $users;
+	}
+
+	/**
+	 *
+	 * @return [type] [description]
+	 */
+	public function account()
+	{
+		return redirect()->route('cp.users.edit',Auth::user()->username);
 	}
 
 	/**

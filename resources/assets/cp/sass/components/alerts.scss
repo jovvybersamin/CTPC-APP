@@ -2,3 +2,10 @@
 	padding:15px 60px 15px 60px;
 	@extend .z-depth-2;
 }
+
+.outside {
+	.alert {
+		padding:15px;
+		@extend .z-depth-0;
+	}
+}

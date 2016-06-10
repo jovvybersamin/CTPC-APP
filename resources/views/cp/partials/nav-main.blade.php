@@ -53,4 +53,12 @@
 			</ul>
 		</li>
 	</ul>
+	<div class="foot">
+		<a href="{{ route('cp.account') }}" class="account">
+			My Account
+		</a>
+		<a href="{{ route('cp.auth.logout') }}" class="logout">
+			Logout
+		</a>
+	</div>
 </nav>
