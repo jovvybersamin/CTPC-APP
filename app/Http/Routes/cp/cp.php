@@ -31,6 +31,29 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 		Route::delete('{users}','UserController@delete')->name('users.delete');
 	});
 
+
+
+	// Video
+	Route::group(['prefix' => 'videos'], function()
+	{
+
+
+		// Video Categories
+		// cp/videos/categories/{category}
+		Route::group(['prefix' => 'categories'],function()
+		{
+
+			Route::get('/','VideoCategoryController@index')->name('videos.categories.index');
+			Route::get('get','VideoCategoryController@get')->name('videos.categories.get');
+			Route::get('create','VideoCategoryController@create')->name('videos.categories.create');
+			Route::get('{categories}/edit','VideoCategoryController@edit')->name('videos.categories.edit');
+
+			Route::put('{categories}','VideoCategoryController@update')->name('videos.categories.update');
+			Route::post('/','VideoCategoryController@store')->name('videos.categories.store');
+			Route::delete('{categories}','VideoCategoryController@delete')->name('videos.categories.delete');
+		});
+
+	});
 });
 
 

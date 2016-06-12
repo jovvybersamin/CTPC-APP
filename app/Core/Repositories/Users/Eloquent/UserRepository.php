@@ -64,6 +64,8 @@ class UserRepository implements UserRepositoryContract
 		return new UserCollection($this->model->all()->toArray());
 	}
 
+
+
 	/**
 	 * Get a user by its username.
 	 *
@@ -78,6 +80,13 @@ class UserRepository implements UserRepositoryContract
 		return User::where('username',$username)->first();
 	}
 
+	/**
+	 * Update the given user by its username.
+	 *
+	 * @param  String $username
+	 * @param  Request $request
+	 * @return Boolean
+	 */
 	public function updateByUsername($username,Request $request)
 	{
 		$data = array_except($request->all(),['roles','edit_url']);

@@ -53,11 +53,18 @@ module.exports = {
 
 	ready:function(){
 		var self = this;
-
+			self.form.ready = true;
 		this.whenReady(function( data ){
+			console.log( data );
 			self.form.user.set( data.user );
-			self.ajax.update = cp_url('users/' + data.user.username);
+
+			if(data.user !== null){
+				self.ajax.update = cp_url('users/' + data.user.username);
+			}
+
 			self.form.roles = data.roles;
+
+			return true;
 		});
 
 	},

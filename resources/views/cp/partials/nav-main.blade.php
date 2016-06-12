@@ -23,35 +23,39 @@
 			</a>
 		</li>
 		<li class="section">CONTENT</li>
-		<li class="section">CONFIGURE</li>
-		<li class="nav-users root has-sub {{ nav_is('cp.users.*') ? 'active' : '' }}">
-			<a href="#" title="Users" >
-				<span class="title">Users</span>
-				<span class="icon icon-chevron-left pull-right"></span>
-			</a>
-			<ul class="{{ nav_is('cp.users.*') ? 'nav_open' : '' }}">
-				<li class="{{ nav_is('cp.users.index') ? 'active' : '' }}">
-					<a href="{{ route('cp.users.index') }}">All Users</a>
-				</li>
-				<li class="{{ nav_is('cp.users.create') ? 'active' : '' }}">
-					<a href="{{ route('cp.users.create') }}">Add New User</a>
-				</li>
-			</ul>
-		</li>
-		<li class="nav-users root has-sub">
-			<a href="#" title="Users" >
-				<span class="title">Users</span>
+		<li class="nav-videos root has-sub">
+			<a href="#" title="Videos" >
+				<span class="title">Videos</span>
 				<span class="icon icon-chevron-left pull-right"></span>
 			</a>
 			<ul>
 				<li>
-					<a href="#">All Users</a>
+					<a href="#">All Videos</a>
 				</li>
 				<li>
-					<a href="#">Add New User</a>
+					<a href="#">Add New Videos</a>
+				</li>
+				<li class="{{ nav_is_active('cp.videos.categories.index') }}">
+					<a href="{{ route('cp.videos.categories.index') }}">Categories</a>
 				</li>
 			</ul>
 		</li>
+		<li class="section">CONFIGURE</li>
+		<li class="nav-users root has-sub {{ nav_is_active('cp.users.*') }}">
+			<a href="#" title="Users" >
+				<span class="title">Users</span>
+				<span class="icon icon-chevron-left pull-right"></span>
+			</a>
+			<ul class="{{ nav_is_active('cp.users.*','nav_open') }}">
+				<li class="{{ nav_is_active('cp.users.index')}}">
+					<a href="{{ route('cp.users.index') }}">All Users</a>
+				</li>
+				<li class="{{ nav_is_active('cp.users.create') }}">
+					<a href="{{ route('cp.users.create') }}">Add New User</a>
+				</li>
+			</ul>
+		</li>
+
 	</ul>
 	<div class="foot">
 		<a href="{{ route('cp.account') }}" class="account">

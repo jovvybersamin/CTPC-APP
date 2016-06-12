@@ -1213,7 +1213,7 @@
 .icon-video-camera:before {
   content: "\EB88"; }
 
-.icon-video:before {
+.icon-video:before, .nav-main > ul > .nav-videos > a:before {
   content: "\EB89"; }
 
 .icon-vimeo-with-circle:before {

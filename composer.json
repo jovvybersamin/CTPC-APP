@@ -21,7 +21,7 @@
             "database"
         ],
         "files":[
-            "app/Support/helpers.php"
+            "app/Core/Support/helpers.php"
         ],
         "psr-4": {
             "OneStop\\": "app/"

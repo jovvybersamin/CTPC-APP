@@ -2,19 +2,21 @@
 
 namespace OneStop\Http\Controllers\Cp;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use OneStop\Core\Contracts\Repositories\UserRepositoryInterface as UserRepositoryContract;
-use OneStop\Core\Models\Role;
-use OneStop\Core\Models\User;
-use OneStop\Http\Controllers\Controller;
 use OneStop\Http\Requests;
-use OneStop\Http\Requests\StoreNewUser;
+use Illuminate\Http\Request;
+use OneStop\Core\Models\User;
+use OneStop\Core\Models\Role;
+use Illuminate\Support\Facades\Auth;
 use OneStop\Http\Requests\UpdateUser;
+use OneStop\Http\Requests\StoreNewUser;
+use OneStop\Http\Controllers\Controller;
+use OneStop\Core\Support\Traits\FormAjax;
+use OneStop\Core\Contracts\Repositories\UserRepositoryInterface as UserRepositoryContract;
 
 
 class UserController extends Controller
 {
+	use FormAjax;
 
 	protected $users;
 
@@ -144,43 +146,4 @@ class UserController extends Controller
 		return $data;
 	}
 
-
-	/**
-	 *  Determine if the request is creating a new instance.
-	 *  TODO: We can separate this to a trait.
-	 *
-	 * @param  Request $request [description]
-	 * @return Array
-	 */
-	private function isCreating(Request $request,callable $callback){
-		if($request->ajax()){
-
-			$return = [
-				'type' => 'store'
-			];
-
-			if(is_callable($callback)){
-				$return = array_merge($return,call_user_func($callback,[true]) ?: []);
-			}
-
-			return $return;
-		}
-		return false;
-	}
-
-	private function isEditing(Request $request,$callback){
-		if($request->ajax()){
-
-			$return = [
-				'type' => 'update'
-			];
-
-			if(is_callable($callback)){
-				$return = array_merge($return,call_user_func($callback,[true]) ?: []);
-			}
-
-			return $return;
-		}
-		return false;
-	}
 }

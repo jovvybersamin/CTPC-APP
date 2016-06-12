@@ -2,7 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Database\Seeder\Users\SetupUsersTableSeeder;
+use OneStop\Database\Seeder\Users\SetupUsersTableSeeder;
+use OneStop\Database\Seeder\Videos\SetupVideosTableSeeder;
 
 
 class DatabaseSeeder extends Seeder
@@ -17,6 +18,7 @@ class DatabaseSeeder extends Seeder
     	DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
         $this->call(SetupUsersTableSeeder::class);
+        $this->call(SetupVideosTableSeeder::class);
 
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
