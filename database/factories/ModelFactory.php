@@ -27,3 +27,20 @@ $factory->define(OneStop\Core\Models\VideoCategory::class,function(Faker\Generat
 		'name'	=> $faker->name
 	];
 });
+
+
+$factory->define(OneStop\Core\Models\Video::class,function(Faker\Generator $faker){
+    return [
+        'title'             => $faker->title,
+        'short_description' => $faker->paragraph,
+        'description'       => $faker->paragraph,
+        'duration'          => '3:20',
+        'url'               => $faker->url,
+        'image_cover'       => $faker->url,
+        'published'         => 0,
+        'featured'          => 0,
+        'category_id'       => OneStop\Core\Models\VideoCategory::first()->id,
+        'uploaded_by'       => OneStop\Core\Models\User::first()->id,
+        'created_by'        => OneStop\Core\Models\User::first()->id
+    ];
+});
