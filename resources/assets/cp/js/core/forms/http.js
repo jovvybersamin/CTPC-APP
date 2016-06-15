@@ -30,8 +30,8 @@ module.exports = {
 		return new Promise(function(fulfill,reject){
 			form.startProcessing();
 			Vue.http[method](uri,form.data).then(function( response ){
-				form.finishProcessing();
 				fulfill( response.data );
+				form.finishProcessing();
 			}, function( response ){
 				form.busy = false;
 				form.errors.set( response.data );

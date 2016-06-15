@@ -26830,14 +26830,28 @@ module.exports = {
 				sortCol: 'name',
 				sortOrder: 'asc',
 				partials: {
-					'actions': '',
+					actions: '',
 					'cell': '\n\t\t\t\t\t\t<a v-if="$index === 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="">\n\t\t\t\t\t\t\t\t{{ item.name }}\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t'
 				}
 			}
 		};
 	},
 
-	ready: function ready() {}
+	ready: function ready() {
+		this.addActionPartial();
+	},
+
+	methods: {
+
+		addActionPartial: function addActionPartial() {
+			var str = '';
+			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
+			str += '<li class="warning">\n\t\t\t\t\t\t<a href="#" @click.prevent="call(\'deleteItem\',item.id)">Delete</a>\n\t\t\t\t\t</li>';
+
+			this.tableOptions.partials.actions = str;
+		}
+
+	}
 
 };
 
@@ -26966,8 +26980,8 @@ module.exports = {
 		return new Promise(function (fulfill, reject) {
 			form.startProcessing();
 			Vue.http[method](uri, form.data).then(function (response) {
-				form.finishProcessing();
 				fulfill(response.data);
+				form.finishProcessing();
 			}, function (response) {
 				form.busy = false;
 				form.errors.set(response.data);

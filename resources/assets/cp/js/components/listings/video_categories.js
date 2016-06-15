@@ -14,7 +14,7 @@ module.exports = {
 				sortCol:'name',
 				sortOrder:'asc',
 				partials:{
-					'actions':'',
+					actions:'',
 					'cell':`
 						<a v-if="$index === 0" href="{{ item.edit_url }}">
 							<span class="">
@@ -29,6 +29,21 @@ module.exports = {
 
 
 	ready:function(){
+		this.addActionPartial();
+	},
+
+
+	methods:{
+
+		addActionPartial:function(){
+			var str = '';
+			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
+			str += `<li class="warning">
+						<a href="#" @click.prevent="call('deleteItem',item.id)">Delete</a>
+					</li>`;
+
+			this.tableOptions.partials.actions = str;
+		}
 
 	}
 

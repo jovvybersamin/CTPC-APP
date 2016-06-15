@@ -56,4 +56,3 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 	});
 });
 
-

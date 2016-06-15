@@ -23,12 +23,12 @@
 			</a>
 		</li>
 		<li class="section">CONTENT</li>
-		<li class="nav-videos root has-sub">
+		<li class="nav-videos root has-sub {{ nav_is_active('cp.videos.*','active') }}">
 			<a href="#" title="Videos" >
 				<span class="title">Videos</span>
 				<span class="icon icon-chevron-left pull-right"></span>
 			</a>
-			<ul>
+			<ul class="{{ nav_is_active('cp.videos.*','nav_open') }}">
 				<li>
 					<a href="#">All Videos</a>
 				</li>
@@ -46,7 +46,7 @@
 				<span class="title">Users</span>
 				<span class="icon icon-chevron-left pull-right"></span>
 			</a>
-			<ul class="{{ nav_is_active('cp.users.*','nav_open') }}">
+			<ul class="{{ nav_is_active('cp.users.*','nav_open') }}" style="display:none">
 				<li class="{{ nav_is_active('cp.users.index')}}">
 					<a href="{{ route('cp.users.index') }}">All Users</a>
 				</li>
