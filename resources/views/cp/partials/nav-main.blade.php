@@ -30,10 +30,10 @@
 			</a>
 			<ul class="{{ nav_is_active('cp.videos.*','nav_open') }}">
 				<li>
-					<a href="#">All Videos</a>
+					<a href="{{ route('cp.videos.index') }}">All Videos</a>
 				</li>
 				<li>
-					<a href="#">Add New Videos</a>
+					<a href="{{ route('cp.videos.create') }}">Add New Video</a>
 				</li>
 				<li class="{{ nav_is_active('cp.videos.categories.index') }}">
 					<a href="{{ route('cp.videos.categories.index') }}">Categories</a>

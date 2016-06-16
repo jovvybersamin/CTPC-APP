@@ -33,10 +33,18 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 
 
 
-	// Video
+	// Videos
 	Route::group(['prefix' => 'videos'], function()
 	{
 
+		Route::get('/','VideoController@index')->name('videos.index');
+		Route::get('get','VideoController@get')->name('videos.get');
+		Route::get('create','VideoController@create')->name('videos.create');
+		Route::get('{videos}/edit','VideoController@edit')->name('videos.edit');
+
+		Route::put('{videos}','VideoController@update')->name('videos.update');
+		Route::post('/','VideoController@store')->name('videos.store');
+		Route::delete('{videos}','VideoController@delete')->name('videos.delete');
 
 		// Video Categories
 		// cp/videos/categories/{category}

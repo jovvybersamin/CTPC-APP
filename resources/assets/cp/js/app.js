@@ -15,6 +15,7 @@ new Vue({
 		'app-error':require('./components/common/errors'),
 		'user-form':require('./components/forms/user'),
 		'user-listing':require('./components/listings/users'),
+		'video-listing':require('./components/listing/videos'),
 		'video-category-form':require('./components/forms/video_category'),
 		'video-category-listing':require('./components/listings/video_categories')
 	},

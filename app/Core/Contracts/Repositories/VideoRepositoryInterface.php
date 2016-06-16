@@ -12,5 +12,4 @@ interface VideoRepositoryInterface
 	 * @return  \OneStop\Core\Support\Collections\VideoCollection
 	 */
 	public function getAll();
-
 }
