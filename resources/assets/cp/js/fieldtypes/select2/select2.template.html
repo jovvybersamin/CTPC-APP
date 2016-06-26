@@ -1,0 +1,7 @@
+<div v-if="hasOptions">
+	<select :class="name">
+		<option v-for="option in options" :value="option[key]" :selected="isSelected(option)">
+			{{ option[value] }}
+		</option>
+	</select>
+</div>

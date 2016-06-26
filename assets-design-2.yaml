@@ -1,0 +1,18 @@
+Assets
+  -
+
+Assets Controllers
+  - AssetsController
+    - index
+    - browse
+    - get
+
+  - AssetFoldersController
+    - store
+    - edit
+    - update
+
+  - AssetContainersController
+    - store
+    - edit
+    - update

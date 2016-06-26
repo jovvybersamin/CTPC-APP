@@ -4,7 +4,7 @@ use OneStop\Core\Support\Menu\Menu;
 
 
 Route::get('test',function(){
-	return url('cp/');
+	return OneStop\Core\API\Helper::makeUuid();
 });
 
 Route::get('menu',function()

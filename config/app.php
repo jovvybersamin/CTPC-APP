@@ -159,7 +159,7 @@ return [
         /**
          * Core Service Providers...
          */
-        OneStop\Core\Providers\RepositoryServiceProvider::class,
+        OneStop\Providers\OneStopServiceProvider::class,
 
         /**
          * Third Party Service Providers...
@@ -218,7 +218,7 @@ return [
          */
 
         'Active' => HieuLe\Active\Facades\Active::class,
-
+        'Uuid' => Webpatser\Uuid\Uuid::class,
     ],
 
 ];

@@ -1,6 +1,12 @@
-window.AppForm = function( data ){
+window.AppFormType = {
+	Extend:'extend',
+	Each:'each'
+};
+
+window.AppForm = function( data , type ){
 	var form = this;
 
+	this.type = type;
 	this.data = {};
 	this.busy = false;
 	this.successfull = false;
@@ -9,9 +15,22 @@ window.AppForm = function( data ){
 	$.extend(this.data,data);
 
 	this.set = function( data ){
-		if(data !== null){
-			_.extend(this.data,data);
+
+		if(this.type === undefined || this.type === null || this.type === AppFormType.Extend){
+			if(data !== null){
+				_.extend(this.data,data);
+			}
+		}else if(this.type === AppFormType.Each){
+			if(data !== null){
+				var self = this;
+				_.each(data,function(value,key){
+					if(_.has(self.data,key)){
+						self.data[key] = value;
+					}
+				});
+			}
 		}
+
 	};
 
 	this.startProcessing = function(){
@@ -24,5 +43,5 @@ window.AppForm = function( data ){
 		this.busy = false;
 		this.successfull = true;
 	}
-
 }
+

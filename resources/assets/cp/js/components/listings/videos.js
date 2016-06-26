@@ -11,16 +11,19 @@ module.exports = {
 			tableOptions:{
 				hasHeader:true,
 				hasCheckbox:false,
-				sortCol:'name',
+				sortCol:'title',
 				sortOrder:'asc',
 				partials:{
 					actions:'',
 					cell:`
 						<a v-if="$index == 0" href="{{ item.edit_url }}">
 							<span class="">
-								{{ item.name }}
+								{{ item[column] }}
 							</span>
 						</a>
+						<span v-else>
+							{{ item[column] }}
+						</span>
 					`
 				}
 			}

@@ -1,0 +1,16 @@
+.select2{
+	width:100% !important;
+
+	[role=combobox]{
+		color:inherit;
+        border: none !important;
+	    background: #f4f4f4 !important;
+	    border-radius: 2px 2px 3px 3px ;
+	    box-shadow: 0 3px #ccc;
+	    color: #484747;
+	    font-size: 13px;
+	    height: 30px;
+	    position: relative;
+	    text-shadow: none;
+	}
+}

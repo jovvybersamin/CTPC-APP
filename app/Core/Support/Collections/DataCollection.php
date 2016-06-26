@@ -10,8 +10,10 @@ abstract class DataCollection extends IlluminateCollection
 	/**
 	 *
 	 *
-	 * @param  [type] $key [description]
-	 * @return [type]      [description]
+	 *
+	 * @param  [string]   $key      [description]
+	 * @param  callable $callable [description]
+	 * @return [type]             [description]
 	 */
 	public function supplement($key,callable $callable)
 	{

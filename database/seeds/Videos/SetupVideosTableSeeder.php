@@ -14,6 +14,7 @@ class SetupVideosTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('videos')->truncate();
 
         DB::table('video_categories')->truncate();
 

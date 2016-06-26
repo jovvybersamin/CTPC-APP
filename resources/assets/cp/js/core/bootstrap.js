@@ -25,6 +25,10 @@ if(window.$ === undefined || window.jQuery === undefined){
 	window.$ = window.jQuery = require('jquery');
 }
 
+if(window.$.select2 === undefined || window.jQuery.select2 === undefined){
+	require('select2/dist/js/select2.full.min.js');
+}
+
 if(window._ === undefined){
 	window._ = require('underscore');
 }

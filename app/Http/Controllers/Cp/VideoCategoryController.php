@@ -79,7 +79,7 @@ class VideoCategoryController extends Controller
 
 	/**
 	 * Show the Edit Form.
-	 *
+ *
 	 * @param  Request $request
 	 * @param  [type]  $slug
 	 * @return view|json:data

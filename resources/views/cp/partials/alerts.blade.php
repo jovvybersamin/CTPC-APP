@@ -9,7 +9,7 @@
 	@endif
 
 
-	<app-error inline-template v-cloak :errors.sync="errors">
+	<app-error inline-template :errors.sync="errors" v-cloak>
 		<div class="alert alert-danger alert-dismissible" role="alert" v-if="hasErrors">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				<span aria-hidden="true">&times;</span>

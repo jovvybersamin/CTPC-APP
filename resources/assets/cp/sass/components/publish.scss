@@ -1,0 +1,33 @@
+.publish-meta{
+	padding-bottom:5px;
+	margin: -5px -15px 0 -15px;
+
+
+	.title-field{
+		padding:10px 15px 15px;
+		flex-basis:100%;
+
+		input{
+			width:100%;
+			font-size:24px;
+			background:white;
+			box-shadow:none;
+			border-bottom:1px dashed $border;
+			padding-left:0;
+
+			&:hover {border-bottom:1px solid #333; }
+
+			&:focus,&:active{ outline:0;}
+		}
+	}
+
+	.equal{
+		flex:1;
+		padding:0 15px;
+		margin-top:5px;
+	}
+
+	small{
+		color:#949494;
+	}
+}

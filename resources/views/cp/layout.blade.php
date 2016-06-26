@@ -25,6 +25,7 @@
 		</div>
 
 		@include('cp.partials.scripts')
+		@yield('footer-scripts')
 
 	</body>
 </html>

@@ -1,0 +1,20 @@
+Assets
+	- Asset Factory
+	- Asset Container Factory
+  - File
+    - Asset
+    - AssetFolder
+    - AssetContainer
+
+Assets Controllers
+	- AssetsController
+		- index
+		- browse
+		-
+	- AssetContainersController
+		- create
+	- AssetFoldersController
+		- store
+		- edit
+		- update
+		- delete

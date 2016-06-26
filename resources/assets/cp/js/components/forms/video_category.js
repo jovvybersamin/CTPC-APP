@@ -18,7 +18,6 @@ module.exports = {
 	},
 
 	ready:function(){
-		console.log('here');
 		var self = this;
 		this.whenReady(function( data ){
 			self.form.category.set( data.category );

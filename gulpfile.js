@@ -53,12 +53,16 @@ function site(){
 function vendors(mix){
 	if(configurations.run.vendors){
 		mix.copy('node_modules/sweetalert/dist','resources/assets/vendors/sweetalert/');
+		mix.copy('node_modules/select2/dist','resources/assets/vendors/select2/');
+
 		mix.styles([
-			'../vendors/sweetalert/sweetalert.css'
+			'../vendors/sweetalert/sweetalert.css',
+			'../vendors/select2/css/select2.min.css'
 		],'public/vendors/css');
 
 		mix.scripts([
-			'../vendors/sweetalert/sweetalert.min.js'
+			'../vendors/sweetalert/sweetalert.min.js',
+			// '../vendors/select2/js/select2.full.min.js'// This is already loaded in core/bootstrap.js
 		],'public/vendors/js');
 	}
 }
