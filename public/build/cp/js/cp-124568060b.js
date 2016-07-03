@@ -26427,6 +26427,14 @@ require('./core/bootstrap');
 window.Dossier = require('./components/dossier/dossier');
 window.Form = require('./components/forms/form');
 
+// Components
+Vue.component('asset-listing', require('./components/assets/listing/listing'));
+
+},{"./components/assets/listing/listing":22,"./components/dossier/dossier":25,"./components/forms/form":28,"./core/bootstrap":35}],19:[function(require,module,exports){
+'use strict';
+
+require('./app.globals');
+
 new Vue({
 	el: '#app',
 	data: {
@@ -26436,6 +26444,7 @@ new Vue({
 
 	components: {
 		'app-error': require('./components/common/errors'),
+		'assets-browser': require('./components/assets/browser/browser'),
 		'user-form': require('./components/forms/user'),
 		'user-listing': require('./components/listings/users'),
 		'video-form': require('./components/forms/video'),
@@ -26457,7 +26466,106 @@ new Vue({
 	}
 });
 
-},{"./components/common/errors":19,"./components/dossier/dossier":20,"./components/forms/form":23,"./components/forms/user":24,"./components/forms/video":25,"./components/forms/video_category":26,"./components/listings/users":27,"./components/listings/video_categories":28,"./components/listings/videos":29,"./core/bootstrap":30}],19:[function(require,module,exports){
+},{"./app.globals":18,"./components/assets/browser/browser":20,"./components/common/errors":24,"./components/forms/user":29,"./components/forms/video":30,"./components/forms/video_category":31,"./components/listings/users":32,"./components/listings/video_categories":33,"./components/listings/videos":34}],20:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./browser.template.html'),
+
+	props: {
+		container: String,
+		uuid: String,
+		path: String
+	},
+
+	data: function data() {
+		return {
+			assets: [],
+			folders: [],
+			folder: {},
+			loading: true
+		};
+	},
+
+	ready: function ready() {
+		this.loadAssets();
+	},
+
+	methods: {
+
+		loadAssets: function loadAssets() {
+			this.$http.post(cp_url('assets/browse'), {
+				container: this.container,
+				path: this.path
+			}).then(function (response) {
+				var data = response.data;
+				this.assets = data.assets;
+				this.folder = data.folder;
+				this.folders = data.folders;
+				this.loading = false;
+			});
+		}
+	}
+
+};
+
+},{"./browser.template.html":21}],21:[function(require,module,exports){
+module.exports = '<div class="card">\n	<div class="head">\n		<h1>\n			{{ container }}\n			<strong v-if="path !== \'/\'"><small>{{ path }}</small></strong>\n		</h1>\n	</div>\n	<hr>\n	<assets-listing v-if="!loading"\n			name="browse"\n			:assets="assets"\n			:folders="folders"\n			:folder="folder"\n			:container="container"\n			:path="path"\n			:mode="table"\n	>\n	</assets-listing>\n</div>\n';
+},{}],22:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./listing.template.html'),
+
+	props: {
+		name: String,
+		container: String,
+		path: String,
+		assets: {
+			type: Array,
+			required: false,
+			default: function _default() {
+				return null;
+			}
+		},
+		folders: {
+			type: Array,
+			required: false,
+			default: function _default() {
+				return null;
+			}
+		},
+		folder: {
+			type: Object,
+			required: false,
+			default: function _default() {
+				return null;
+			}
+		}
+	},
+
+	data: function data() {
+		return {
+			loading: true,
+			creatingFolder: false
+		};
+	},
+
+	computed: {
+
+		hasItems: function hasItems() {
+			return this.folders.length || this.assets.length;
+		}
+
+	}
+
+};
+
+},{"./listing.template.html":23}],23:[function(require,module,exports){
+module.exports = '<div class="asset-listing">\n\n\n	<div v-if="!loading && hasItems">\n		<div class="asset-listing table">\n			<table>\n				<thead>\n					<tr>\n						 <th class="column-checkbox"></th>\n						 <th>\n						 	Title\n						 </th>\n						 <th>\n						 	Filename\n						 </th>\n						 <th>\n						 	File size\n						 </th>\n						 <th>\n							Date Modified\n						 </th>\n					</tr>\n				</thead>\n			</table>\n		</div>\n	</div>\n\n</div>\n';
+},{}],24:[function(require,module,exports){
 'use strict';
 
 // Error Components.
@@ -26470,7 +26578,7 @@ module.exports = {
 	}
 };
 
-},{}],20:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26529,7 +26637,7 @@ module.exports = {
 
 };
 
-},{"./table":21}],21:[function(require,module,exports){
+},{"./table":26}],26:[function(require,module,exports){
 'use strict';
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -26636,9 +26744,9 @@ module.exports = {
 
 };
 
-},{"./table.template.html":22}],22:[function(require,module,exports){
+},{"./table.template.html":27}],27:[function(require,module,exports){
 module.exports = '<div>\n	<div class="actions">\n		<search :term.sync="search"></search>\n	</div>\n	<table class="dossier">\n		<thead v-if="hasHeader">\n			<th></th>\n			<th v-for="column in columns"\n			    class="column-sortable column-{{ column }}"\n			    @click="sortBy(column)">\n				{{ column }}\n				<i v-if="sortCol == column"\n				   class="icon icon-chevron-{{ (sortOrders[column] > 0) ? \'up\' : \'down\' }}"></i>\n			</th>\n			<th></th>\n		</thead>\n		<tbody>\n			<tr v-for="item in items | filterBy computedSearch | orderBy computedSortCol computedSortOrder">\n				<td></td>\n					<td v-for="column in columns">\n						<partial name="cell"></partial>\n					</td>\n				<td class="column-actions">\n					<div class="btn-group">\n						<button type="button" class="btn-more dropdown-toggle"\n								 data-toggle="dropdown" aria-haspopup="true"\n								 aria-expanded="true" aria-expanded="false">\n							<i class="icon icon-dots-three-vertical"></i>\n						</button>\n						<ul class="dropdown-menu">\n							<partial name="actions"></partial>\n						</ul>\n					</div>\n				</td>\n			</tr>\n		</tbody>\n	</table>\n</div>\n';
-},{}],23:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26683,7 +26791,7 @@ module.exports = {
 
 };
 
-},{}],24:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26767,7 +26875,7 @@ module.exports = {
 	}
 };
 
-},{}],25:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26837,7 +26945,7 @@ module.exports = {
 
 };
 
-},{"./../../fieldtypes/select2/select2":36,"./../../fieldtypes/toggle/toggle":38}],26:[function(require,module,exports){
+},{"./../../fieldtypes/select2/select2":41,"./../../fieldtypes/toggle/toggle":43}],31:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26882,7 +26990,7 @@ module.exports = {
 	}
 };
 
-},{}],27:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26925,7 +27033,7 @@ module.exports = {
 	}
 };
 
-},{}],28:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26968,7 +27076,7 @@ module.exports = {
 
 };
 
-},{}],29:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27013,7 +27121,7 @@ module.exports = {
 
 };
 
-},{}],30:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 /**
@@ -27060,7 +27168,7 @@ require('./../cp.js');
 // Load the Control Panel JS Theme.
 require('./../theme/theme');
 
-},{"./../cp.js":35,"./../theme/theme":40,"./forms/bootstrap":31,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"select2/dist/js/select2.full.min.js":14,"underscore":15,"vue":17,"vue-resource":16}],31:[function(require,module,exports){
+},{"./../cp.js":40,"./../theme/theme":45,"./forms/bootstrap":36,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"select2/dist/js/select2.full.min.js":14,"underscore":15,"vue":17,"vue-resource":16}],36:[function(require,module,exports){
 'use strict';
 
 // Load the AppForm class.
@@ -27071,7 +27179,7 @@ require('./errors');
 
 $.extend(App, require('./http'));
 
-},{"./errors":32,"./http":33,"./instances":34}],32:[function(require,module,exports){
+},{"./errors":37,"./http":38,"./instances":39}],37:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -27109,7 +27217,7 @@ window.AppErrors = function () {
 	};
 };
 
-},{}],33:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27154,7 +27262,7 @@ module.exports = {
 
 };
 
-},{}],34:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 window.AppFormType = {
@@ -27203,17 +27311,20 @@ window.AppForm = function (data, type) {
 	};
 };
 
-},{}],35:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 window.cp_url = function (url) {
 	// By leaving of the specific protocol (keep the double slashes). the resource
 	// will be serve whichever protocol currently being used.
+	// For e.g. ( Current protocal http:)
+	// This will leave us a http://whatever.com this also applies to https
+	// https://whatever.com
 	url = '//' + App.siteRoot + '/cp/' + url;
 	return url;
 };
 
-},{}],36:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27261,9 +27372,9 @@ module.exports = {
 
 };
 
-},{"./select2.template.html":37}],37:[function(require,module,exports){
+},{"./select2.template.html":42}],42:[function(require,module,exports){
 module.exports = '<div v-if="hasOptions">\n	<select :class="name">\n		<option v-for="option in options" :value="option[key]" :selected="isSelected(option)">\n			{{ option[value] }}\n		</option>\n	</select>\n</div>\n';
-},{}],38:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27286,9 +27397,9 @@ module.exports = {
 
 };
 
-},{"./toggle.template.html":39}],39:[function(require,module,exports){
+},{"./toggle.template.html":44}],44:[function(require,module,exports){
 module.exports = '<div>\n	<div class="toggle-container" :class="{\'on\': isOn }" @click.prevent="toggle">\n		<div class="toggle-slider">\n			<div class="toggle-knob"></div>\n		</div>\n	</div>\n</div>\n';
-},{}],40:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -27363,4 +27474,4 @@ function _init() {
 	};
 }
 
-},{}]},{},[18]);
+},{}]},{},[19]);

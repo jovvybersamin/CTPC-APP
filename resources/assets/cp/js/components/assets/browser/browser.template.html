@@ -1,0 +1,19 @@
+<div class="card">
+	<div class="head">
+		<h1>
+			{{ container }}
+			<strong v-if="path !== '/'"><small>{{ path }}</small></strong>
+		</h1>
+	</div>
+	<hr>
+	<assets-listing v-if="!loading"
+			name="browse"
+			:assets="assets"
+			:folders="folders"
+			:folder="folder"
+			:container="container"
+			:path="path"
+			:mode="table"
+	>
+	</assets-listing>
+</div>

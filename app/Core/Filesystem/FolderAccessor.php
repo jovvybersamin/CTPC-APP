@@ -34,7 +34,7 @@ class FolderAccessor
 
 	public function makeDirectory($folder)
 	{
-		if($this->fs()->exists($foler)){
+		if($this->fs()->exists($folder)){
 
 		}
 	}

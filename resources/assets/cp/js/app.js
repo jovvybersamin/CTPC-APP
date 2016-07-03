@@ -1,8 +1,4 @@
-require('./core/bootstrap');
-
-// Mixins.
-window.Dossier = require('./components/dossier/dossier');
-window.Form = require('./components/forms/form');
+require('./app.globals');
 
 new Vue({
 	el:'#app',
@@ -13,6 +9,7 @@ new Vue({
 
 	components:{
 		'app-error':require('./components/common/errors'),
+		'assets-browser':require('./components/assets/browser/browser'),
 		'user-form':require('./components/forms/user'),
 		'user-listing':require('./components/listings/users'),
 		'video-form':require('./components/forms/video'),

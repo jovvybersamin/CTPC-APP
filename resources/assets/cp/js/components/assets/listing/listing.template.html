@@ -1,0 +1,46 @@
+<div class="asset-listing">
+
+
+	<div v-if="!loading && (hasParent || hasItems)">
+		<div class="asset-listing table">
+			<table>
+				<thead>
+					<tr>
+						 <th class="column-checkbox"></th>
+						 <th>
+						 	Title
+						 </th>
+						 <th>
+						 	Filename
+						 </th>
+						 <th>
+						 	File size
+						 </th>
+						 <th>
+							Date Modified
+						 </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-if="hasParent">
+						<td></td>
+						<td>
+							<a href="" @click.prevent="goToFolder(folder.folder_path)">
+								<img src="" class="folder">
+								Parent Folder
+							</a>
+						</td>
+						<td colspan='3'></td>
+					</tr>
+					<tr v-for="folder in folders">
+						<td></td>
+						<td>
+
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>

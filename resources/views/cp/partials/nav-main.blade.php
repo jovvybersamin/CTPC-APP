@@ -23,6 +23,9 @@
 			</a>
 		</li>
 		<li class="section">CONTENT</li>
+		<li class="nav-videos {{ nav_is_active('cp.videos.*','active') }}">
+			<a href="{{ route('cp.assets.index') }}">Assets</a>
+		</li>
 		<li class="nav-videos root has-sub {{ nav_is_active('cp.videos.*','active') }}">
 			<a href="#" title="Videos" >
 				<span class="title">Videos</span>

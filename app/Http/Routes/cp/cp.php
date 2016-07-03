@@ -16,6 +16,15 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 
 	});
 
+	// Assets
+	Route::group(['prefix' => 'assets'],function()
+	{
+
+		Route::get('/','AssetsController@index')->name('assets.index');
+		Route::get('browse/{container}/{folder?}','AssetsController@browse')->name('assets.browse');
+		Route::post('browse','AssetsController@json');
+
+	});
 	// Users
 	Route::group(['prefix' => 'users'],function()
 	{
