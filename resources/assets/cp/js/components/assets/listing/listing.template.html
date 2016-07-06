@@ -1,5 +1,16 @@
 <div class="asset-listing">
 
+	 <div v-if="loading" class="loading">
+        <span class="icon icon-circular-graph animation-spin"></span> Loading..
+    </div>
+
+	<div v-if="!loading" class="actions">
+		<div class="action-controls">
+			<button @click="createFolder" class="btn">
+				Create New Folder
+			</button>
+		</div>
+	</div>
 
 	<div v-if="!loading && (hasParent || hasItems)">
 		<div class="asset-listing table">
@@ -25,8 +36,8 @@
 					<tr v-if="hasParent">
 						<td></td>
 						<td>
-							<a href="" @click.prevent="goToFolder(folder.folder_path)">
-								<img src="" class="folder">
+							<a href="" @click.prevent="goToFolder(folder.parent_path)">
+								<img :src="resource_url('img/fieldtypes/folder.png')" class="folder">
 								Parent Folder
 							</a>
 						</td>
@@ -35,7 +46,34 @@
 					<tr v-for="folder in folders">
 						<td></td>
 						<td>
-
+							<a href="" @click.prevent="goToFolder(folder.path)">
+								<img :src="resource_url('img/fieldtypes/folder.png')" class="folder">
+								{{ folder.title }}
+							</a>
+						</td>
+						<td>
+							<strong>...</strong>
+						</td>
+						<td>
+							<strong>...</strong>
+						</td>
+						<td>
+							<strong>...</strong>
+						</td>
+					</tr>
+					<tr v-for="asset in assets">
+						<td></td>
+						<td>
+							{{ asset.title }}
+						</td>
+						<td>
+							{{ asset.basename }}
+						</td>
+						<td>
+							{{ asset.human_size }}
+						</td>
+						<td>
+							{{ asset.last_modified }}
 						</td>
 					</tr>
 				</tbody>
@@ -43,4 +81,11 @@
 		</div>
 	</div>
 
+	<assets-folder-editor v-if="showFolderEditor"
+		:show.sync="showFolderEditor"
+		:container="container"
+		:path="path"
+		:create.sync="creatingFolder"
+	>
+	</assets-folder-editor>
 </div>

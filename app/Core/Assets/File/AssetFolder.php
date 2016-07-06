@@ -3,8 +3,10 @@
 namespace OneStop\Core\Assets\File;
 
 use Illuminate\Support\Facades\Storage;
+use OneStop\Core\API\Folder;
 use OneStop\Core\API\Path;
 use OneStop\Core\Assets\AssetCollection;
+use OneStop\Core\Assets\File\AssetFolder;
 
 class AssetFolder
 {
@@ -37,7 +39,7 @@ class AssetFolder
 
 	public function disk()
 	{
-
+		return Folder::disk($this->container);
 	}
 
 	/**
@@ -45,7 +47,8 @@ class AssetFolder
 	 */
 	public function title()
 	{
-		return Path::filename($this->path());
+		return $this->basename();
+		// return Path::filename($this->path());
 	}
 
 	/**
@@ -70,6 +73,29 @@ class AssetFolder
 	public function container()
 	{
 		return $this->container;
+	}
+
+	/**
+	 * @param  string $folder
+	 * @return OneStop\Core\Asset\File\AssetFolder
+	 */
+	public function createFolder($folder)
+	{
+		$path = $this->fullPath() . $folder;
+
+		$path = Path::assemblePath($this->fullPath(),$folder,'/');
+
+		if($this->disk()->createFolder($path)){
+			$folder = new AssetFolder($this->container,$folder);
+			return $folder;
+		}
+
+		return false;
+	}
+
+	public function fullPath()
+	{
+		return Path::assemblePath($this->container->getPath(),$this->path(),'/');
 	}
 
 	 /**
@@ -111,7 +137,10 @@ class AssetFolder
 			return null;
 		}
 		// TODO::Array pop get the last segement.
-		return $this->container()->folder($this->path);
+		$path = Path::popLastSegment($this->path());
+		$path = ($path === '') ? '/' : $path;
+
+		return $this->container()->folder($path);
 	}
 
 	/**
@@ -119,13 +148,19 @@ class AssetFolder
 	 */
 	public function toArray()
 	{
+		$parent = $this->parent();
+
 		return [
 			'title' => $this->title(),
-			'path'	=> $this->path(),
-			'parent_folder' => $this->parent()
+			'path'	=> Path::assemblePath('',$this->path(),'/'),
+			'parent_path' => (string) $parent
 		];
+
 	}
 
-
+	public function __toString()
+	{
+		return $this->path();
+	}
 
 }

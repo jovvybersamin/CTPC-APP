@@ -2,6 +2,7 @@
 
 namespace OneStop\Core\Assets;
 
+use OneStop\Core\API\Path;
 use OneStop\Core\Assets\File\AssetFolder;
 
 abstract class AssetContainer
@@ -137,6 +138,9 @@ abstract class AssetContainer
 		if(!is_null($folder)){
 			$this->folder = $folder;
 		}
+
+		$this->folder = Path::assemblePath('',$this->folder,'/');
+
 		return new AssetFolder($this,$this->folder);
 	}
 

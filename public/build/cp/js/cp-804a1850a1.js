@@ -26427,10 +26427,15 @@ require('./core/bootstrap');
 window.Dossier = require('./components/dossier/dossier');
 window.Form = require('./components/forms/form');
 
-// Components
-Vue.component('assets-listing', require('./components/assets/listing/listing'));
+// Plugins
+Vue.use(require('./plugins/resource_url'));
 
-},{"./components/assets/listing/listing":22,"./components/dossier/dossier":25,"./components/forms/form":28,"./core/bootstrap":35}],19:[function(require,module,exports){
+// Components
+Vue.component('modal', require('./components/modal/modal'));
+Vue.component('assets-listing', require('./components/assets/listing/listing'));
+Vue.component('assets-folder-editor', require('./components/assets/modals/folder-editor'));
+
+},{"./components/assets/listing/listing":22,"./components/assets/modals/folder-editor":24,"./components/dossier/dossier":27,"./components/forms/form":30,"./components/modal/modal":37,"./core/bootstrap":39,"./plugins/resource_url":49}],19:[function(require,module,exports){
 'use strict';
 
 require('./app.globals');
@@ -26466,7 +26471,7 @@ new Vue({
 	}
 });
 
-},{"./app.globals":18,"./components/assets/browser/browser":20,"./components/common/errors":24,"./components/forms/user":29,"./components/forms/video":30,"./components/forms/video_category":31,"./components/listings/users":32,"./components/listings/video_categories":33,"./components/listings/videos":34}],20:[function(require,module,exports){
+},{"./app.globals":18,"./components/assets/browser/browser":20,"./components/common/errors":26,"./components/forms/user":31,"./components/forms/video":32,"./components/forms/video_category":33,"./components/listings/users":34,"./components/listings/video_categories":35,"./components/listings/videos":36}],20:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26490,11 +26495,22 @@ module.exports = {
 
 	ready: function ready() {
 		this.loadAssets();
+
+		this.$on('path.updated', function (newPath) {
+			this.updatedPath(newPath);
+			this.pushState();
+		});
+
+		this.$on('folder.created', function (folder) {
+			this.folders.push(folder);
+		});
 	},
 
 	methods: {
 
 		loadAssets: function loadAssets() {
+			this.loading = true;
+
 			this.$http.post(cp_url('assets/browse'), {
 				container: this.container,
 				path: this.path
@@ -26505,6 +26521,16 @@ module.exports = {
 				this.folders = data.folders;
 				this.loading = false;
 			});
+		},
+
+		updatedPath: function updatedPath(newPath) {
+			this.path = newPath;
+			this.loadAssets();
+		},
+
+		pushState: function pushState() {
+			var path = this.path === '/' ? '' : this.path;
+			window.history.pushState({ path: this.path }, '', cp_url('assets/browse/' + this.container + path));
 		}
 	}
 
@@ -26549,7 +26575,8 @@ module.exports = {
 	data: function data() {
 		return {
 			loading: true,
-			creatingFolder: false
+			creatingFolder: false,
+			showFolderEditor: false
 		};
 	},
 
@@ -26559,7 +26586,8 @@ module.exports = {
 			if (!this.folder) {
 				return false;
 			}
-			return this.folder.folder_path;
+
+			return this.folder.parent_path;
 		},
 
 		hasItems: function hasItems() {
@@ -26579,6 +26607,15 @@ module.exports = {
 
 	methods: {
 
+		createFolder: function createFolder() {
+			this.showFolderEditor = true;
+			this.creatingFolder = true;
+		},
+
+		goToFolder: function goToFolder(path) {
+			this.$dispatch('path.updated', path);
+		},
+
 		loadingComplete: function loadingComplete() {
 			this.loading = false;
 			//
@@ -26589,8 +26626,97 @@ module.exports = {
 };
 
 },{"./listing.template.html":23}],23:[function(require,module,exports){
-module.exports = '<div class="asset-listing">\n\n\n	<div v-if="!loading && (hasParent || hasItems)">\n		<div class="asset-listing table">\n			<table>\n				<thead>\n					<tr>\n						 <th class="column-checkbox"></th>\n						 <th>\n						 	Title\n						 </th>\n						 <th>\n						 	Filename\n						 </th>\n						 <th>\n						 	File size\n						 </th>\n						 <th>\n							Date Modified\n						 </th>\n					</tr>\n				</thead>\n				<tbody>\n					<tr v-if="hasParent">\n						<td></td>\n						<td>\n							<a href="" @click.prevent="goToFolder(folder.folder_path)">\n								<img src="" class="folder">\n								Parent Folder\n							</a>\n						</td>\n						<td colspan=\'3\'></td>\n					</tr>\n					<tr v-for="folder in folders">\n						<td></td>\n						<td>\n\n						</td>\n					</tr>\n				</tbody>\n			</table>\n		</div>\n	</div>\n\n</div>\n';
+module.exports = '<div class="asset-listing">\n\n	 <div v-if="loading" class="loading">\n        <span class="icon icon-circular-graph animation-spin"></span> Loading..\n    </div>\n\n	<div v-if="!loading" class="actions">\n		<div class="action-controls">\n			<button @click="createFolder" class="btn">\n				Create New Folder\n			</button>\n		</div>\n	</div>\n\n	<div v-if="!loading && (hasParent || hasItems)">\n		<div class="asset-listing table">\n			<table>\n				<thead>\n					<tr>\n						 <th class="column-checkbox"></th>\n						 <th>\n						 	Title\n						 </th>\n						 <th>\n						 	Filename\n						 </th>\n						 <th>\n						 	File size\n						 </th>\n						 <th>\n							Date Modified\n						 </th>\n					</tr>\n				</thead>\n				<tbody>\n					<tr v-if="hasParent">\n						<td></td>\n						<td>\n							<a href="" @click.prevent="goToFolder(folder.parent_path)">\n								<img :src="resource_url(\'img/fieldtypes/folder.png\')" class="folder">\n								Parent Folder\n							</a>\n						</td>\n						<td colspan=\'3\'></td>\n					</tr>\n					<tr v-for="folder in folders">\n						<td></td>\n						<td>\n							<a href="" @click.prevent="goToFolder(folder.path)">\n								<img :src="resource_url(\'img/fieldtypes/folder.png\')" class="folder">\n								{{ folder.title }}\n							</a>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n					</tr>\n					<tr v-for="asset in assets">\n						<td></td>\n						<td>\n							{{ asset.title }}\n						</td>\n						<td>\n							{{ asset.basename }}\n						</td>\n						<td>\n							{{ asset.human_size }}\n						</td>\n						<td>\n							{{ asset.last_modified }}\n						</td>\n					</tr>\n				</tbody>\n			</table>\n		</div>\n	</div>\n\n	<assets-folder-editor v-if="showFolderEditor"\n		:show.sync="showFolderEditor"\n		:container="container"\n		:path="path"\n		:create.sync="creatingFolder"\n	>\n	</assets-folder-editor>\n</div>\n';
 },{}],24:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./folder-editor.template.html'),
+
+	props: {
+		show: Boolean,
+		container: String,
+		path: String,
+		create: { type: Boolean, default: false }
+	},
+
+	data: function data() {
+		return {
+			form: {
+				folder: new AppForm({
+					id: null,
+					basename: '',
+					parent: '',
+					container: ''
+				})
+			},
+			ajax: {
+				method: 'store',
+				store: cp_url('assets/folders'),
+				update: cp_url('assets/folders/{container}/{path}')
+			},
+			folder: {},
+			loading: false,
+			saving: false
+		};
+	},
+
+	ready: function ready() {
+		this.getFolder();
+	},
+
+	methods: {
+
+		reset: function reset() {},
+
+		getFolder: function getFolder() {
+			if (this.create) {
+				this.getBlankFolder();
+			} else {}
+		},
+
+		getBlankFolder: function getBlankFolder() {
+			this.folder = {};
+
+			var form = {
+				container: this.container,
+				parent: this.path
+			};
+
+			_.extend(this.form.folder.data, form);
+			this.loading = false;
+		},
+
+		getExistingFolder: function getExistingFolder() {
+			//
+		},
+
+		saveNewFolder: function saveNewFolder() {
+			var method = 'store',
+			    self = this;
+			App[method](this.ajax[method], this.form.folder).then(function (response) {
+				self.$dispatch('folder.created', response.folder);
+				self.saving = false;
+				self.creating = false;
+			});
+		},
+
+		save: function save() {
+			this.saving = true;
+
+			if (this.create) {
+				this.saveNewFolder();
+			} else {}
+		}
+
+	}
+
+};
+
+},{"./folder-editor.template.html":25}],25:[function(require,module,exports){
+module.exports = '<modal\n	:show.sync="show"\n	class="asset-modal asset-folder-editor"\n	:saving="saving"\n	:loading="loading"\n	:full="false"\n>\n	<template slot="header">\n		<template v-if="create">\n			Create Folder\n		</template>\n	</template>\n\n	<template slot="body">\n		<div class="form-group">\n			<label class="block">Name</label>\n            <small class="help-block">The filesystem directory name</small>\n			<input type="text" class="form-control" v-model="form.folder.data.basename">\n		</div>\n	</template>\n\n	<template slot="footer">\n		<button type="button" @click.prevent="save" class="btn btn-primary">Save</button>\n	</template>\n\n</modal>\n';
+},{}],26:[function(require,module,exports){
 'use strict';
 
 // Error Components.
@@ -26603,7 +26729,7 @@ module.exports = {
 	}
 };
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26662,7 +26788,7 @@ module.exports = {
 
 };
 
-},{"./table":26}],26:[function(require,module,exports){
+},{"./table":28}],28:[function(require,module,exports){
 'use strict';
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -26769,9 +26895,9 @@ module.exports = {
 
 };
 
-},{"./table.template.html":27}],27:[function(require,module,exports){
+},{"./table.template.html":29}],29:[function(require,module,exports){
 module.exports = '<div>\n	<div class="actions">\n		<search :term.sync="search"></search>\n	</div>\n	<table class="dossier">\n		<thead v-if="hasHeader">\n			<th></th>\n			<th v-for="column in columns"\n			    class="column-sortable column-{{ column }}"\n			    @click="sortBy(column)">\n				{{ column }}\n				<i v-if="sortCol == column"\n				   class="icon icon-chevron-{{ (sortOrders[column] > 0) ? \'up\' : \'down\' }}"></i>\n			</th>\n			<th></th>\n		</thead>\n		<tbody>\n			<tr v-for="item in items | filterBy computedSearch | orderBy computedSortCol computedSortOrder">\n				<td></td>\n					<td v-for="column in columns">\n						<partial name="cell"></partial>\n					</td>\n				<td class="column-actions">\n					<div class="btn-group">\n						<button type="button" class="btn-more dropdown-toggle"\n								 data-toggle="dropdown" aria-haspopup="true"\n								 aria-expanded="true" aria-expanded="false">\n							<i class="icon icon-dots-three-vertical"></i>\n						</button>\n						<ul class="dropdown-menu">\n							<partial name="actions"></partial>\n						</ul>\n					</div>\n				</td>\n			</tr>\n		</tbody>\n	</table>\n</div>\n';
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26816,7 +26942,7 @@ module.exports = {
 
 };
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26900,7 +27026,7 @@ module.exports = {
 	}
 };
 
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26970,7 +27096,7 @@ module.exports = {
 
 };
 
-},{"./../../fieldtypes/select2/select2":41,"./../../fieldtypes/toggle/toggle":43}],31:[function(require,module,exports){
+},{"./../../fieldtypes/select2/select2":45,"./../../fieldtypes/toggle/toggle":47}],33:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27015,7 +27141,7 @@ module.exports = {
 	}
 };
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27058,7 +27184,7 @@ module.exports = {
 	}
 };
 
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27101,7 +27227,7 @@ module.exports = {
 
 };
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27146,7 +27272,68 @@ module.exports = {
 
 };
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./modal.template.html'),
+
+	props: {
+		show: {
+			type: Boolean,
+			required: true,
+			default: false
+		},
+		full: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		class: {
+			required: false,
+			default: function _default() {
+				return {};
+			}
+		},
+		loading: Boolean,
+		saving: Boolean
+	},
+
+	methods: {
+		close: function close() {
+			this.show = false;
+		}
+	},
+
+	computed: {
+		classes: function classes() {
+
+			var defaults = {
+				'modal-full': this.full
+			};
+
+			var classes = {};
+
+			if (typeof this.class === 'string') {
+				_.each(this.class.split(' '), function (e) {
+					classes[e] = true;
+				});
+			} else {
+				classes = this.class;
+			}
+
+			return _.extend(defaults, classes);
+		}
+	},
+
+	ready: function ready() {}
+
+};
+
+},{"./modal.template.html":38}],38:[function(require,module,exports){
+module.exports = '<div class="modal" :class="classes" role="dialog" tabindex="-1" v-if="show">\n\n	<div class="modal-dialog">\n		<div class="modal-content">\n\n			<div class="saving" v-if="saving">\n				<div class="inner">\n                    <i class="icon icon-circular-graph animation-spin"></i> Saving..\n                </div>\n			</div>\n\n			<div class="modal-header">\n				<slot name="close">\n					<button type="button" class="close" aria-label="Close" @click="close"><span aria-hidden="true">&times;</span></button>\n				</slot>\n				<h3 class="modal-title">\n					<slot name="header"></slot>\n				</h3>\n			</div>\n\n			<div v-if="! loading" class="modal-body">\n				<slot name="body"></slot>\n			</div>\n\n			<div v-if="! loading" class="modal-footer">\n				<slot name="footer">\n					<button type="button" class="btn" @click="close">Close</button>\n				</slot>\n			</div>\n\n		</div>\n	</div>\n\n\n</div>\n';
+},{}],39:[function(require,module,exports){
 'use strict';
 
 /**
@@ -27193,7 +27380,7 @@ require('./../cp.js');
 // Load the Control Panel JS Theme.
 require('./../theme/theme');
 
-},{"./../cp.js":40,"./../theme/theme":45,"./forms/bootstrap":36,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"select2/dist/js/select2.full.min.js":14,"underscore":15,"vue":17,"vue-resource":16}],36:[function(require,module,exports){
+},{"./../cp.js":44,"./../theme/theme":50,"./forms/bootstrap":40,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"select2/dist/js/select2.full.min.js":14,"underscore":15,"vue":17,"vue-resource":16}],40:[function(require,module,exports){
 'use strict';
 
 // Load the AppForm class.
@@ -27204,7 +27391,7 @@ require('./errors');
 
 $.extend(App, require('./http'));
 
-},{"./errors":37,"./http":38,"./instances":39}],37:[function(require,module,exports){
+},{"./errors":41,"./http":42,"./instances":43}],41:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -27242,7 +27429,7 @@ window.AppErrors = function () {
 	};
 };
 
-},{}],38:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27287,7 +27474,7 @@ module.exports = {
 
 };
 
-},{}],39:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 window.AppFormType = {
@@ -27336,7 +27523,7 @@ window.AppForm = function (data, type) {
 	};
 };
 
-},{}],40:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 
 window.cp_url = function (url) {
@@ -27349,7 +27536,12 @@ window.cp_url = function (url) {
 	return url;
 };
 
-},{}],41:[function(require,module,exports){
+window.resource_url = function (url) {
+	url = '//' + App.siteRoot + '/build/cp/' + url;
+	return url;
+};
+
+},{}],45:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27397,9 +27589,9 @@ module.exports = {
 
 };
 
-},{"./select2.template.html":42}],42:[function(require,module,exports){
+},{"./select2.template.html":46}],46:[function(require,module,exports){
 module.exports = '<div v-if="hasOptions">\n	<select :class="name">\n		<option v-for="option in options" :value="option[key]" :selected="isSelected(option)">\n			{{ option[value] }}\n		</option>\n	</select>\n</div>\n';
-},{}],43:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27422,9 +27614,19 @@ module.exports = {
 
 };
 
-},{"./toggle.template.html":44}],44:[function(require,module,exports){
+},{"./toggle.template.html":48}],48:[function(require,module,exports){
 module.exports = '<div>\n	<div class="toggle-container" :class="{\'on\': isOn }" @click.prevent="toggle">\n		<div class="toggle-slider">\n			<div class="toggle-knob"></div>\n		</div>\n	</div>\n</div>\n';
-},{}],45:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
+"use strict";
+
+exports.install = function (Vue, options) {
+
+	Vue.prototype.resource_url = function (url) {
+		return resource_url(url);
+	};
+};
+
+},{}],50:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };

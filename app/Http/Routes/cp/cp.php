@@ -21,8 +21,13 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 	{
 
 		Route::get('/','AssetsController@index')->name('assets.index');
-		Route::get('browse/{container}/{folder?}','AssetsController@browse')->name('assets.browse');
+		Route::get('browse/{container}/{folder?}','AssetsController@browse')->where('folder','.*')->name('assets.browse');
 		Route::post('browse','AssetsController@json');
+
+		Route::group(['prefix' => 'folders'],function()
+		{
+			Route::post('/','AssetFoldersController@store')->name('folders.store');
+		});
 
 	});
 	// Users
@@ -39,8 +44,6 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 		Route::post('/','UserController@store')->name('users.store');
 		Route::delete('{users}','UserController@delete')->name('users.delete');
 	});
-
-
 
 	// Videos
 	Route::group(['prefix' => 'videos'], function()

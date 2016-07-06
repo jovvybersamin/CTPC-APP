@@ -13,7 +13,8 @@ class File
 	public  static function disk($container)
 	{
 		$disk = $container->getDriver();
-		return new FileAccessor($disk,app('filesystem')->disk($disk));
+		$container = $container->getContainer();
+		return new FileAccessor($disk,$container,app('filesystem')->disk($disk));
 	}
 
 	public static function __caaStatic($method,$args)

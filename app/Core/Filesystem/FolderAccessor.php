@@ -2,15 +2,33 @@
 
 namespace OneStop\Core\Filesystem;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
+
 
 class FolderAccessor
 {
+
+	/**
+	 * @var string
+	 */
 	private $disk;
+
+	/**
+	 * @var \Illuminate\Contracts\Filesystem\Filesystem
+	 */
 	private $filesystem;
 
-	public function __construct($disk,\Illuminate\Contracts\Filesystem\Filesystem $filesystem)
+	/**
+	 * @var [type]
+	 */
+	private $container;
+
+	public function __construct($disk,$container,\Illuminate\Contracts\Filesystem\Filesystem $filesystem)
 	{
 		$this->disk = $disk;
+
+		$this->container = $container;
+
 		$this->filesystem = $filesystem;
 	}
 
@@ -32,10 +50,11 @@ class FolderAccessor
 		return $this->fs()->exists($folder);
 	}
 
-	public function makeDirectory($folder)
+	public function createFolder($folder)
 	{
-		if($this->fs()->exists($folder)){
-
+		if(!$this->fs()->exists($folder)){
+			return $this->fs()->makeDirectory($folder);
 		}
+		return false;
 	}
 }

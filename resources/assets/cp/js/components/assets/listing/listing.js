@@ -1,4 +1,4 @@
-module.exports = {
+  module.exports = {
 
 	template:require('./listing.template.html'),
 
@@ -33,7 +33,8 @@ module.exports = {
 	data:function(){
 		return {
 			loading:true,
-			creatingFolder:false
+			creatingFolder:false,
+			showFolderEditor:false
 		}
 	},
 
@@ -43,7 +44,8 @@ module.exports = {
 			if( ! this.folder) {
 				return false;
 			}
-			return this.folder.folder_path;
+
+			return this.folder.parent_path;
 		},
 
 		hasItems: function(){
@@ -59,9 +61,20 @@ module.exports = {
 		}else{
 			this.loadingComplete();
 		}
+
+
 	},
 
 	methods:{
+
+		createFolder:function(){
+			this.showFolderEditor = true;
+			this.creatingFolder = true;
+		},
+
+		goToFolder:function(path){
+			this.$dispatch('path.updated',path);
+		},
 
 		loadingComplete:function(){
 			this.loading = false;

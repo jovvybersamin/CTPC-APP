@@ -30,15 +30,23 @@ class AssetsController extends CpController
 
 	/**
 	 *
-	 * @param  string $container [description]
-	 * @param  string $folder    [description]
-	 * @return [type]            [description]
+	 * @return JSON|string
 	 */
-	public function json($container = 'assets',$folder = '/')
+	public function json()
 	{
+		$container = $this->request->get('container');
+
+		$path = $this->request->get('path');
+
+		$path = ($path === '') ? '/' : $path;
+
+
 		if($this->request->ajax()){
 			$container = AssetService::getContainer($container);
-			$folder = $container->folder($folder);
+
+			$folder = $container->folder($path);
+
+
 
 			$assets = $folder->assets();
 
@@ -53,9 +61,9 @@ class AssetsController extends CpController
 
 			return [
 				'container'	=>	$container->getContainer(),
-				'folder'	=> $folder->toArray(),
-				'assets'	=> $assets->toArray(),
-				'folders'	=> $folders
+				'folder'	=> 	$folder->toArray(),
+				'assets'	=> 	$assets->toArray(),
+				'folders'	=> 	$folders
 			];
 		}
 		return null;

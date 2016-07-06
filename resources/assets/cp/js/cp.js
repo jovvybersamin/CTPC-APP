@@ -8,4 +8,8 @@ window.cp_url = function(url){
 	return url;
 }
 
+window.resource_url = function(url){
+	url = '//' + App.siteRoot + '/build/cp/' + url;
+	return url;
+}
 

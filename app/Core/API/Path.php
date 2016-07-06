@@ -11,7 +11,23 @@ use League\Flysystem\Util;
 class Path
 {
 
+	public static function assemblePath($parent,$path,$needle)
+	{
 
+
+		if(strpos($path,$needle) === false || strpos($path,$needle) !== 0){
+			$path = '/' . $path;
+		}
+
+		return $parent . $path;
+	}
+
+
+	/**
+	 * [resolve description]
+	 * @param  [type] $path [description]
+	 * @return [type]       [description]
+	 */
 	public static function resolve($path)
 	{
 		return Util::normalizeRelativePath($path);
@@ -34,5 +50,12 @@ class Path
 		return array_get(pathinfo($path),'filename');
 	}
 
+	public static function popLastSegment($path)
+	{
+		$path = explode('/',$path);
+		array_pop($path);
+
+		return implode('/',$path);
+	}
 
 }
