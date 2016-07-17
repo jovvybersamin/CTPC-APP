@@ -34,6 +34,10 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
         ],
+
+        'admin' => [
+            'view.cp:Administrator'
+        ]
     ];
 
     /**
@@ -48,6 +52,8 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
         'guest' => \OneStop\Http\Middleware\RedirectIfAuthenticated::class,
+        'guest.cp' =>  \OneStop\Http\Middleware\RedirectIfAuthenticatedForCp::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'view.cp'    => \OneStop\Http\Middleware\ControlPanel::class,
     ];
 }

@@ -75,7 +75,29 @@ class VideoRepository implements VideoRepositoryContract
 		return new VideoCollection($this->model->All()->toArray());
 	}
 
+	public function getWhereNotIn($ids = array())
+	{
+		return new VideoCollection($this->model->whereNotIn('id',$ids)->get()->toArray());
+	}
 
+	/**
+	 *
+	 * @param  array  $ids [description]
+	 * @return bool
+	 */
+	public function delete(array $ids)
+	{
+		return $this->model->destroy($ids);
+	}
 
-
+	/**
+	 * Get the recent videos base on the $limit value.
+	 *
+	 * @param  integer $limit
+	 * @return OneStop\Core\Support\Collections\VideoCollection;
+	 */
+	public function getRecentEntries($limit = 10)
+	{
+		return new VideoCollection($this->model->latest()->limit($limit)->get());
+	}
 }

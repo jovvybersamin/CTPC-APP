@@ -64,6 +64,17 @@ class UserRepository implements UserRepositoryContract
 		return new UserCollection($this->model->all()->toArray());
 	}
 
+	/**
+	 * Get the recent users base on $limit value.
+	 *
+	 * @param  integer $limit
+	 * @return OneStop\Core\Support\Collections\UserCollection
+	 */
+	public function getRecentEntries($limit = 10)
+	{
+		return $this->model->latest()->limit($limit)->get();
+	}
+
 
 
 	/**

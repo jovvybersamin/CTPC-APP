@@ -50,6 +50,14 @@ class FileAccessor
 		return $this->filesystem;
 	}
 
+
+
+
+	public function exists($path)
+	{
+		return $this->filesystem()->exists($path);
+	}
+
 	/**
 	 * Get the last modified
 	 *
@@ -95,6 +103,11 @@ class FileAccessor
 		}
 
 		return $bytes;
+	}
+
+	public function __call($method,$args)
+	{
+		return call_user_func_array([$this->filesystem, $method], $args);
 	}
 
 }

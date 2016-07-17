@@ -35,10 +35,8 @@ class AuthController extends Controller
 	protected $loginView = 'cp.auth.login';
 
 
-
 	/**
-	 * [$username description]
-	 * @var [type]
+	 * @var string
 	 */
 	protected $username = 'username';
 
@@ -50,5 +48,15 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+    }
+
+     /**
+     * Get the guest middleware for the application.
+     */
+    public function guestMiddleware()
+    {
+        $guard = $this->getGuard();
+
+        return $guard ? 'guest.cp:'.$guard : 'guest.cp';
     }
 }

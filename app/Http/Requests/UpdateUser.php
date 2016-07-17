@@ -23,8 +23,20 @@ class UpdateUser extends Request
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $id = $this->get('id');
+
+        $rules = [
+                'name' => 'required|min:5',
+                'email' => 'required|email|unique:users,email,' . $id .',id',
+                'username' => 'required|unique:users,username,' . $id . ',id'
+            ];
+
+        $password = trim($this->get('password'));
+
+        if(!empty($password)){
+            $rules['password'] = 'required|confirmed';
+        }
+
+        return $rules;
     }
 }

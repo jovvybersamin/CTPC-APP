@@ -23,10 +23,14 @@ class StoreNewUser extends Request
      */
     public function rules()
     {
-        return [
+
+        $rules = [
             'name' => 'required|min:5',
             'email' => 'required|email|unique:users',
-            'username' => 'required|unique:users'
+            'username' => 'required|unique:users',
+            'password'  => 'required|confirmed'
         ];
+
+        return $rules;
     }
 }

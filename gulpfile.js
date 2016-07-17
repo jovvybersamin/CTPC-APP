@@ -4,7 +4,10 @@ elixir.config.sourcemaps = false;
 
 var configurations = {
 	run:{
-		vendors:true
+		vendors:true,
+		versions:true,
+		cp:true,
+		site:true
 	}
 }
 
@@ -35,17 +38,28 @@ elixir(function(mix) {
  * @return {[type]}     [description]
  */
 function cp(mix){
-	mix.sass('../cp/sass/cp.scss','public/cp/css/cp.css')
-	   .copy('../cp/fonts','public/cp/fonts/') // This is not working I do not know why.
-	   .browserify('../cp/js/app.js','public/cp/js/cp.js');
+	mix.sass('../cp/sass/cp.scss','public/backend/css/cp.css')
+	   .copy('../cp/fonts','public/backend/fonts/') // This is not working I do not know why.
+	   .browserify('../cp/js/app.js','public/backend/js/cp.js');
 }
 
-function site(){
+/**
+ * For Site.
+ *
+ * @param  {[type]} mix [description]
+ * @return {[type]}     [description]
+ */
+function site(mix){
+	mix.sass('../site/sass/site.scss','public/frontend/css/site.css')
+		.browserify('../site/js/app.js','public/frontend/js/site.js');
+}
+
+function site_vendors(mix){
 
 }
 
 /**
- * Consolidate all the third party assets used by thee application.
+ * Consolidate all the third party assets used by the application.
  *
  * @param  MIX
  * @return void
@@ -54,14 +68,17 @@ function vendors(mix){
 	if(configurations.run.vendors){
 		mix.copy('node_modules/sweetalert/dist','resources/assets/vendors/sweetalert/');
 		mix.copy('node_modules/select2/dist','resources/assets/vendors/select2/');
+		mix.copy('bower_components/video.js/dist','resources/assets/vendors/video.js/');
 
 		mix.styles([
 			'../vendors/sweetalert/sweetalert.css',
-			'../vendors/select2/css/select2.min.css'
+			'../vendors/select2/css/select2.min.css',
+			'../vendors/video.js/video-js.min.css'
 		],'public/vendors/css');
 
 		mix.scripts([
 			'../vendors/sweetalert/sweetalert.min.js',
+			'../vendors/dmuploader.js',
 			// '../vendors/select2/js/select2.full.min.js'// This is already loaded in core/bootstrap.js
 		],'public/vendors/js');
 	}
@@ -75,9 +92,9 @@ function vendors(mix){
 function versions(mix){
 	mix.version([
 		// Fon Control Panel assets versioning.
-		'cp/css/cp.css','cp/js/cp.js',
+		'backend/css/cp.css','backend/js/cp.js',
 		// For Site assets versioning.
-		//
+		'frontend/css/site.css','frontend/js/site.js',
 		// For Application vendors versioning.
 		// ( Third Party assets.)
 		'vendors/css/all.css','vendors/js/all.js'

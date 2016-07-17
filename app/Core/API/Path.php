@@ -13,15 +13,28 @@ class Path
 
 	public static function assemblePath($parent,$path,$needle)
 	{
+		if(strpos($path,$needle) === false || strpos($path,$needle) !== 0){
+			$path = '/' . $path;
+		}
+		return $parent . $path;
+	}
 
-
+	public static function assemble($container,$path,$basename,$needle = '/')
+	{
 		if(strpos($path,$needle) === false || strpos($path,$needle) !== 0){
 			$path = '/' . $path;
 		}
 
-		return $parent . $path;
-	}
+		$parts = explode('/',$path);
 
+		$last = array_pop($parts);
+
+		if($last !== '/'){
+			$path = $path . '/';
+		}
+
+		return $container . $path . $basename;
+	}
 
 	/**
 	 * [resolve description]
@@ -31,6 +44,17 @@ class Path
 	public static function resolve($path)
 	{
 		return Util::normalizeRelativePath($path);
+	}
+
+	/**
+	 * Remove //
+	 *
+	 * @param  string $path
+	 * @return string
+	 */
+	public static function fix($path)
+	{
+		return preg_replace('#(^|[^:])//+#', '\\1/', $path);
 	}
 
 

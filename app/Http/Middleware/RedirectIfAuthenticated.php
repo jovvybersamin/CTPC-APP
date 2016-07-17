@@ -4,6 +4,7 @@ namespace OneStop\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use OneStop\Core\API\User;
 
 class RedirectIfAuthenticated
 {
@@ -17,7 +18,12 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->check()) {
+
+        // if (Auth::guard($guard)->check()) {
+        //     return redirect('/');
+        // }
+
+        if(User::get()){
             return redirect('/');
         }
 

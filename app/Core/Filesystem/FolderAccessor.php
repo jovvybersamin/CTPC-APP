@@ -52,9 +52,27 @@ class FolderAccessor
 
 	public function createFolder($folder)
 	{
-		if(!$this->fs()->exists($folder)){
-			return $this->fs()->makeDirectory($folder);
+		try{
+			if( $this->fs()->exists($folder)){
+
+			}else{
+				return $this->fs()->makeDirectory($folder);
+			}
+		}catch(Exception $e){
+			throw new Exception($e->getMessage());
 		}
+
 		return false;
+	}
+
+	/**
+	 * Recursively delete a directory.
+	 *
+	 * @param  string $directory
+	 * @return bool
+	 */
+	public function deleteFolder($directory)
+	{
+		return $this->fs()->deleteDirectory($directory);
 	}
 }

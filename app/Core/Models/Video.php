@@ -70,6 +70,7 @@ class Video extends Model
 		$this->attributes['category'] = $this->video_category->name;
 		$this->attributes['created_by'] = $this->creator->name;
 		$this->attributes['updated_by'] = $this->getUploader();
+		$this->attributes['human_created_at'] = $this->created_at->diffForHumans();
 	}
 
 	/**

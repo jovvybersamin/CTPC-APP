@@ -1,15 +1,44 @@
 <div class="asset-listing">
 
+
+	 <input type="file" multiple="multiple" class="system-file-upload hide" v-if="allowActions">
+
 	 <div v-if="loading" class="loading">
         <span class="icon icon-circular-graph animation-spin"></span> Loading..
     </div>
 
-	<div v-if="!loading" class="actions">
+	<div v-if="!loading && allowActions" class="actions">
 		<div class="action-controls">
 			<button @click="createFolder" class="btn">
 				Create New Folder
 			</button>
 		</div>
+	</div>
+
+	<div class="asset-listing table asset-listing-uploads" v-if="assetQueue.length">
+		<table>
+			<thead>
+				<tr>
+					<th class="column-checkbox"></th>
+					<th colspan="2">Upload</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="asset in assetQueue">
+					<td class="column-checkbox">
+						<span class="icon icon-circular-graph animation-spin"></span>
+					</td>
+					<td class="column-filename">
+						{{ asset.basename }}
+					</td>
+					<td class="column-progress">
+						<div class="progress">
+							<div class="progress-bar" :style="{ width: asset.percent + '%'	 }"></div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 	<div v-if="!loading && (hasParent || hasItems)">
@@ -29,6 +58,9 @@
 						 </th>
 						 <th>
 							Date Modified
+						 </th>
+						 <th>
+
 						 </th>
 					</tr>
 				</thead>
@@ -60,11 +92,18 @@
 						<td>
 							<strong>...</strong>
 						</td>
+						<td class="column-actions">
+							<partial name="actions-folder"></partial>
+						</td>
 					</tr>
 					<tr v-for="asset in assets">
 						<td></td>
 						<td>
-							{{ asset.title }}
+							<span class="asset" @click="selectAsset(asset)">
+								<img :src="fileIcon(asset.extension)" class="file">
+								{{ asset.title }}
+							</span>
+
 						</td>
 						<td>
 							{{ asset.basename }}
@@ -75,6 +114,9 @@
 						<td>
 							{{ asset.last_modified }}
 						</td>
+						<td class="column-actions">
+							<partial name="actions-asset"></partial>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -84,7 +126,7 @@
 	<assets-folder-editor v-if="showFolderEditor"
 		:show.sync="showFolderEditor"
 		:container="container"
-		:path="path"
+		:path="folderModalPath"
 		:create.sync="creatingFolder"
 	>
 	</assets-folder-editor>

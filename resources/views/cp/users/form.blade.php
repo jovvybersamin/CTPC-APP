@@ -48,14 +48,29 @@
 				<div class="row">
 
 					<div class="col-md-12 col-lg-12">
+
 						<div class="form-group">
 							<label for="email">Email</label>
 							<input type="text" class="form-control" name="email" v-model="form.user.data.email">
 						</div>
+
 						<div class="form-group">
 							<label for="name">Name</label>
 							<input type="text" class="form-control" name="name" v-model="form.user.data.name">
 						</div>
+
+						<div class="form-group">
+							<label for="password">Password</label>
+							<small v-if="form.user.data.id">Leave empty to keep your original password</small>
+							<input type="password" class="form-control" name="password" v-model="form.user.data.password">
+						</div>
+
+						<div class="form-group">
+							<label for="password">Confirm Password</label>
+							<small v-if="form.user.data.id">Leave empty to keep your original password</small>
+							<input type="password" class="form-control" name="password" v-model="form.user.data.password_confirmation">
+						</div>
+
 						<div class="form-group">
 							<label for="name">About</label>
 							<textarea name="about" cols="30" rows="10" class="form-control" v-model="form.user.data.about"></textarea>

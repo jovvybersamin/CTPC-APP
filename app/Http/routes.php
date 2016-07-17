@@ -3,9 +3,6 @@
 use OneStop\Core\Support\Menu\Menu;
 
 
-Route::get('test',function(){
-	return OneStop\Core\API\Helper::makeUuid();
-});
 
 Route::get('menu',function()
 {
@@ -25,5 +22,7 @@ Route::get('menu',function()
 
 
 require_once __DIR__ . '/Routes/cp/cp.php';
+
+require_once __DIR__ . '/Routes/site/site.php';
 
 

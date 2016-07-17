@@ -64,25 +64,30 @@
 				<div class="publish-meta">
 					<div class="form-group equal">
 						<label>Video Image Cover</label>
-						<input type="text"
-							class="form-control"
-							placeholder="Select the image cover"
-							v-model="form.video.data.image_cover"
-						>
+						<asset-field-browser
+							label="Video Image Cover"
+							placeholder="Select an image cover"
+							:container="container"
+							:path="folder"
+							:selected-asset.sync="form.video.data.image_cover"
+							>
+						</asset-field-browser >
 					</div>
 
 					<div class="form-group equal">
 						<label>Video Source</label>
-						<input type="text"
-							class="form-control"
-							placeholder="Select the video"
-							v-model="form.video.data.source"
-						>
+						<asset-field-browser
+							placeholder="Select a video"
+							:container="container"
+							:path="folder"
+							:selected-asset.sync="form.video.data.source"
+							>
+						</asset-field-browser >
 					</div>
 
 					<div class="form-group equal">
 						<label>Duration</label>
-						<small>Enter the video duration in the following format (Hours : Minutes : Seconds)</small>
+						<small>Enter the video duration in the following format (Hours : Minutes : Seconds) | (00:00:00)</small>
 						<input type="text"
 							   class="form-control"
 							   placeholder="Enter the duration"

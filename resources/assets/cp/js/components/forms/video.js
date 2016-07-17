@@ -9,6 +9,8 @@ module.exports = {
 
 	data:function(){
 		return {
+			container:'assets',
+			folder:'/',
 			form:{
 				primary:'video',
 				video:new AppForm({
@@ -53,11 +55,16 @@ module.exports = {
 	methods:{
 
 		save:function(){
+			var self = this;
 			var method = this.ajax.method;
+
 			App[method](this.ajax[method],this.form.video).then(function( response ){
 				if(response.path !== undefined){
 					window.location = response.path;
 				}
+			}, function( response ){
+				console.log( response );
+				self.$dispatch('show.errors',response);
 			});
 		}
 

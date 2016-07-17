@@ -46,8 +46,6 @@ class AssetsController extends CpController
 
 			$folder = $container->folder($path);
 
-
-
 			$assets = $folder->assets();
 
 			$folders = [];
@@ -69,6 +67,61 @@ class AssetsController extends CpController
 		return null;
 	}
 
+	/**
+	 * Store a new file.
+	 *
+	 * @return JSON
+	 */
+	public function store()
+	{
+		if( ! $this->request->hasFile('file')){
+			return response()->json('No file specified.',400);
+		}
+
+		$asset = AssetService::asset()
+							->container($this->request->container)
+							->folder($this->request->folder)
+							->get();
+
+		try{
+			$asset->upload($this->request->file('file'));
+		}catch(FileException $e){
+			$error = 'There was an error uploading the file: ' . $e->getMessage();
+			return response()->json($error,400);
+		}
+
+
+		// TODO:: add image manipulation if the asset is an image.
+		return response()->json([
+			'success'	=> true,
+			'asset'		=> $asset->toArray()
+		]);
+
+	}
+
+	/**
+	 * Delete the given file.
+	 *
+	 * @return
+	 */
+	public function delete()
+	{
+
+		$asset = AssetService::asset()
+						->container($this->request->container)
+						->folder($this->request->folder)
+						->file($this->request->paths[0])
+						->get();
+
+		try{
+			$asset->delete();
+		}catch(Exception $e){
+			$error = 'There was an error deleting the given file: ' . $e->getMessage();
+			return response()->json($error,400);
+		}
+
+		return ['success' => true];
+	}
 
 
 }

@@ -1,5 +1,5 @@
 <nav class="nav-mobile">
-	<a href="#" class="logi">
+	<a href="#" class="logo">
 
 	</a>
 
@@ -18,12 +18,12 @@
 	<ul>
 
 		<li class="nav-dashboard {{ request()->is('cp') ? 'visible active' : '' }}">
-			<a href="" title="Dashboard">
+			<a href="{{ route('cp.dashboard.index') }}" title="Dashboard">
 				<span class="title">Dashboard</span>
 			</a>
 		</li>
 		<li class="section">CONTENT</li>
-		<li class="nav-videos {{ nav_is_active('cp.videos.*','active') }}">
+		<li class="nav-assets {{ nav_is_active('cp.assets.*','active') }}">
 			<a href="{{ route('cp.assets.index') }}">Assets</a>
 		</li>
 		<li class="nav-videos root has-sub {{ nav_is_active('cp.videos.*','active') }}">
@@ -31,11 +31,11 @@
 				<span class="title">Videos</span>
 				<span class="icon icon-chevron-left pull-right"></span>
 			</a>
-			<ul class="{{ nav_is_active('cp.videos.*','nav_open') }}">
-				<li>
+			<ul class="{{ nav_is_active('cp.videos.*','nav_open') }}" style="{{ nav_is_active('cp.videos.*','','display:none;') }}">
+				<li class="{{ nav_is_active('cp.videos.index') }}">
 					<a href="{{ route('cp.videos.index') }}">All Videos</a>
 				</li>
-				<li>
+				<li  class="{{ nav_is_active('cp.videos.create') }}">
 					<a href="{{ route('cp.videos.create') }}">Add New Video</a>
 				</li>
 				<li class="{{ nav_is_active('cp.videos.categories.index') }}">
@@ -44,12 +44,12 @@
 			</ul>
 		</li>
 		<li class="section">CONFIGURE</li>
-		<li class="nav-users root has-sub {{ nav_is_active('cp.users.*') }}">
+		<li class="nav-users root has-sub {{ nav_is_active('cp.users.*','active') }}">
 			<a href="#" title="Users" >
 				<span class="title">Users</span>
 				<span class="icon icon-chevron-left pull-right"></span>
 			</a>
-			<ul class="{{ nav_is_active('cp.users.*','nav_open') }}" style="display:none">
+			<ul class="{{ nav_is_active('cp.users.*','nav_open') }}" style="{{ nav_is_active('cp.users.*','','display:none') }}">
 				<li class="{{ nav_is_active('cp.users.index')}}">
 					<a href="{{ route('cp.users.index') }}">All Users</a>
 				</li>

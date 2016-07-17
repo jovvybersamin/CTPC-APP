@@ -21,4 +21,17 @@
 			</ul>
 		</div>
 	</app-error>
+
+	<app-message inline-template :messages:sync="messages" v-cloak>
+		<div class="alert alert-success alert-dismissible" role="alert" v-if="hasMessages">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<ul>
+				<li v-for="message in messages">
+					<strong>@{{ error}}</strong>
+				</li>
+			</ul>
+		</div>
+	</app-message>
 </div>

@@ -36,6 +36,7 @@ function _init(){
 			var nextElement = $this.next();
 			if(nextElement.is('ul') && nextElement.is('ul.nav-open')){
 				e.preventDefault();
+
 				nextElement.slideUp(animationSpeed, function(){
 					nextElement.removeClass('nav-open');
 				});
@@ -58,7 +59,21 @@ function _init(){
 				// Open the target menu and add nav-open class.
 				nextElement.slideDown(animationSpeed, function(){
 					nextElement.addClass('nav-open');
-					parent.find('li.active').removeClass('active');
+
+					var activeMenu = parent.find('li.has-sub.active');
+					activeMenu.removeClass('active');
+					// Remove the active class of the child li element.
+					activeMenu.find('li.active').removeClass('active');
+					var activeMenuUL = activeMenu.find('ul.nav_open');
+
+					if(activeMenuUL !== null || activeMenuUL !== undefined){
+						activeMenuUL.slideUp(function(){
+							activeMenuUL.removeClass('nav_open')
+										.css('display','none');
+						});
+					}
+
+					// parent.find('li.active').removeClass('active');
 						  // .find('span.icon')
 						  // .removeClass(iconDown)
 						  // .addClass(iconLeft);

@@ -1,0 +1,37 @@
+<div class="input-group">
+	<label class="sr-only">{{ label }}</label>
+	<input type="text" class="form-control" v-model="selectedAsset" :placeholder="placeholder" disabled>
+	<div class="input-group-addon" style="padding:0 !important">
+		<button class="btn" @click.prevent="select">Select</button>
+	</div>
+</div>
+
+<modal
+	:show.sync="showModalBrowser"
+	class="asset-modal"
+	:full="true"
+	v-if="showModalBrowser"
+>
+
+	<template slot="header">
+		<h1>
+			Select an Asset
+			<strong v-if="path !== '/'"><small>{{ path }}</small></strong>
+		</h1>
+
+	</template>
+
+	<template slot="body">
+		<assets-listing v-if="!loading"
+			name="browse"
+			:assets="assets"
+			:folders="folders"
+			:folder="folder"
+			:container="container"
+			:path="path"
+			:mode="table"
+		 >
+		</assets-listing>
+	</template>
+
+</modal>

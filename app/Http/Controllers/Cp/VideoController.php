@@ -7,11 +7,11 @@ use OneStop\Core\Contracts\Repositories\UserRepositoryInterface as UserRepositor
 use OneStop\Core\Contracts\Repositories\VideoCategoryRepositoryInterface as VideoCategoryRepositoryContract;
 use OneStop\Core\Contracts\Repositories\VideoRepositoryInterface as VideoRepositoryContract;
 use OneStop\Core\Support\Traits\FormAjax;
-use OneStop\Http\Controllers\Controller;
+use OneStop\Http\Controllers\CpController;
 use OneStop\Http\Requests\StoreNewVideo;
 use OneStop\Http\Requests\UpdateVideoRequest;
 
-class VideoController extends Controller
+class VideoController extends CpController
 {
 
 	use FormAjax;
@@ -43,12 +43,17 @@ class VideoController extends Controller
 	 * @param VideoRepository         $videos     [description]
 	 * @param VideoCategoryRepository $categories [description]
 	 */
-	public function __construct(VideoRepositoryContract $videos,
-		VideoCategoryRepositoryContract $categories,UserRepositoryContract $users)
+	public function __construct(
+		VideoRepositoryContract $videos,
+		VideoCategoryRepositoryContract $categories,
+		UserRepositoryContract $users,
+		Request $request)
 	{
 		$this->videos = $videos;
 		$this->categories = $categories;
 		$this->users = $users;
+
+		parent::__construct($request);
 	}
 
 	/**
@@ -142,8 +147,33 @@ class VideoController extends Controller
 	}
 
 	/**
+	 * Delete the video by its Id
 	 *
-	 * @return [type] [description]
+	 * @return json
+	 */
+	public function delete()
+	{
+
+		$ids = $this->request->get('ids');
+
+		if(count($ids)){
+			$this->videos->delete($ids);
+			return response()->json([
+				'success'	=> true,
+				'message'	=> 'The video was successfully deleted.'
+			]);
+		}
+
+		return response()->json([
+				'success'	=> false,
+				'message'	=> 'There was an error deleting the video.'
+			],400);
+	}
+
+	/**
+	 *
+	 *
+	 * @return $data|json
 	 */
 	public function get()
 	{
@@ -152,7 +182,7 @@ class VideoController extends Controller
 		});
 
 		$data = [
-			'columns'	=>	['title','category'],
+			'columns'	=>	['title','category','featured'],
 			'items'		=> $videos,
 		];
 

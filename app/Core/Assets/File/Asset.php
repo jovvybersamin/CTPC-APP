@@ -6,17 +6,23 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
 use OneStop\Core\API\File;
 use OneStop\Core\API\Path;
+use OneStop\Core\API\Str;
+use OneStop\Core\Assets\AssetFactory;
 use OneStop\Core\Support\Data\File\Data;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\getClientOriginalName;
 
 class Asset extends Data implements Arrayable
 {
 
 	/**
-	 * @var string
+	 * @var OneStop\Core\Assets\File\AssetFolder
 	 */
 	protected $folder;
 
-
+	/**
+	 * @var OneStop\Core\Assets\File\AssetContainer
+	 */
 	protected $container;
 
 	/**
@@ -24,13 +30,15 @@ class Asset extends Data implements Arrayable
 	 */
 	protected $basename;
 
-
+	/**
+	 * @var string
+	 */
 	protected $path;
 
-
 	/**
-	 * @param [type] $container [description]
-	 * @param [type] $folder    [description]
+	 * @param OneStop\Core\Assets\File\AssetContainer $container
+	 * @param OneStop\Core\Assets\File\AssetFolder $folder
+	 * @param string $path [filename]
 	 */
 	public function __construct($container,$folder,$path)
 	{
@@ -39,13 +47,19 @@ class Asset extends Data implements Arrayable
 		$this->path = $path;
 	}
 
+
 	/**
 	 *
 	 * @return [type] [description]
 	 */
 	public function disk()
 	{
-		return File::disk($this->container);
+		return File::disk($this->container());
+	}
+
+	public function driver()
+	{
+		return $this->container()->getDriver();
 	}
 
 	/**
@@ -72,38 +86,110 @@ class Asset extends Data implements Arrayable
 		return $this->path;
 	}
 
+	public function container()
+	{
+		return $this->container;
+	}
+
+	public function folder()
+	{
+		return $this->folder;
+	}
+
 	/**
 	 * @return string
 	 */
 	public function url()
 	{
-		return '';
+		if($this->driver() === 'local'){
+			$url = $this->container()->url() . '/' . Str::removeLeft($this->folder()->path(),'/') . '/' .  $this->path();
+			return Path::fix($url);
+		}
 	}
 
+	/**
+	 * Upload a file.
+	 *
+	 * @param  UploadedFile $file [description]
+	 * @return [type]             [description]
+	 */
+	public function upload(UploadedFile $file)
+	{
+		$basename 	= $file->getClientOriginalName();
+		$filename 	= pathinfo($basename)['filename'];
+		$ext 		= $file->getClientOriginalExtension();
+
+		$directory = Str::removeLeft($this->folder()->path(),'/');
+		$container = $this->container()->getPath();
+
+		$path = Path::assemble($container,$directory,$filename . '.' . $ext);
+
+		// if the file already exists, we'll append a timestamp to prevent overwriting.
+		if($this->disk()->exists($path)){
+			$basename = $filename . '-' . time() . '.' . $ext;
+			$path = Path::assemble($container,$directory,$basename);
+		}
+
+		$stream = fopen($file->getRealPath(),'r+');
+		$this->disk()->put($path,$stream);
+		fclose($stream);
+
+		$this->basename = $basename;
+		$this->path = $basename;
+	}
+
+	public function delete()
+	{
+		$directory = Str::removeLeft($this->folder()->path(),'/');
+		$container = $this->container()->getPath();
+		$path = Path::assemble($container,$directory,Str::removeLeft($this->path(),'/'));
+
+		if($this->disk()->exists($path)){
+			return $this->disk()->delete($path);
+		}
+
+		throw new Exception('File not found.');
+	}
+
+
+
+
+
+	/**
+	 * @return string
+	 */
 	public function extension()
 	{
 		return Path::extension($this->path());
 	}
 
 	/**
-	 * [isImage description]
-	 * @return boolean [description]
+	 * @return boolean
 	 */
 	public function isImage()
 	{
 		return in_array($this->extension(),['jpg,jpeg,png,gif,bmp']);
 	}
 
+	/**
+	 * @return
+	 */
 	public function lastModified()
 	{
 		return Carbon::createFromTimestamp($this->disk()->lastModified($this->fullPath()));
 	}
 
+	/**
+	 * @return string
+	 */
 	public function fullPath()
 	{
-		return $this->container->getPath() . $this->path();
+		return $this->container()->getPath() . $this->folder()->path()  . '/' . Str::removeLeft($this->path(),'/');
 	}
 
+	/**
+	 * @return int
+	 */
 	public function size()
 	{
 		return $this->disk()->size($this->fullPath());
@@ -144,11 +230,14 @@ class Asset extends Data implements Arrayable
 
 	public function rename()
 	{
-
+		//
 	}
 
-	public function delete()
+
+
+	public function deleteMany()
 	{
 
 	}
+
 }

@@ -89,7 +89,7 @@ module.exports = {
 		call: function(method){
 			// Call any method from parent component.
 			var args = Array.prototype.slice.call(arguments,1);
-			this.$parent.$options.methods[method].apply(null,args);
+			this.$parent[method].apply(this,args);
 		},
 
 		setSortOrders:function(){

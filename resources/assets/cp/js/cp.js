@@ -9,7 +9,7 @@ window.cp_url = function(url){
 }
 
 window.resource_url = function(url){
-	url = '//' + App.siteRoot + '/build/cp/' + url;
+	url = '//' + App.siteRoot + '/build/backend/' + url;
 	return url;
 }
 

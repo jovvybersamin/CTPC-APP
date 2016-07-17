@@ -18,6 +18,17 @@
 	h1 {flex:1;}
 }
 
+.card.flush{
+	padding:0px;
+	.head{
+		padding:15px 30px;
+	}
+
+	tr td:first-child{
+		padding-left:30px;
+	}
+}
+
 .card .head .actions{
 	padding:15px 25px;
 }

@@ -39,7 +39,7 @@ module.exports = {
 			var str = '';
 			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
 			str += `<li class="warning">
-						<a href="#" @click.prevent="call('deleteItem',item.id)">Delete</a>
+						<a href="" @click.prevent="call('deleteItem',item.id)">Delete</a>
 					</li>`;
 
 			this.tableOptions.partials.actions = str;

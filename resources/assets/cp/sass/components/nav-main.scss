@@ -137,12 +137,17 @@ nav.nav-main{
         }
 
         .account {
-            img {
-                height: 32px;
-                width: 32px;
-                display: block;
+            &:before{
                 border-radius: 32px;
-                margin: 0 auto 5px;
+                content: '';
+                display: block;
+                height: 32px;
+                left: 50%;
+                margin: 0 0 5px -16px;
+                position: relative;
+                width: 32px;
+
+                @include background('../img/account.png', 13px 11px, $color_gray_page, center);
             }
         }
         .logout {

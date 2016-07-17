@@ -8,6 +8,7 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "hieu-le/active": "^3.0",
+        "danielstjules/stringy": "~2.3",
         "webpatser/laravel-uuid": "2.*"
     },
     "require-dev": {

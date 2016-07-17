@@ -4,10 +4,14 @@
 			{{ container }}
 			<strong v-if="path !== '/'"><small>{{ path }}</small></strong>
 		</h1>
+		<button class="btn btn-primary" @click="openFinder">Upload</button>
 	</div>
+
 	<hr>
+
 	<assets-listing v-if="!loading"
 			name="browse"
+			allow-actions="true"
 			:assets="assets"
 			:folders="folders"
 			:folder="folder"
@@ -17,3 +21,4 @@
 	>
 	</assets-listing>
 </div>
+

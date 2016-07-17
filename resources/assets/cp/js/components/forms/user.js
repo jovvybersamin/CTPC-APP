@@ -7,6 +7,8 @@ module.exports = {
 				user:new AppForm({
 					name:'',
 					username:'',
+					password:'',
+					password_confirmation:'',
 					email:'',
 					about:'',
 					roles:[]
@@ -72,9 +74,14 @@ module.exports = {
 	methods:{
 		save:function(){
 			var method = this.ajax.method;
+			var self = this;
 			// Either POST,PUT or DELETE
 			App[method](this.ajax[method],this.form.user).then(function( response ){
-				window.location = response.path;
+				if(response.path !== undefined){
+					window.location = response.path;
+				}
+			},function( response ){
+				self.$dispatch('show-error',response);
 			});
 		}
 	}

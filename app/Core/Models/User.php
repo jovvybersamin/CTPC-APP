@@ -2,8 +2,9 @@
 
 namespace OneStop\Core\Models;
 
-use OneStop\Core\Models\Role;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use OneStop\Core\Models\Role;
 
 class User extends Authenticatable
 {
@@ -48,6 +49,7 @@ class User extends Authenticatable
     public function supplement()
     {
         $this->attributes['edit_url'] = $this->editUrl();
+        $this->attributes['human_created_at'] = $this->created_at->diffForHumans();
     }
 
     /**
@@ -78,6 +80,26 @@ class User extends Authenticatable
     public function editUrl()
     {
         return route('cp.users.edit',$this->username);
+    }
+
+
+
+    /**
+     * Check if the user has a role by name or id.
+     *
+     * @param string $nameOrId
+     * @return boolean
+     */
+    public function hasRole($nameOrId)
+    {
+        foreach ($this->roles->toArray() as $role) {
+            // check by id?
+            // check by name?
+            if($nameOrId == $role['name']){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

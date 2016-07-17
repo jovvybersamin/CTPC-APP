@@ -76,16 +76,18 @@ class AssetFolder
 	}
 
 	/**
+	 * Create a new folder.
+	 *
 	 * @param  string $folder
 	 * @return OneStop\Core\Asset\File\AssetFolder
 	 */
 	public function createFolder($folder)
 	{
-		$path = $this->fullPath() . $folder;
-
-		$path = Path::assemblePath($this->fullPath(),$folder,'/');
+		$path = Path::assemble($this->container()->getPath(),$this->path(),$folder);
+		$path = Path::fix($path);
 
 		if($this->disk()->createFolder($path)){
+			$folder = Path::fix(Path::assemble('',$this->path(),$folder));
 			$folder = new AssetFolder($this->container,$folder);
 			return $folder;
 		}
@@ -93,6 +95,30 @@ class AssetFolder
 		return false;
 	}
 
+	/**
+	 * Delete the folder.
+	 *
+	 * @return [type] [description]
+	 */
+	public function delete()
+	{
+		return $this->disk()->deleteFolder($this->fullPath());
+	}
+
+	/**
+	 * For now, we only support editing the folder name.
+	 *
+	 * @param string $title
+	 */
+	public function editFolder($title)
+	{
+
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function fullPath()
 	{
 		return Path::assemblePath($this->container->getPath(),$this->path(),'/');
@@ -107,7 +133,8 @@ class AssetFolder
 
 		foreach ($files as $i => $file) {
 			$file = str_replace('assets', '', $file);
-			$this->assets[] = new Asset($this->container,$this,$file);
+			$basename = pathinfo($file)['basename'];
+			$this->assets[] = new Asset($this->container,$this,$basename);
 		}
 
 		return new AssetCollection($this->assets);

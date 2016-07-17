@@ -1,0 +1,34 @@
+.navbar-reddish{
+	@extend .navbar-default;
+	background-color:#f4645f;
+	margin-bottom:0px;
+
+	a{
+		color:#fff !important;
+	}
+
+	border-radius:0px !important;
+}
+
+
+body.nav-visible{
+	padding-left:220px;
+
+	#sidebar-wrapper{
+		width:220px;
+	}
+}
+
+#sidebar-wrapper{
+	z-index: 1000;
+    left: 220px;
+    width: 0;
+    height: 100%;
+    margin-left: -220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #333;
+    transition: all 0.5s ease;
+}
+
+

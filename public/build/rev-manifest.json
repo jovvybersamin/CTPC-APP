@@ -1,6 +1,8 @@
 {
-  "cp/css/cp.css": "cp/css/cp-f6bf255863.css",
-  "cp/js/cp.js": "cp/js/cp-804a1850a1.js",
-  "vendors/css/all.css": "vendors/css/all-c58d49a615.css",
-  "vendors/js/all.js": "vendors/js/all-c87e0643d7.js"
+  "backend/css/cp.css": "backend/css/cp-1c6c61c419.css",
+  "backend/js/cp.js": "backend/js/cp-980345f4f9.js",
+  "frontend/css/site.css": "frontend/css/site-892a9e70ed.css",
+  "frontend/js/site.js": "frontend/js/site-e7aa76e086.js",
+  "vendors/css/all.css": "vendors/css/all-9479458946.css",
+  "vendors/js/all.js": "vendors/js/all-e567abaf40.js"
 }

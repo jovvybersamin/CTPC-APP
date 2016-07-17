@@ -20,15 +20,11 @@ module.exports = {
 	ready:function(){
 		this.loadAssets();
 
-
 		this.$on('path.updated',function(newPath){
 			this.updatedPath(newPath);
 			this.pushState();
 		});
 
-		this.$on('folder.created',function( folder ){
-			this.folders.push( folder );
-		});
 	},
 
 	methods:{
@@ -46,6 +42,10 @@ module.exports = {
 				this.folders = data.folders;
 				this.loading = false;
 			});
+		},
+
+		openFinder:function(){
+			$('.system-file-upload').click();
 		},
 
 		updatedPath:function(newPath){

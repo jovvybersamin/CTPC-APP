@@ -39,9 +39,9 @@ module.exports = {
 			});
 		},
 
-		deleteItem:function(){
+		deleteItem:function(id){
 			var self = this;
-			console.log( self );
+
 			swal({
 				type:'warning',
 				title:'Are you sure?',
@@ -50,6 +50,22 @@ module.exports = {
 				confirmButtonText:"Yes, I'm sure."
 			},function(){
 
+				if(arguments.length === 1){
+
+					self.$http.delete(self.ajax.delete,{
+						ids:[id]
+					}).then(function(response){
+						var data = response.data;
+
+						if(data.success){
+							var item = _.findWhere(self.items,{id:id});
+							var index = _.indexOf(self.items,item);
+							self.items.splice(item,1);
+						}
+
+					});
+
+				}
 			});
 		}
 

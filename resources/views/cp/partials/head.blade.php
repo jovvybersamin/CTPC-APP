@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width">
 
 <title>@yield('title')</title>
-<link rel="stylesheet" type="text/css" href="{{ elixir('cp/css/cp.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ elixir('backend/css/cp.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ elixir('vendors/css/all.css') }}">
 
     <!-- Fonts -->

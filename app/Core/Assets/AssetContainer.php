@@ -2,6 +2,7 @@
 
 namespace OneStop\Core\Assets;
 
+use Illuminate\Support\Facades\URL;
 use OneStop\Core\API\Path;
 use OneStop\Core\Assets\File\AssetFolder;
 
@@ -45,10 +46,6 @@ abstract class AssetContainer
 	protected $folders = [];
 
 
-	public function url($url = null)
-	{
-
-	}
 
 	public function setFolder()
 	{
@@ -131,16 +128,31 @@ abstract class AssetContainer
 	}
 
 	/**
+	 * [url description]
+	 * @param  [type] $url [description]
+	 * @return [type]      [description]
+	 */
+	public function url($url = null)
+	{
+
+		if($this->getDriver() == 'local'){
+			$url = URL::to('/');
+			return $url . '/' . $this->container;
+		}
+
+	}
+
+	/**
 	 * @param \OneStop\Core\Assets\File\AssetFolder
 	 */
 	public function folder($folder = null)
 	{
+
 		if(!is_null($folder)){
 			$this->folder = $folder;
 		}
 
 		$this->folder = Path::assemblePath('',$this->folder,'/');
-
 		return new AssetFolder($this,$this->folder);
 	}
 
