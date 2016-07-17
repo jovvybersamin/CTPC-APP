@@ -5742,30 +5742,14 @@ body {
 body.nav-visible {
   padding-left: 220px; }
 
-.page-wrapper {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-flow: row wrap;
-  flex-flow: row wrap; }
+.row {
+  margin: 0; }
 
-.Main, .Sidebar__right {
-  -ms-flex: 1 100%;
-  flex: 1 100%; }
+.Main .Box {
+  width: 100% !important; }
 
-@media all and (max-width: 600px) {
-  .Sidebar__right {
-    -ms-flex: 1 auto;
-    flex: 1 auto; } }
-
-@media all and (min-width: 600px) {
-  .Main {
-    -ms-flex: 1.5 0px;
-    flex: 1.5 0px;
-    -ms-flex-order: 1;
-    order: 1; }
-  .Sidebar__right {
-    -ms-flex-order: 2;
-    order: 2; } }
+.Sidebar__right .Box {
+  width: 100% !important; }
 
 h1 {
   font-size: 21px; }

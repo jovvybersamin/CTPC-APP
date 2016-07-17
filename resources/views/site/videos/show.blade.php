@@ -10,21 +10,24 @@
 
 @section('content')
 
-	<div class="Main">
-		<video-app :video="{{ $video }}">
-			<template slot="bottom">
-				Hello
-			</template>
-		</video-app>
-	</div>
+	<div class="row">
+		<div class="Main col-md-8 col-lg-8">
+			<video-app :video="{{ $video }}">
+				<template slot="bottom">
+					Hello
+				</template>
+			</video-app>
+		</div>
 
-	<div class="Sidebar__right">
-		<div class="Videos">
-			<div class="Videos__listing Box">
+		<div class="Sidebar__right col-md-4 col-lg-4">
+			<div class="Videos">
+				<div class="Videos__listing Box">
 
+				</div>
 			</div>
 		</div>
 	</div>
+
 
 
 @stop

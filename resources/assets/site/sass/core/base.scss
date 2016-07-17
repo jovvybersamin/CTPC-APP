@@ -7,31 +7,19 @@ body.nav-visible{
 	padding-left:220px;
 }
 
-.page-wrapper{
-	display:flex;
-	flex-flow:row wrap;
+.row{
+	margin:0;
 }
 
-.Main,.Sidebar__right{
-	flex:1 100%;
-}
 
-// Smaller to Medium Screen.
-@media all and(max-width:600px){
-	.Sidebar__right{
-		flex:1 auto;
+.Main{
+	.Box{
+		width:100% !important;
 	}
 }
 
-@media all and(min-width:600px){
-
-	.Main{
-		flex:1.5 0px;
-		order:1
+.Sidebar__right{
+	.Box{
+		width:100% !important;
 	}
-
-	.Sidebar__right{
-		order:2
-	}
-
 }
