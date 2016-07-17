@@ -6,6 +6,8 @@
 <link rel="stylesheet" type="text/css" href="{{ elixir('frontend/css/site.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ elixir('vendors/css/all.css') }}">
 
+@yield('head.styles')
+
  <!-- Fonts -->
 <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet'
           type='text/css'>
@@ -15,5 +17,6 @@
 <link rel="shortcut icon" href="" />
 
 @include('scripts.site.global')
+
 @include('site.partials.scripts')
 

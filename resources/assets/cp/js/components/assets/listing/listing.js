@@ -52,6 +52,7 @@
 					</button>
 					<ul class="dropdown-menu">
 						<li><a href="">Edit</a></li>
+						<li><a href="#" @click.prevent="copyUrl(asset)">Copy Url</a></li>
 						<li class="warning"><a href="" @click.prevent='deleteAsset(asset)'>Delete</a></li>
 					</ul>
 			</div>
@@ -106,6 +107,22 @@
 	},
 
 	methods:{
+
+		copyUrl:function(asset){
+			swal({
+				'title':'Copy URL!',
+				'text':'Copy the url link in the textbox.',
+				type:'input',
+				showCancelButton:true,
+				showConfirmButton:false,
+				closeOnConfirm:false,
+				animation:'slide-from-top',
+				inputValue:asset.url
+			},function()
+			{
+
+			})
+		},
 
 		createFolder:function(){
 			this.showFolderEditor = true;

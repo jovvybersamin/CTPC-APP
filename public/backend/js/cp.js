@@ -26599,7 +26599,7 @@ module.exports = {
 
 	partials: {
 
-		'actions-asset': '\n\t\t\t<div class="btn-group" v-if="allowActions">\n\t\t\t\t\t<button type="button" class="btn-more dropdown-toggle"\n\t\t\t\t\t\t\t data-toggle="dropdown" aria-haspopup="true"\n\t\t\t\t\t\t\t aria-expanded="true" aria-expanded="false">\n\t\t\t\t\t\t<i class="icon icon-dots-three-vertical"></i>\n\t\t\t\t\t</button>\n\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li><a href="">Edit</a></li>\n\t\t\t\t\t\t<li class="warning"><a href="" @click.prevent=\'deleteAsset(asset)\'>Delete</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t\t',
+		'actions-asset': '\n\t\t\t<div class="btn-group" v-if="allowActions">\n\t\t\t\t\t<button type="button" class="btn-more dropdown-toggle"\n\t\t\t\t\t\t\t data-toggle="dropdown" aria-haspopup="true"\n\t\t\t\t\t\t\t aria-expanded="true" aria-expanded="false">\n\t\t\t\t\t\t<i class="icon icon-dots-three-vertical"></i>\n\t\t\t\t\t</button>\n\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li><a href="">Edit</a></li>\n\t\t\t\t\t\t<li><a href="#" @click.prevent="copyUrl(asset)">Copy Url</a></li>\n\t\t\t\t\t\t<li class="warning"><a href="" @click.prevent=\'deleteAsset(asset)\'>Delete</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t\t',
 
 		'actions-folder': '\n\t\t\t<div class="btn-group" v-if="allowActions">\n\t\t\t\t\t<button type="button" class="btn-more dropdown-toggle"\n\t\t\t\t\t\t\t data-toggle="dropdown" aria-haspopup="true"\n\t\t\t\t\t\t\t aria-expanded="true" aria-expanded="false">\n\t\t\t\t\t\t<i class="icon icon-dots-three-vertical"></i>\n\t\t\t\t\t</button>\n\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li class="warning"><a href="" @click.prevent="deleteFolder(folder)">Delete</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t\t'
 
@@ -26636,6 +26636,19 @@ module.exports = {
 	},
 
 	methods: {
+
+		copyUrl: function copyUrl(asset) {
+			swal({
+				'title': 'Copy URL!',
+				'text': 'Copy the url link in the textbox.',
+				type: 'input',
+				showCancelButton: true,
+				showConfirmButton: false,
+				closeOnConfirm: false,
+				animation: 'slide-from-top',
+				inputValue: asset.url
+			}, function () {});
+		},
 
 		createFolder: function createFolder() {
 			this.showFolderEditor = true;

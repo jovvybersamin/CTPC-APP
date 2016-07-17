@@ -1,0 +1,60 @@
+<div class="Video">
+	<div class="video">
+		<div class="Video__player Box">
+			<video
+				id="app-video"
+				class="video-js vjs-big-play-centered vjs-paused ctpc-video-dimensions vjs-fluid vjs-controls-enabled vjs-workinghover vjs-user-inactive "
+				fluid
+				controls
+				poster="{{ video.image_cover }}"
+				data-setup="{}"
+			>
+			    <source src="{{ video.source }}" type="video/mp4">
+
+			    <p class="vjs-no-js">
+			    	To view this video please enable JavaScript, and consider upgrading to a web browser that
+			    	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+			    </p>
+			 </video>
+		</div>
+
+		<div class="Video__details Box">
+			<div class="Video__details_title">
+				<h3>
+					{{ video.title }}
+				</h3>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="video-bg">
+<div class="container">
+
+	<div class="video-container">
+
+	</div>
+
+	<div class="video-details">
+		<h3>
+
+		</h3>
+		<hr>
+		<div class="video-details-container">
+			<p>
+			</p>
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="video-listing">
+		<h3>
+			Related Videos
+		</h3>
+	</div>
+</div>
+</div>
+
+<slot name="bottom"></slot>

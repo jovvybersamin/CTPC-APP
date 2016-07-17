@@ -23,6 +23,7 @@ class CreateVideosTable extends Migration
             $table->string('image_cover');
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('featured')->default(0);
+            $table->bigInteger('hits')->unsigned();
 
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')

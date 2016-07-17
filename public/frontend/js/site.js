@@ -26737,6 +26737,10 @@ $(document).ready(function () {
 	new Vue({
 		el: '#app',
 
+		components: {
+			'video-app': require('./components/video/video')
+		},
+
 		data: {
 			navVisible: false,
 			errors: [],
@@ -26751,4 +26755,27 @@ $(document).ready(function () {
 	});
 });
 
-},{"./app.globals":25}]},{},[26]);
+},{"./app.globals":25,"./components/video/video":27}],27:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./video.template.html'),
+
+	props: ['video'],
+
+	data: function data() {
+		return {
+			video: {}
+		};
+	},
+
+	ready: function ready() {},
+
+	methods: {}
+
+};
+
+},{"./video.template.html":28}],28:[function(require,module,exports){
+module.exports = '<div class="Video">\n	<div class="video">\n		<div class="Video__player Box">\n			<video\n				id="app-video"\n				class="video-js vjs-big-play-centered vjs-paused ctpc-video-dimensions vjs-fluid vjs-controls-enabled vjs-workinghover vjs-user-inactive "\n				fluid\n				controls\n				poster="{{ video.image_cover }}"\n				data-setup="{}"\n			>\n			    <source src="{{ video.source }}" type="video/mp4">\n\n			    <p class="vjs-no-js">\n			    	To view this video please enable JavaScript, and consider upgrading to a web browser that\n			    	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>\n			    </p>\n			 </video>\n		</div>\n\n		<div class="Video__details Box">\n			<div class="Video__details_title">\n				<h3>\n					{{ video.title }}\n				</h3>\n			</div>\n		</div>\n	</div>\n</div>\n\n\n<div class="video-bg">\n<div class="container">\n\n	<div class="video-container">\n\n	</div>\n\n	<div class="video-details">\n		<h3>\n\n		</h3>\n		<hr>\n		<div class="video-details-container">\n			<p>\n			</p>\n		</div>\n	</div>\n\n	<hr>\n\n	<div class="video-listing">\n		<h3>\n			Related Videos\n		</h3>\n	</div>\n</div>\n</div>\n\n<slot name="bottom"></slot>\n';
+},{}]},{},[26]);

@@ -68,12 +68,9 @@ function vendors(mix){
 	if(configurations.run.vendors){
 		mix.copy('node_modules/sweetalert/dist','resources/assets/vendors/sweetalert/');
 		mix.copy('node_modules/select2/dist','resources/assets/vendors/select2/');
-		mix.copy('bower_components/video.js/dist','resources/assets/vendors/video.js/');
-
 		mix.styles([
 			'../vendors/sweetalert/sweetalert.css',
-			'../vendors/select2/css/select2.min.css',
-			'../vendors/video.js/video-js.min.css'
+			'../vendors/select2/css/select2.min.css'
 		],'public/vendors/css');
 
 		mix.scripts([
@@ -81,7 +78,22 @@ function vendors(mix){
 			'../vendors/dmuploader.js',
 			// '../vendors/select2/js/select2.full.min.js'// This is already loaded in core/bootstrap.js
 		],'public/vendors/js');
+
+		// Mix the standalone vendors.
+		video_js(mix);
 	}
+}
+
+function video_js(mix){
+	mix.copy('bower_components/video.js/dist','resources/assets/vendors/videojs/');
+
+	mix.styles([
+		'../vendors/videojs/video-js.min.css'
+	],'public/vendors/css/videojs');
+
+	mix.scripts([
+		'../vendors/videojs/video.min.js'
+	],'public/vendors/js/videojs');
 }
 
 /**
@@ -97,6 +109,8 @@ function versions(mix){
 		'frontend/css/site.css','frontend/js/site.js',
 		// For Application vendors versioning.
 		// ( Third Party assets.)
-		'vendors/css/all.css','vendors/js/all.js'
+		'vendors/css/all.css','vendors/js/all.js',
+
+		'vendors/css/videojs/all.css','vendors/js/videojs/all.js'
 	]);
 }
