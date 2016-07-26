@@ -20,7 +20,7 @@ module.exports = {
 					'description':'',
 					'duration':'',
 					'source':'',
-					'image_cover':'',
+					'poster':'',
 					'status':false,
 					'featured':false,
 					'category_id':null,

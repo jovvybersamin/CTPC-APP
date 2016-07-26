@@ -16,11 +16,12 @@ class CreateVideosTable extends Migration
 
             $table->increments('id');
             $table->string('title');
+            $table->string('slug');
             $table->string('short_description')->nullable();
             $table->text('description')->nullable();
             $table->string('duration');
             $table->string('source');
-            $table->string('image_cover');
+            $table->string('poster');
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('featured')->default(0);
             $table->bigInteger('hits')->unsigned();

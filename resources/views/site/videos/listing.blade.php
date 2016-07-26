@@ -1,14 +1,26 @@
 <div class="Videos">
 	<div class="Videos__listing Box">
-		@foreach ($videos->chunk(3) as $chunk)
+		@foreach ($categories as $category)
 			<div class="row">
-				@foreach ($chunk as $video)
+				<div class="category-header col-md-12">
+					<div class="title">
+						<h1>
+							{{ ($category->description ) ? $category->description : $category->name }}
+						</h1>
+					</div>
+
+					<div class="actions">
+						<a href="{{ route('video.category',$category->slug)}}">View Category</a>
+					</div>
+
+				</div>
+				@foreach ($category->limitVideos(3) as $video)
 					<div class="col-md-4 col-sm-6 col-xs-12">
 						<article class="v-block">
-							<a href="{{ route('video.show',$video['id']) }}" class="block-thumbnail">
+							<a href="{{ route('video.watch',$video['slug']) }}" class="block-thumbnail">
 								<div class="thumbnail-overlay"></div>
 								<span class="play-button"></span>
-								<img src="{{ $video['image_cover'] }}">
+								<img src="{{ $video['poster'] }}">
 								<div class="details">
 									<h2>{{ $video['title'] }}</h2>
 									<span>{{ $video['duration'] }}</span>
@@ -16,7 +28,7 @@
 							</a>
 							<div class="block-contents">
 								<p class="date">
-									{{ $video['human_created_at'] }}
+									{{ $video['human_published_at'] }}
 								</p>
 								<p class="desc">
 									{{ $video['short_description'] }}

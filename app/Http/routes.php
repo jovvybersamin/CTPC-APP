@@ -2,7 +2,9 @@
 
 use OneStop\Core\Support\Menu\Menu;
 
-
+Route::get('test',function(){
+	return base64_encode(1 + time());
+});
 
 Route::get('menu',function()
 {

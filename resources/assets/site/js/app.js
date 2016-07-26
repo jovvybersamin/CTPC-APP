@@ -5,7 +5,8 @@ $(document).ready(function(){
 		el:'#app',
 
 		components:{
-			'video-app':require('./components/video/video')
+			'video-player':require('./components/video/video'),
+			'video-sidebar-listing':require('./components/videos/sidebar/listing')
 		},
 
 		data:{

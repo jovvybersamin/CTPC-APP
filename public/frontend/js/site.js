@@ -26629,6 +26629,11 @@ window.cp_url = function (url) {
 	return url;
 };
 
+window.site_url = function (url) {
+	url = '//' + App.siteRoot + '/' + url;
+	return url;
+};
+
 window.resource_url = function (url) {
 	url = '//' + App.siteRoot + '/build/backend/' + url;
 	return url;
@@ -26738,7 +26743,8 @@ $(document).ready(function () {
 		el: '#app',
 
 		components: {
-			'video-app': require('./components/video/video')
+			'video-player': require('./components/video/video'),
+			'video-sidebar-listing': require('./components/videos/sidebar/listing')
 		},
 
 		data: {
@@ -26755,7 +26761,7 @@ $(document).ready(function () {
 	});
 });
 
-},{"./app.globals":25,"./components/video/video":27}],27:[function(require,module,exports){
+},{"./app.globals":25,"./components/video/video":27,"./components/videos/sidebar/listing":29}],27:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26765,9 +26771,7 @@ module.exports = {
 	props: ['video'],
 
 	data: function data() {
-		return {
-			video: {}
-		};
+		return {};
 	},
 
 	ready: function ready() {},
@@ -26777,5 +26781,95 @@ module.exports = {
 };
 
 },{"./video.template.html":28}],28:[function(require,module,exports){
-module.exports = '<div class="Video">\n	<div class="video">\n		<div class="Video__player Box">\n			<video\n				id="app-video"\n				class="video-js vjs-big-play-centered vjs-paused ctpc-video-dimensions vjs-fluid vjs-controls-enabled vjs-workinghover vjs-user-inactive "\n				fluid\n				controls\n				poster="{{ video.image_cover }}"\n				data-setup="{}"\n			>\n			    <source src="{{ video.source }}" type="video/mp4">\n\n			    <p class="vjs-no-js">\n			    	To view this video please enable JavaScript, and consider upgrading to a web browser that\n			    	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>\n			    </p>\n			 </video>\n		</div>\n\n		<div class="Video__details Box">\n			<div class="Video__details_title">\n				<h3>\n					{{ video.title }}\n				</h3>\n			</div>\n		</div>\n	</div>\n</div>\n\n\n<div class="video-bg">\n<div class="container">\n\n	<div class="video-container">\n\n	</div>\n\n	<div class="video-details">\n		<h3>\n\n		</h3>\n		<hr>\n		<div class="video-details-container">\n			<p>\n			</p>\n		</div>\n	</div>\n\n	<hr>\n\n	<div class="video-listing">\n		<h3>\n			Related Videos\n		</h3>\n	</div>\n</div>\n</div>\n\n<slot name="bottom"></slot>\n';
+module.exports = '<div class="Video">\n	<div class="video">\n		<div class="Watch__player Box Card">\n			<video\n				id="app-video"\n				class="video-js vjs-big-play-centered vjs-paused ctpc-video-dimensions vjs-fluid vjs-controls-enabled vjs-workinghover vjs-user-inactive "\n				fluid\n				controls\n				:poster="video.poster"\n				data-setup="{}"\n			>\n			    <source :src="video.source" type="video/mp4">\n\n			    <p class="vjs-no-js">\n			    	To view this video please enable JavaScript, and consider upgrading to a web browser that\n			    	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>\n			    </p>\n			 </video>\n		</div>\n\n		<div class="Watch__header Box Card">\n\n			<div class="Watch__header-headline">\n				<div class="title">\n					<h1>\n						{{ video.title }}\n					</h1>\n				</div>\n			</div>\n\n			<div class="Watch__header-user">\n				<span>\n					from <strong>{{ video.publisher.name }}</strong> &nbsp; {{ video.human_published_at }}\n				</span>\n			</div>\n\n			<div class="Watch__header-actions">\n				<div class="">\n					<div class="views-info">\n						<div class="views-count">\n							<span>\n								{{ video.views }} views\n							</span>\n						</div>\n					</div>\n				</div>\n			</div>\n\n		</div>\n\n		<div class="Watch__details Box Card">\n			<div class="extras">\n				<ul class="extras-list">\n					<li>\n						<h4 class="title">Category</h4>\n						<ul class="watch-tag-list">\n							<li>\n								<a href="">\n									{{ video.category }}\n								</a>\n							</li>\n						</ul>\n					</li>\n				</ul>\n			</div>\n			<div class="description">\n				{{ video.description }}\n			</div>\n		</div>\n\n	</div>\n</div>\n\n<slot name="bottom"></slot>\n';
+},{}],29:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./listing.template.html'),
+
+	props: ['video'],
+
+	data: function data() {
+		return {
+			videos: [],
+			loading: true,
+			loading_more: false,
+			count: 0,
+			skip: 0,
+			take: 10,
+			ajax: {
+				get: site_url('video/related'),
+				count: site_url('video/related/count')
+			}
+		};
+	},
+
+	ready: function ready() {
+		this.getRelatedVideos();
+		this.getRelatedCount();
+	},
+
+	computed: {
+
+		showLoadMore: function showLoadMore() {
+			return this.videos.length < this.count;
+		}
+
+	},
+
+	methods: {
+
+		getRelatedVideos: function getRelatedVideos(callback) {
+			var self = this;
+			this.$http.post(this.ajax.get, {
+				video: self.video,
+				skip: self.skip,
+				take: self.take,
+				videos: self.videos
+			}).then(function (response) {
+
+				var data = response.data;
+				status = response.status;
+
+				if (!self.videos.length) {
+					self.videos = data.videos;
+				} else {
+					_.each(data.videos, function (video) {
+						self.videos.push(video);
+					});
+				}
+
+				this.loading = false;
+				self.skip = self.skip + 10;
+
+				if (callback && typeof callback === 'function') {
+					callback();
+				}
+			});
+		},
+
+		getRelatedCount: function getRelatedCount() {
+			var self = this;
+
+			this.$http.post(this.ajax.count, { video: this.video }).then(function (response) {
+				self.count = response.data;
+			});
+		},
+
+		loadMore: function loadMore() {
+			var self = this;
+			self.loading_more = true;
+
+			this.getRelatedVideos(function () {
+				self.loading_more = false;
+			});
+		}
+	}
+
+};
+
+},{"./listing.template.html":30}],30:[function(require,module,exports){
+module.exports = '<div class="Watch">\n\n	<div class="Watch__loading" v-if="loading">\n		<i class="fa fa-spinner fa-pulse fa-6x fa-fw"></i>\n		<span class="sr-only">Loading...</span>\n	</div>\n\n	<ul class="Video__list" v-if="!loading">\n		<li v-for="video in videos" class="Video__list-item">\n			<div class="content-wrapper">\n				<a :href="video.watch_url">\n\n					<span class="title">\n						{{ video.title }}\n					</span>\n\n					<span class="publisher">\n						from {{ video.publisher.name }} &nbsp; {{ video.human_published_at }}\n					</span>\n\n					<span class="stat view-count" v-if="video.hits">\n						{{ video.views }} views\n					</span>\n\n					<span class="stat view-count" v-else>\n						No views\n					</span>\n\n				</a>\n			</div>\n			<div class="thumb-wrapper">\n				<a :href="video.watch_url">\n					<span class="thumb-wrap" tabindex="0">\n						<img aria-hidden="true" width="120" height="90" :src="video.poster">\n					</span>\n					<span class="video-time">\n						{{ video.duration }}\n					</span>\n				</a>\n			</div>\n		</li>\n\n		<button @click.prevent="loadMore" class="ux-btn ux-btn-expander" type="button" v-if="showLoadMore">\n\n			<div class="Watch__loading" v-if="loading_more">\n				<i class="fa fa-spinner fa-pulse fa-6x fa-fw"></i>\n				<span class="sr-only">Loading...</span>\n			</div>\n\n			<span v-else>\n				SHOW MORE\n			</span>\n\n		</button>\n\n	</ul>\n</div>\n';
 },{}]},{},[26]);

@@ -167,15 +167,37 @@
 
 }
 
+.Videos__pagination{
+	text-align:center;
+}
+
 .Videos{
 	.Videos__listing{
 		background:#fff;
 		width:90%;
 		max-width:1800px;
 		margin:3em auto auto;
+
+		.category-header{
+			clear:both;
+
+			.title{
+				display:inline-block;
+
+				h1{
+					color:#222;
+					font-size:22px;
+					margin-bottom:20px;
+
+				}
+			}
+
+			.actions{
+				float:right;
+			}
+		}
 	}
 }
-
 
 
 .ctpc-video-dimensions.vjs-fluid{

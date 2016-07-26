@@ -90,6 +90,7 @@
 	},
 
 	ready:function(){
+
 		if(!this.assets) {
 			// No assets ? what should we do.
 			// can we not just call the loadAssets of the parent component (asset-browser)?
@@ -102,6 +103,11 @@
 		});
 
 		this.$on('folder.updated',function( folder ){
+
+		});
+
+		this.$on('load.assets',function(){
+
 		});
 
 	},

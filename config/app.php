@@ -160,6 +160,7 @@ return [
          * Core Service Providers...
          */
         OneStop\Providers\OneStopServiceProvider::class,
+        OneStop\Providers\ShareDataToAllViews::class,
 
         /**
          * Third Party Service Providers...

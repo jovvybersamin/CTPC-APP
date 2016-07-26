@@ -14,9 +14,15 @@ module.exports = {
 
 	data:function(){
 		return {
+			onSelect:false,
 			assets:[],
 			folders:[],
 			folder:{},
+			rootFolder:{
+				parent_path:'',
+				path:'/',
+				title:''
+			},
 			loading:true,
 			showModalBrowser:false,
 		}
@@ -24,8 +30,6 @@ module.exports = {
 
 	ready:function(){
 		var self = this;
-
-		this.loadAssets();
 
 		this.$on('path.updated',function(newPath){
 			this.updatedPath(newPath);
@@ -35,7 +39,7 @@ module.exports = {
 			self.selectedAsset = asset;
 			self.showModalBrowser = false;
 			self.path = '/';
-			self.folder = {};
+			self.folder = self.rootFolder;
 		});
 
 	},
@@ -43,8 +47,8 @@ module.exports = {
 	methods:{
 
 		select:function(){
-			this.path = '/';
 			this.showModalBrowser = true;
+			this.loadAssets();
 		},
 
 		loadAssets:function(){

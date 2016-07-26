@@ -2,9 +2,11 @@
 
 namespace OneStop\Core\Repositories\VideoCategories\Eloquent;
 
+use Illuminate\Support\Facades\DB;
 use OneStop\Core\Contracts\Repositories\VideoCategoryRepositoryInterface as CategoryRepositoryContract;
 use OneStop\Core\Models\VideoCategory;
 use OneStop\Core\Support\Collections\VideoCategoryCollection;
+use OneStop\Core\Support\Collections\VideoCollection;
 use OneStop\Http\Requests\Request;
 
 class VideoCategoryRepository implements CategoryRepositoryContract
@@ -37,7 +39,8 @@ class VideoCategoryRepository implements CategoryRepositoryContract
 	{
 		$category = $this->model->create([
 			'name'	=> $request->get('name'),
-			'slug'	=> str_slug(($request->get('name')))
+			'slug'	=> str_slug(($request->get('name'))),
+			'description' => $request->get('description')
 		]);
 
 		return $category;
@@ -67,6 +70,19 @@ class VideoCategoryRepository implements CategoryRepositoryContract
 
 
 	/**
+	 * [getAllNotCollection description]
+	 * @return [type] [description]
+	 */
+	public function getAllWithVideos()
+	{
+		return new VideoCategoryCollection(
+			  $this->model->has('videos')->get()
+		);
+	}
+
+
+
+	/**
 	 * Get the video category by its id and update it.
 	 *
 	 * @param  int $category [description]
@@ -78,6 +94,7 @@ class VideoCategoryRepository implements CategoryRepositoryContract
 		$category = $this->model->find($category);
 		$category->name = $request->get('name');
 		$category->slug = str_slug($request->get('name'));
+		$category->description = $request->get('description');
 		return $category->save();
 	}
 }

@@ -28,6 +28,15 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="row">
+					<div class="col-md-12 col-lg-12">
+						<div class="form-group">
+							<label for="name">Description</label>
+							<input type="textarea" name="name" class="form-control" id="name" v-model="form.category.data.description">
+						</div>
+					</div>
+				</div>
 			</div>
 
 

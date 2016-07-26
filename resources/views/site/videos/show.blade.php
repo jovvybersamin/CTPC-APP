@@ -12,22 +12,18 @@
 
 	<div class="row">
 		<div class="Main col-md-8 col-lg-8">
-			<video-app :video="{{ $video }}">
-				<template slot="bottom">
-					Hello
-				</template>
-			</video-app>
+			<video-player :video="{{ $video }}">
+			</video-player>
 		</div>
 
 		<div class="Sidebar__right col-md-4 col-lg-4">
 			<div class="Videos">
 				<div class="Videos__listing Box">
-
+					<video-sidebar-listing :video="{{ $video }}"></video-sidebar-listing>
 				</div>
 			</div>
 		</div>
 	</div>
-
 
 
 @stop

@@ -10,7 +10,7 @@ class VideoRequest extends Request
 		    'title'         => 'required',
             'duration'      => 'required',
             'source'        => 'required',
-            'image_cover'   => 'required',
+            'poster'        => 'required',
             'status'        => 'required',
             'featured'      => 'required',
             'category_id'   => 'required',

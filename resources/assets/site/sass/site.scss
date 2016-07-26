@@ -1,19 +1,33 @@
 
 
+$fa-font-path:'/../../frontend/fonts';
 // Vendors
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "node_modules/font-awesome/scss/font-awesome";
+
 
 // Core
 @import 'core/base';
 @import 'core/settings';
 @import 'core/typography';
 
+// Pages
+@import 'pages/home';
+
 // Components
 @import 'components/box';
+@import 'components/cards';
 @import 'components/content-main';
 @import 'components/carousel';
 @import 'components/nav-main';
 @import 'components/sidebar-nav';
-@import 'components/videos';
+@import 'components/videos/videos';
+@import 'components/videos/sidebar';
+@import 'components/videos/watch';
+@import 'components/headroom';
+
+// Elements
+@import 'elements/button';
+

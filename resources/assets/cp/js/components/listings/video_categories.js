@@ -21,6 +21,10 @@ module.exports = {
 								{{ item.name }}
 							</span>
 						</a>
+
+						<span v-else>
+							{{ item[column] }}
+						</span>
 					`
 				}
 			}

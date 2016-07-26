@@ -6,7 +6,8 @@ module.exports = {
 				primary:'category',
 				category:new AppForm({
 					id:'',
-					name:''
+					name:'',
+					description:''
 				})
 			},
 			ajax:{

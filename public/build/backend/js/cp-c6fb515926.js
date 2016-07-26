@@ -26421,6 +26421,1169 @@ module.exports = Vue;
 },{"_process":5}],18:[function(require,module,exports){
 'use strict';
 
+require('./core/bootstrap');
+
+// Mixins.
+window.Dossier = require('./components/dossier/dossier');
+window.Form = require('./components/forms/form');
+
+// Plugins
+Vue.use(require('./plugins/resource_url'));
+
+// Components
+Vue.component('modal', require('./components/modal/modal'));
+Vue.component('assets-listing', require('./components/assets/listing/listing'));
+Vue.component('assets-folder-editor', require('./components/assets/modals/folder-editor'));
+
+//fieldtypes
+Vue.component('asset-field-browser', require('./fieldtypes/assets/browser/browser'));
+
+},{"./components/assets/listing/listing":22,"./components/assets/modals/folder-editor":24,"./components/dossier/dossier":28,"./components/forms/form":31,"./components/modal/modal":38,"./core/bootstrap":40,"./fieldtypes/assets/browser/browser":46,"./plugins/resource_url":52}],19:[function(require,module,exports){
+'use strict';
+
+require('./app.globals');
+
+new Vue({
+	el: '#app',
+	data: {
+		navVisible: false,
+		errors: [],
+		messages: []
+	},
+
+	components: {
+		'app-error': require('./components/common/errors'),
+		'app-message': require('./components/common/messages'),
+		'assets-browser': require('./components/assets/browser/browser'),
+		'user-form': require('./components/forms/user'),
+		'user-listing': require('./components/listings/users'),
+		'video-form': require('./components/forms/video'),
+		'video-listing': require('./components/listings/videos'),
+		'video-category-form': require('./components/forms/video_category'),
+		'video-category-listing': require('./components/listings/video_categories')
+	},
+
+	ready: function ready() {
+		var self = this;
+
+		this.$on('show.errors', function (errors) {
+			self.errors = errors;
+		});
+	},
+
+	methods: {
+		toggleNav: function toggleNav() {
+			this.navVisible = !this.navVisible;
+		}
+	},
+
+	events: {
+		'errors-changed': function errorsChanged(errors) {
+			this.errors = errors;
+		}
+	}
+});
+
+},{"./app.globals":18,"./components/assets/browser/browser":20,"./components/common/errors":26,"./components/common/messages":27,"./components/forms/user":32,"./components/forms/video":33,"./components/forms/video_category":34,"./components/listings/users":35,"./components/listings/video_categories":36,"./components/listings/videos":37}],20:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./browser.template.html'),
+
+	props: {
+		container: String,
+		uuid: String,
+		path: String
+	},
+
+	data: function data() {
+		return {
+			assets: [],
+			folders: [],
+			folder: {},
+			loading: true
+		};
+	},
+
+	ready: function ready() {
+		this.loadAssets();
+
+		this.$on('path.updated', function (newPath) {
+			this.updatedPath(newPath);
+			this.pushState();
+		});
+	},
+
+	methods: {
+
+		loadAssets: function loadAssets() {
+			this.loading = true;
+
+			this.$http.post(cp_url('assets/browse'), {
+				container: this.container,
+				path: this.path
+			}).then(function (response) {
+				var data = response.data;
+				this.assets = data.assets;
+				this.folder = data.folder;
+				this.folders = data.folders;
+				this.loading = false;
+			});
+		},
+
+		openFinder: function openFinder() {
+			$('.system-file-upload').click();
+		},
+
+		updatedPath: function updatedPath(newPath) {
+			this.path = newPath;
+			this.loadAssets();
+		},
+
+		pushState: function pushState() {
+			var path = this.path === '/' ? '' : this.path;
+			window.history.pushState({ path: this.path }, '', cp_url('assets/browse/' + this.container + path));
+		}
+	}
+
+};
+
+},{"./browser.template.html":21}],21:[function(require,module,exports){
+module.exports = '<div class="card">\n	<div class="head">\n		<h1>\n			{{ container }}\n			<strong v-if="path !== \'/\'"><small>{{ path }}</small></strong>\n		</h1>\n		<button class="btn btn-primary" @click="openFinder">Upload</button>\n	</div>\n\n	<hr>\n\n	<assets-listing v-if="!loading"\n			name="browse"\n			allow-actions="true"\n			:assets="assets"\n			:folders="folders"\n			:folder="folder"\n			:container="container"\n			:path="path"\n			:mode="table"\n	>\n	</assets-listing>\n</div>\n\n';
+},{}],22:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./listing.template.html'),
+
+	props: {
+		name: String,
+		container: String,
+		path: String,
+		allowActions: true,
+		assets: {
+			type: Array,
+			required: false,
+			default: function _default() {
+				return null;
+			}
+		},
+		folders: {
+			type: Array,
+			required: false,
+			default: function _default() {
+				return null;
+			}
+		},
+		folder: {
+			type: Object,
+			required: false,
+			default: function _default() {
+				return null;
+			}
+		}
+	},
+
+	data: function data() {
+		return {
+			assetQueue: [],
+			loading: true,
+			creatingFolder: false,
+			showFolderEditor: false,
+			folderModalPath: '',
+			plugin: null
+		};
+	},
+
+	partials: {
+
+		'actions-asset': '\n\t\t\t<div class="btn-group" v-if="allowActions">\n\t\t\t\t\t<button type="button" class="btn-more dropdown-toggle"\n\t\t\t\t\t\t\t data-toggle="dropdown" aria-haspopup="true"\n\t\t\t\t\t\t\t aria-expanded="true" aria-expanded="false">\n\t\t\t\t\t\t<i class="icon icon-dots-three-vertical"></i>\n\t\t\t\t\t</button>\n\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li><a href="">Edit</a></li>\n\t\t\t\t\t\t<li><a href="#" @click.prevent="copyUrl(asset)">Copy Url</a></li>\n\t\t\t\t\t\t<li class="warning"><a href="" @click.prevent=\'deleteAsset(asset)\'>Delete</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t\t',
+
+		'actions-folder': '\n\t\t\t<div class="btn-group" v-if="allowActions">\n\t\t\t\t\t<button type="button" class="btn-more dropdown-toggle"\n\t\t\t\t\t\t\t data-toggle="dropdown" aria-haspopup="true"\n\t\t\t\t\t\t\t aria-expanded="true" aria-expanded="false">\n\t\t\t\t\t\t<i class="icon icon-dots-three-vertical"></i>\n\t\t\t\t\t</button>\n\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li class="warning"><a href="" @click.prevent="deleteFolder(folder)">Delete</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t\t'
+
+	},
+
+	computed: {
+
+		hasParent: function hasParent() {
+			if (!this.folder) {
+				return false;
+			}
+			return this.folder.parent_path;
+		},
+
+		hasItems: function hasItems() {
+			return this.folders.length || this.assets.length;
+		}
+
+	},
+
+	ready: function ready() {
+
+		if (!this.assets) {
+			// No assets ? what should we do.
+			// can we not just call the loadAssets of the parent component (asset-browser)?
+		} else {
+				this.loadingComplete();
+			}
+
+		this.$on('folder.created', function (folder) {
+			this.folders.push(folder);
+		});
+
+		this.$on('folder.updated', function (folder) {});
+
+		this.$on('load.assets', function () {});
+	},
+
+	methods: {
+
+		copyUrl: function copyUrl(asset) {
+			swal({
+				'title': 'Copy URL!',
+				'text': 'Copy the url link in the textbox.',
+				type: 'input',
+				showCancelButton: true,
+				showConfirmButton: false,
+				closeOnConfirm: false,
+				animation: 'slide-from-top',
+				inputValue: asset.url
+			}, function () {});
+		},
+
+		createFolder: function createFolder() {
+			this.showFolderEditor = true;
+			this.creatingFolder = true;
+			this.folderModalPath = this.path;
+		},
+
+		deleteFolder: function deleteFolder(folder) {
+
+			var url = cp_url('assets/folders/delete'),
+			    self = this;
+
+			swal({
+				type: 'warning',
+				title: 'Are you sure?',
+				text: "This folder will be deleted.",
+				showCancelButton: true,
+				confirmButtonText: "Yes, I'm sure."
+			}, function () {
+				this.loading = true;
+
+				self.$http.delete(url, {
+					container: self.container,
+					path: folder.path
+				}).then(function (response) {
+					var data = response.data;
+					if (data.success) {
+						var item = _.findWhere(self.folders, { path: folder.path }),
+						    index = _.indexOf(self.folders, item);
+						self.folders.$remove(folder);
+						self.folders.slice(index, 1);
+					}
+					self.loadingComplete();
+				});
+			});
+		},
+
+		deleteAsset: function deleteAsset(asset) {
+			var self = this;
+
+			var url = cp_url('assets/delete');
+
+			swal({
+				type: 'warning',
+				title: 'Are you sure?',
+				text: "This file will be deleted.",
+				showCancelButton: true,
+				confirmButtonText: "Yes, I'm sure."
+			}, function () {
+				this.loading = true;
+
+				self.$http.delete(url, {
+					container: self.container,
+					folder: self.folder.path,
+					paths: [asset.path]
+				}).then(function (response) {
+					var data = response.data;
+					if (data.success) {
+						self.assets.$remove(asset);
+					}
+					self.loadingComplete();
+				});
+			});
+		},
+
+		editFolder: function editFolder(path) {
+			this.showFolderEditor = true;
+			this.createFolder = false;
+			this.folderModalPath = path;
+		},
+
+		goToFolder: function goToFolder(path) {
+			this.$dispatch('path.updated', path);
+		},
+
+		selectAsset: function selectAsset(asset) {
+			this.$dispatch('asset.selected', asset.url);
+		},
+
+		loadingComplete: function loadingComplete() {
+			this.loading = false;
+			this.$dispatch('asset-listing.loading-complete');
+			this.bindUploader();
+		},
+
+		fileIcon: function fileIcon(extension) {
+			return resource_url('img/fieldtypes/' + extension + '.png');
+		},
+
+		bindUploader: function bindUploader() {
+			var self = this;
+			var $uploader = $(this.$el);
+
+			$uploader.dmUploader({
+				url: cp_url('assets'),
+				extraData: {
+					container: self.container,
+					folder: self.path
+				},
+
+				onNewFile: function onNewFile(id, file) {
+					self.assetQueue.push({
+						id: id,
+						basename: file.name,
+						extension: file.name.split('.').pop(),
+						percent: 0
+					});
+				},
+
+				onUploadProgress: function onUploadProgress(id, percent) {
+					var asset = _.findWhere(self.assetQueue, { id: id });
+					asset.percent = percent;
+				},
+
+				onUploadSuccess: function onUploadSuccess(id, data) {
+					self.assets.unshift(data.asset);
+
+					var asset = _.findWhere(self.assetQueue, { id: id });
+					var index = _.indexOf(self.assetQueue, asset);
+					self.assetQueue.splice(index, 1);
+				},
+
+				onUploaderError: function onUploaderError(id, message) {}
+			});
+		}
+
+	}
+
+};
+
+},{"./listing.template.html":23}],23:[function(require,module,exports){
+module.exports = '<div class="asset-listing">\n\n\n	 <input type="file" multiple="multiple" class="system-file-upload hide" v-if="allowActions">\n\n	 <div v-if="loading" class="loading">\n        <span class="icon icon-circular-graph animation-spin"></span> Loading..\n    </div>\n\n	<div v-if="!loading && allowActions" class="actions">\n		<div class="action-controls">\n			<button @click="createFolder" class="btn">\n				Create New Folder\n			</button>\n		</div>\n	</div>\n\n	<div class="asset-listing table asset-listing-uploads" v-if="assetQueue.length">\n		<table>\n			<thead>\n				<tr>\n					<th class="column-checkbox"></th>\n					<th colspan="2">Upload</th>\n				</tr>\n			</thead>\n			<tbody>\n				<tr v-for="asset in assetQueue">\n					<td class="column-checkbox">\n						<span class="icon icon-circular-graph animation-spin"></span>\n					</td>\n					<td class="column-filename">\n						{{ asset.basename }}\n					</td>\n					<td class="column-progress">\n						<div class="progress">\n							<div class="progress-bar" :style="{ width: asset.percent + \'%\'	 }"></div>\n						</div>\n					</td>\n				</tr>\n			</tbody>\n		</table>\n	</div>\n\n	<div v-if="!loading && (hasParent || hasItems)">\n		<div class="asset-listing table">\n			<table>\n				<thead>\n					<tr>\n						 <th class="column-checkbox"></th>\n						 <th>\n						 	Title\n						 </th>\n						 <th>\n						 	Filename\n						 </th>\n						 <th>\n						 	File size\n						 </th>\n						 <th>\n							Date Modified\n						 </th>\n						 <th>\n\n						 </th>\n					</tr>\n				</thead>\n				<tbody>\n					<tr v-if="hasParent">\n						<td></td>\n						<td>\n							<a href="" @click.prevent="goToFolder(folder.parent_path)">\n								<img :src="resource_url(\'img/fieldtypes/folder.png\')" class="folder">\n								Parent Folder\n							</a>\n						</td>\n						<td colspan=\'3\'></td>\n					</tr>\n					<tr v-for="folder in folders">\n						<td></td>\n						<td>\n							<a href="" @click.prevent="goToFolder(folder.path)">\n								<img :src="resource_url(\'img/fieldtypes/folder.png\')" class="folder">\n								{{ folder.title }}\n							</a>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n						<td class="column-actions">\n							<partial name="actions-folder"></partial>\n						</td>\n					</tr>\n					<tr v-for="asset in assets">\n						<td></td>\n						<td>\n							<span class="asset" @click="selectAsset(asset)">\n								<img :src="fileIcon(asset.extension)" class="file">\n								{{ asset.title }}\n							</span>\n\n						</td>\n						<td>\n							{{ asset.basename }}\n						</td>\n						<td>\n							{{ asset.human_size }}\n						</td>\n						<td>\n							{{ asset.last_modified }}\n						</td>\n						<td class="column-actions">\n							<partial name="actions-asset"></partial>\n						</td>\n					</tr>\n				</tbody>\n			</table>\n		</div>\n	</div>\n\n	<assets-folder-editor v-if="showFolderEditor"\n		:show.sync="showFolderEditor"\n		:container="container"\n		:path="folderModalPath"\n		:create.sync="creatingFolder"\n	>\n	</assets-folder-editor>\n</div>\n';
+},{}],24:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./folder-editor.template.html'),
+
+	props: {
+		show: Boolean,
+		container: String,
+		path: String,
+		create: { type: Boolean, default: false }
+	},
+
+	data: function data() {
+		return {
+			form: {
+				folder: new AppForm({
+					id: null,
+					basename: '',
+					parent: '',
+					container: ''
+				})
+			},
+			ajax: {
+				method: 'store',
+				store: cp_url('assets/folders'),
+				update: cp_url('assets/folders')
+			},
+			folder: {},
+			loading: false,
+			saving: false
+		};
+	},
+
+	ready: function ready() {
+		this.getFolder();
+	},
+
+	methods: {
+
+		reset: function reset() {},
+
+		getFolder: function getFolder() {
+			if (this.create) {
+				this.getBlankFolder();
+			} else {
+				this.getExistingFolder();
+			}
+		},
+
+		getBlankFolder: function getBlankFolder() {
+			this.folder = {};
+
+			var form = {
+				container: this.container,
+				parent: this.path
+			};
+
+			_.extend(this.form.folder.data, form);
+			this.loading = false;
+		},
+
+		getExistingFolder: function getExistingFolder() {
+			var url = cp_url('assets/folders/' + this.container + this.path),
+			    self = this;
+
+			this.$http.get(url).then(function (response) {
+				var data = response.data;
+				if (data.success) {
+
+					var form = {
+						container: self.container,
+						path: self.path,
+						parent: data.folder.parent,
+						basename: data.folder.title
+					};
+
+					_.extend(this.form.folder.data, form);
+				}
+
+				this.loading = false;
+			});
+		},
+
+		saveNewFolder: function saveNewFolder() {
+			var method = 'store',
+			    self = this;
+			App[method](this.ajax[method], this.form.folder).then(function (response) {
+
+				self.saving = false;
+				self.creating = false;
+				self.show = false;
+
+				if (response.success) {
+					self.$dispatch('folder.created', response.folder);
+				} else {
+					alert('There was an error when we are trying to create the folder.');
+				}
+			});
+		},
+
+		saveExistingFolder: function saveExistingFolder() {
+			var method = 'update',
+			    self = this;
+			App[method](this.ajax[method], this.form.folder).then(function (response) {
+				var data = response.data;
+				self.$dispatch('folder.updated', data.folder);
+				self.saving = false;
+				self.creating = false;
+			});
+		},
+
+		save: function save() {
+			this.saving = true;
+
+			if (this.create) {
+				this.saveNewFolder();
+			} else {
+				this.saveExistingFolder();
+			}
+		}
+
+	}
+
+};
+
+},{"./folder-editor.template.html":25}],25:[function(require,module,exports){
+module.exports = '<modal\n	:show.sync="show"\n	class="asset-modal asset-folder-editor"\n	:saving="saving"\n	:loading="loading"\n	:full="false"\n>\n	<template slot="header">\n		<template v-if="create">\n			Create Folder\n		</template>\n	</template>\n\n	<template slot="body">\n		<div class="form-group">\n			<label class="block">Name</label>\n            <small class="help-block">The filesystem directory name</small>\n			<input type="text" class="form-control" v-model="form.folder.data.basename">\n		</div>\n	</template>\n\n	<template slot="footer">\n		<button type="button" @click.prevent="save" class="btn btn-primary">Save</button>\n	</template>\n\n</modal>\n';
+},{}],26:[function(require,module,exports){
+'use strict';
+
+// Error Components.
+module.exports = {
+	props: ['errors'],
+
+	computed: {
+
+		hasErrors: function hasErrors() {
+			return _.size(this.errors);
+		},
+
+		flatten: function flatten() {
+			return _.flatten(_.toArray(this.errors));
+		}
+
+	}
+};
+
+},{}],27:[function(require,module,exports){
+'use strict';
+
+// Message Components.
+module.exports = {
+	props: ['messages'],
+	computed: {
+		hasMessages: function hasMessages() {
+			return _.size(this.messages);
+		}
+	}
+};
+
+},{}],28:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	data: function data() {
+		return {
+			items: [],
+			columns: [],
+			loading: true
+		};
+	},
+
+	components: {
+		'dossier-table': require('./table')
+	},
+
+	ready: function ready() {
+		this.getItems();
+	},
+
+	computed: {
+		hasItems: function hasItems() {
+			return this.items !== null && !this.loading;
+		}
+	},
+
+	methods: {
+
+		getItems: function getItems() {
+			this.$http.get(this.ajax.get).then(function (response) {
+				var data = response.data,
+				    status = response.status,
+				    request = response.request;
+
+				this.columns = data.columns;
+				this.items = data.items;
+				this.loading = false;
+			}).catch(function () {
+				alert('There was a problem retrieving the data. Check your logs.');
+			});
+		},
+
+		deleteItem: function deleteItem(id) {
+			var self = this;
+
+			swal({
+				type: 'warning',
+				title: 'Are you sure?',
+				text: "This item will be deleted.",
+				showCancelButton: true,
+				confirmButtonText: "Yes, I'm sure."
+			}, function () {
+
+				if (arguments.length === 1) {
+
+					self.$http.delete(self.ajax.delete, {
+						ids: [id]
+					}).then(function (response) {
+						var data = response.data;
+
+						if (data.success) {
+							var item = _.findWhere(self.items, { id: id });
+							var index = _.indexOf(self.items, item);
+							self.items.splice(item, 1);
+						}
+					});
+				}
+			});
+		}
+
+	}
+
+};
+
+},{"./table":29}],29:[function(require,module,exports){
+'use strict';
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+// component
+
+module.exports = {
+
+	template: require('./table.template.html'),
+
+	props: ['options'],
+
+	data: function data() {
+		return _defineProperty({
+			items: [],
+			columns: [],
+			sortCol: this.options.sortCol || null,
+			sortOrder: this.options.sortOrder || 'asc',
+			sortOrders: {},
+			search: ''
+		}, 'sortOrders', {});
+	},
+
+	components: {
+		'search': {
+			props: ['term'],
+			template: '\n\t\t\t\t<input type="text" v-model="term" @keyup.esc="reset" placeholder="Search" class="search" >\n\t\t\t',
+			methods: {
+				reset: function reset() {
+					this.term = '';
+				}
+			}
+		}
+	},
+
+	partials: {
+
+		'cell': '\n\t\t\t<a v-if="$index === 0">\n\t\t\t\t<span class="status status-{{ (item.status) ? \'live\' : \'hidden\' }}"\n\t\t\t\t\t  :title=""\n\t\t\t\t></span>\n\t\t\t\t{{ item[column] }}\n\t\t\t</a>\n\t\t\t<span v-else>\n\t\t\t\t{{ item[column] }}\n\t\t\t</span>\n\t\t\t'
+	},
+
+	ready: function ready() {
+		this.items = this.$parent.items;
+		this.columns = this.$parent.columns;
+
+		this.setSortOrders();
+	},
+
+	beforeCompile: function beforeCompile() {
+		var self = this;
+		_.each(this.options.partials, function (value, key) {
+			self.$options.partials[key] = value;
+		});
+	},
+
+	computed: {
+
+		hasItems: function hasItems() {
+			return this.$parent.hasItems;
+		},
+
+		hasHeader: function hasHeader() {
+			return this.options.hasHeader;
+		},
+
+		computedSearch: function computedSearch() {
+			return this.search;
+		},
+
+		computedSortCol: function computedSortCol() {
+			return this.sortCol;
+		},
+
+		computedSortOrder: function computedSortOrder() {
+			return this.sortOrders[this.sortCol];
+		}
+
+	},
+
+	methods: {
+		call: function call(method) {
+			// Call any method from parent component.
+			var args = Array.prototype.slice.call(arguments, 1);
+			this.$parent[method].apply(this, args);
+		},
+
+		setSortOrders: function setSortOrders() {
+			var sortOrders = {};
+			_.each(this.columns, function (column) {
+				sortOrders[column] = 1;
+			});
+			sortOrders[this.sortCol] = this.sortOrder === 'asc' ? 1 : -1;
+			this.sortOrders = sortOrders;
+		},
+
+		sortBy: function sortBy(column) {
+			if (this.sortCol == column) {
+				this.sortOrders[column] = this.sortOrders[column] * -1;
+			}
+			this.sortCol = column;
+			return this.sortOrders[column];
+		}
+
+	}
+
+};
+
+},{"./table.template.html":30}],30:[function(require,module,exports){
+module.exports = '<div>\n	<div class="actions">\n		<search :term.sync="search"></search>\n	</div>\n	<table class="dossier">\n		<thead v-if="hasHeader">\n			<th></th>\n			<th v-for="column in columns"\n			    class="column-sortable column-{{ column }}"\n			    @click="sortBy(column)">\n				{{ column }}\n				<i v-if="sortCol == column"\n				   class="icon icon-chevron-{{ (sortOrders[column] > 0) ? \'up\' : \'down\' }}"></i>\n			</th>\n			<th></th>\n		</thead>\n		<tbody>\n			<tr v-for="item in items | filterBy computedSearch | orderBy computedSortCol computedSortOrder">\n				<td></td>\n					<td v-for="column in columns">\n						<partial name="cell"></partial>\n					</td>\n				<td class="column-actions">\n					<div class="btn-group">\n						<button type="button" class="btn-more dropdown-toggle"\n								 data-toggle="dropdown" aria-haspopup="true"\n								 aria-expanded="true" aria-expanded="false">\n							<i class="icon icon-dots-three-vertical"></i>\n						</button>\n						<ul class="dropdown-menu">\n							<partial name="actions"></partial>\n						</ul>\n					</div>\n				</td>\n			</tr>\n		</tbody>\n	</table>\n</div>\n';
+},{}],31:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+	props: ['errors'],
+	data: function data() {
+		return {
+			isNew: true,
+			formReady: false,
+			headerTitle: ''
+		};
+	},
+
+	ready: function ready() {},
+
+	methods: {
+		whenReady: function whenReady(callback) {
+			var self = this,
+			    url = window.location.href;
+
+			this.$http.get(url).then(function (response) {
+				var data = response.data;
+
+				self.isNew = data.type == 'store' ? true : false;
+				if (callback(data) === true) {
+					self.ajax.method = data.type;
+					self.formReady = true;
+					self.headerTitle = data.headerTitle;
+				} else {
+					alert('There was an error in the callback function in ready hook of the component. </br> Try to return a true to fix this.');
+				}
+			}).catch(function (error) {
+				alert('There was something wrong with this form. Error: ' + error);
+			});
+		}
+	},
+
+	watch: {
+		'form[form.primary].errors.errors': function formFormPrimaryErrorsErrors(newVal, oldVal) {
+			this.$dispatch('errors-changed', this.form[this.form.primary].errors.flatten());
+		}
+	}
+
+};
+
+},{}],32:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+	mixins: [Form],
+	data: function data() {
+		return {
+			form: {
+				primary: 'user',
+				user: new AppForm({
+					name: '',
+					username: '',
+					password: '',
+					password_confirmation: '',
+					email: '',
+					about: '',
+					roles: []
+				}),
+				roles: []
+			},
+			ajax: {
+				method: 'store',
+				store: cp_url('users'),
+				update: cp_url('users/update'),
+				delete: ''
+			}
+		};
+	},
+
+	components: {
+		'user-roles': {
+			props: ['roles', 'userRoles'],
+
+			ready: function ready() {
+				var userRoles = [];
+				_.each(this.userRoles, function (value) {
+					userRoles.push(value.id);
+				});
+				this.userRoles = userRoles;
+			},
+
+			methods: {
+				select: function select(role) {
+					if (this.userRoles.indexOf(role.id) === -1) {
+						this.userRoles.push(role.id);
+					} else {
+						this.userRoles.$remove(role.id);
+					}
+				},
+				selected: function selected(id) {
+					if (this.userRoles !== undefined || this.userRoles !== null) {
+						return this.userRoles.indexOf(id) > -1;
+					}
+				}
+			}
+		}
+	},
+
+	ready: function ready() {
+		var self = this;
+		self.form.ready = true;
+		this.whenReady(function (data) {
+			console.log(data);
+			self.form.user.set(data.user);
+
+			if (data.user !== null) {
+				self.ajax.update = cp_url('users/' + data.user.username);
+			}
+
+			self.form.roles = data.roles;
+
+			return true;
+		});
+	},
+
+	methods: {
+		save: function save() {
+			var method = this.ajax.method;
+			var self = this;
+			// Either POST,PUT or DELETE
+			App[method](this.ajax[method], this.form.user).then(function (response) {
+				if (response.path !== undefined) {
+					window.location = response.path;
+				}
+			}, function (response) {
+				self.$dispatch('show-error', response);
+			});
+		}
+	}
+};
+
+},{}],33:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	mixins: [Form],
+
+	components: {
+		'field-toggle': require('./../../fieldtypes/toggle/toggle'),
+		'field-select2': require('./../../fieldtypes/select2/select2')
+	},
+
+	data: function data() {
+		return {
+			container: 'assets',
+			folder: '/',
+			form: {
+				primary: 'video',
+				video: new AppForm({
+					id: null,
+					title: '',
+					'short_description': '',
+					'description': '',
+					'duration': '',
+					'source': '',
+					'poster': '',
+					'status': false,
+					'featured': false,
+					'category_id': null,
+					'uploaded_by': null
+				}, AppFormType.Each),
+				categories: [],
+				users: []
+			},
+			ajax: {
+				method: 'store',
+				store: cp_url('videos'),
+				update: cp_url('videos/update')
+			}
+		};
+	},
+
+	ready: function ready() {
+		var self = this;
+		this.whenReady(function (data) {
+
+			self.form.video.set(data.video);
+			self.form.categories = data.categories;
+			self.form.users = data.users;
+
+			if (data.video !== null) {
+				self.ajax.update = cp_url('videos/' + data.video.id);
+			}
+			return true;
+		});
+	},
+
+	methods: {
+
+		save: function save() {
+			var self = this;
+			var method = this.ajax.method;
+
+			App[method](this.ajax[method], this.form.video).then(function (response) {
+				if (response.path !== undefined) {
+					window.location = response.path;
+				}
+			}, function (response) {
+				console.log(response);
+				self.$dispatch('show.errors', response);
+			});
+		}
+
+	}
+
+};
+
+},{"./../../fieldtypes/select2/select2":48,"./../../fieldtypes/toggle/toggle":50}],34:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+	mixins: [Form],
+	data: function data() {
+		return {
+			form: {
+				primary: 'category',
+				category: new AppForm({
+					id: '',
+					name: '',
+					description: ''
+				})
+			},
+			ajax: {
+				method: 'store',
+				store: cp_url('videos/categories'),
+				update: cp_url('videos/categories/update')
+			}
+		};
+	},
+
+	ready: function ready() {
+		var self = this;
+		this.whenReady(function (data) {
+			self.form.category.set(data.category);
+			if (data.category !== null) {
+				self.ajax.update = cp_url('videos/categories/' + data.category.id);
+			}
+			return true;
+		});
+	},
+
+	methods: {
+		save: function save() {
+			var method = this.ajax.method;
+			App[method](this.ajax[method], this.form.category).then(function (response) {
+				if (response.path !== undefined) {
+					window.location = response.path;
+				}
+			});
+		}
+	}
+};
+
+},{}],35:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	mixins: [Dossier],
+
+	data: function data() {
+		return {
+			ajax: {
+				get: cp_url('users/get'),
+				delete: ''
+			},
+			tableOptions: {
+				hasHeader: true,
+				sortCol: 'name',
+				sortOrder: 'asc',
+				partials: {
+					actions: '',
+					cell: '\n\t\t\t\t\t\t<a v-if="$index === 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="status status-{{ (item.status) ? \'live\' : \'hidden\' }}">\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</a>\n\t\t\t\t\t\t<span v-else>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</span>\n\t\t\t\t\t'
+				}
+			}
+		};
+	},
+
+	ready: function ready() {
+		this.addActionPartial();
+	},
+
+	computed: {},
+
+	methods: {
+
+		addActionPartial: function addActionPartial() {
+			var str = '';
+			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
+			str += '\n\t\t\t\t\t<li class="warning">\n\t\t\t\t\t\t<a href="#" @click.prevent="call(\'deleteItem\',item.id)">Delete</a>\n\t\t\t\t\t</li>\n\t\t\t\t\t';
+			this.tableOptions.partials.actions = str;
+		}
+
+	}
+};
+
+},{}],36:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	mixins: [Dossier],
+
+	data: function data() {
+		return {
+			ajax: {
+				get: cp_url('videos/categories/get'),
+				delete: ''
+			},
+			tableOptions: {
+				hasHeader: true,
+				sortCol: 'name',
+				sortOrder: 'asc',
+				partials: {
+					actions: '',
+					'cell': '\n\t\t\t\t\t\t<a v-if="$index === 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="">\n\t\t\t\t\t\t\t\t{{ item.name }}\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t<span v-else>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</span>\n\t\t\t\t\t'
+				}
+			}
+		};
+	},
+
+	ready: function ready() {
+		this.addActionPartial();
+	},
+
+	methods: {
+
+		addActionPartial: function addActionPartial() {
+			var str = '';
+			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
+			str += '<li class="warning">\n\t\t\t\t\t\t<a href="" @click.prevent="call(\'deleteItem\',item.id)">Delete</a>\n\t\t\t\t\t</li>';
+
+			this.tableOptions.partials.actions = str;
+		}
+
+	}
+
+};
+
+},{}],37:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	mixins: [Dossier],
+
+	data: function data() {
+		return {
+			ajax: {
+				get: cp_url('videos/get'),
+				delete: cp_url('videos/delete')
+			},
+			tableOptions: {
+				hasHeader: true,
+				hasCheckbox: false,
+				sortCol: 'title',
+				sortOrder: 'asc',
+				partials: {
+					actions: '',
+					cell: '\n\t\t\t\t\t\t<a v-if="$index == 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="status status-{{ (item.status) ? \'live\' : \'hidden\' }}"></span>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t<template v-else>\n\t\t\t\t\t\t\t<span v-if="$index == 2" class="text-center status status-{{ (item.featured) ? \'live\' : \'hidden\' }} "></span>\n\t\t\t\t\t\t\t<span v-else>\n\t\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</template>\n\t\t\t\t\t'
+				}
+			}
+		};
+	},
+
+	ready: function ready() {
+		this.addActionPartial();
+	},
+
+	methods: {
+
+		addActionPartial: function addActionPartial() {
+			var str = '';
+
+			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
+			str += '\n\t\t\t\t\t<li class="warning">\n\t\t\t\t\t\t<a href="" @click.prevent="call(\'deleteItem\',item.id)">Delete</a>\n\t\t\t\t\t</li>\n\t\t\t\t';
+
+			this.tableOptions.partials.actions = str;
+		}
+
+	}
+
+};
+
+},{}],38:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./modal.template.html'),
+
+	props: {
+		show: {
+			type: Boolean,
+			required: true,
+			default: false
+		},
+		full: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		class: {
+			required: false,
+			default: function _default() {
+				return {};
+			}
+		},
+		loading: Boolean,
+		saving: Boolean
+	},
+
+	methods: {
+		close: function close() {
+			this.show = false;
+		}
+	},
+
+	computed: {
+		classes: function classes() {
+
+			var defaults = {
+				'modal-full': this.full
+			};
+
+			var classes = {};
+
+			if (typeof this.class === 'string') {
+				_.each(this.class.split(' '), function (e) {
+					classes[e] = true;
+				});
+			} else {
+				classes = this.class;
+			}
+
+			return _.extend(defaults, classes);
+		}
+	},
+
+	ready: function ready() {}
+
+};
+
+},{"./modal.template.html":39}],39:[function(require,module,exports){
+module.exports = '<div class="modal" :class="classes" role="dialog" tabindex="-1" v-if="show">\n\n	<div class="modal-dialog">\n		<div class="modal-content">\n\n			<div class="saving" v-if="saving">\n				<div class="inner">\n                    <i class="icon icon-circular-graph animation-spin"></i> Saving..\n                </div>\n			</div>\n\n			<div class="modal-header">\n				<slot name="close">\n					<button type="button" class="close" aria-label="Close" @click="close"><span aria-hidden="true">&times;</span></button>\n				</slot>\n				<h3 class="modal-title">\n					<slot name="header"></slot>\n				</h3>\n			</div>\n\n			<div v-if="! loading" class="modal-body">\n				<slot name="body"></slot>\n			</div>\n\n			<div v-if="! loading" class="modal-footer">\n				<slot name="footer">\n					<button type="button" class="btn" @click="close">Close</button>\n				</slot>\n			</div>\n\n		</div>\n	</div>\n\n\n</div>\n';
+},{}],40:[function(require,module,exports){
+'use strict';
+
 /**
  * Load Vue and Vue-Resource.
  *
@@ -26473,7 +27636,7 @@ require('./../cp.js');
 // Load the Control Panel JS Theme.
 require('./../theme/theme');
 
-},{"./../cp.js":23,"./../theme/theme":24,"./forms/bootstrap":19,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"select2/dist/js/select2.full.min.js":14,"underscore":15,"vue":17,"vue-resource":16}],19:[function(require,module,exports){
+},{"./../cp.js":45,"./../theme/theme":53,"./forms/bootstrap":41,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"select2/dist/js/select2.full.min.js":14,"underscore":15,"vue":17,"vue-resource":16}],41:[function(require,module,exports){
 'use strict';
 
 // Load the AppForm class.
@@ -26484,7 +27647,7 @@ require('./errors');
 
 $.extend(App, require('./http'));
 
-},{"./errors":20,"./http":21,"./instances":22}],20:[function(require,module,exports){
+},{"./errors":42,"./http":43,"./instances":44}],42:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -26522,7 +27685,7 @@ window.AppErrors = function () {
 	};
 };
 
-},{}],21:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -26567,7 +27730,7 @@ module.exports = {
 
 };
 
-},{}],22:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 
 window.AppFormType = {
@@ -26616,7 +27779,7 @@ window.AppForm = function (data, type) {
 	};
 };
 
-},{}],23:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 'use strict';
 
 window.cp_url = function (url) {
@@ -26629,12 +27792,183 @@ window.cp_url = function (url) {
 	return url;
 };
 
+window.site_url = function (url) {
+	url = '//' + App.siteRoot + '/' + url;
+	return url;
+};
+
 window.resource_url = function (url) {
 	url = '//' + App.siteRoot + '/build/backend/' + url;
 	return url;
 };
 
-},{}],24:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	mixins: [],
+
+	template: require('./browser.template.html'),
+
+	props: {
+		label: String,
+		placeholder: String,
+		container: String,
+		path: String,
+		selectedAsset: ''
+	},
+
+	data: function data() {
+		return {
+			onSelect: false,
+			assets: [],
+			folders: [],
+			folder: {},
+			rootFolder: {
+				parent_path: '',
+				path: '/',
+				title: ''
+			},
+			loading: true,
+			showModalBrowser: false
+		};
+	},
+
+	ready: function ready() {
+		var self = this;
+
+		this.$on('path.updated', function (newPath) {
+			this.updatedPath(newPath);
+		});
+
+		this.$on('asset.selected', function (asset) {
+			self.selectedAsset = asset;
+			self.showModalBrowser = false;
+			self.path = '/';
+			self.folder = self.rootFolder;
+		});
+	},
+
+	methods: {
+
+		select: function select() {
+			this.showModalBrowser = true;
+			this.loadAssets();
+		},
+
+		loadAssets: function loadAssets() {
+			this.loading = true;
+
+			this.$http.post(cp_url('assets/browse'), {
+				container: this.container,
+				path: this.path
+			}).then(function (response) {
+				var data = response.data;
+				this.assets = data.assets;
+				this.folder = data.folder;
+				this.folders = data.folders;
+				this.loading = false;
+			});
+		},
+
+		updatedPath: function updatedPath(newPath) {
+			this.path = newPath;
+			this.loadAssets();
+		}
+
+	}
+
+};
+
+},{"./browser.template.html":47}],47:[function(require,module,exports){
+module.exports = '<div class="input-group">\n	<label class="sr-only">{{ label }}</label>\n	<input type="text" class="form-control" v-model="selectedAsset" :placeholder="placeholder" disabled>\n	<div class="input-group-addon" style="padding:0 !important">\n		<button class="btn" @click.prevent="select">Select</button>\n	</div>\n</div>\n\n<modal\n	:show.sync="showModalBrowser"\n	class="asset-modal"\n	:full="true"\n	v-if="showModalBrowser"\n>\n\n	<template slot="header">\n		<h1>\n			Select an Asset\n			<strong v-if="path !== \'/\'"><small>{{ path }}</small></strong>\n		</h1>\n\n	</template>\n\n	<template slot="body">\n		<assets-listing v-if="!loading && showModalBrowser"\n			name="browse"\n			:assets="assets"\n			:folders="folders"\n			:folder="folder"\n			:container="container"\n			:path="path"\n			:mode="table"\n		 >\n		</assets-listing>\n	</template>\n\n</modal>\n';
+},{}],48:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+	template: require('./select2.template.html'),
+
+	props: ['selected', 'options', 'name', 'key', 'value', 'defaultText'],
+
+	computed: {
+
+		hasOptions: function hasOptions() {
+			return this.options !== null;
+		}
+
+	},
+
+	ready: function ready() {
+
+		var self = this;
+
+		$('.' + this.name).select2().on('change', function () {
+			self.selected = this.value;
+		});
+	},
+
+	methods: {
+
+		isSelected: function isSelected(option) {
+			var key = this.key;
+			if (_.isArray(this.selected)) {} else {
+				return option[key] == this.selected;
+			}
+		}
+	},
+
+	watch: {
+		options: function options(_options, oldVal) {
+			if (_.where(_options, { id: 0 }).length <= 0) {
+				if (this.selected === null) {
+					this.selected = "0";
+				}
+				_options.unshift({ id: 0, name: this.defaultText });
+			}
+		}
+	}
+
+};
+
+},{"./select2.template.html":49}],49:[function(require,module,exports){
+module.exports = '<div v-if="hasOptions">\n	<select :class="name">\n		<option v-for="option in options" :value="option[key]" :selected="isSelected(option)">\n			{{ option[value] }}\n		</option>\n	</select>\n</div>\n';
+},{}],50:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./toggle.template.html'),
+
+	props: ['name', 'data', 'config'],
+
+	computed: {
+		isOn: function isOn() {
+			return this.data === true || this.data === 1;
+		}
+	},
+
+	methods: {
+		toggle: function toggle() {
+			this.data = !this.data;
+		}
+	}
+
+};
+
+},{"./toggle.template.html":51}],51:[function(require,module,exports){
+module.exports = '<div>\n	<div class="toggle-container" :class="{\'on\': isOn }" @click.prevent="toggle">\n		<div class="toggle-slider">\n			<div class="toggle-knob"></div>\n		</div>\n	</div>\n</div>\n';
+},{}],52:[function(require,module,exports){
+"use strict";
+
+exports.install = function (Vue, options) {
+
+	Vue.prototype.resource_url = function (url) {
+		return resource_url(url);
+	};
+};
+
+},{}],53:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -26723,59 +28057,4 @@ function _init() {
 	};
 }
 
-},{}],25:[function(require,module,exports){
-'use strict';
-
-require('../../cp/js/core/bootstrap');
-
-},{"../../cp/js/core/bootstrap":18}],26:[function(require,module,exports){
-'use strict';
-
-require('./app.globals');
-
-$(document).ready(function () {
-	new Vue({
-		el: '#app',
-
-		components: {
-			'video-app': require('./components/video/video')
-		},
-
-		data: {
-			navVisible: false,
-			errors: [],
-			messages: {}
-		},
-
-		methods: {
-			toggleNav: function toggleNav() {
-				this.navVisible = !this.navVisible;
-			}
-		}
-	});
-});
-
-},{"./app.globals":25,"./components/video/video":27}],27:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	template: require('./video.template.html'),
-
-	props: ['video'],
-
-	data: function data() {
-		return {
-			video: {}
-		};
-	},
-
-	ready: function ready() {},
-
-	methods: {}
-
-};
-
-},{"./video.template.html":28}],28:[function(require,module,exports){
-module.exports = '<div class="Video">\n	<div class="video">\n		<div class="Video__player Box">\n			<video\n				id="app-video"\n				class="video-js vjs-big-play-centered vjs-paused ctpc-video-dimensions vjs-fluid vjs-controls-enabled vjs-workinghover vjs-user-inactive "\n				fluid\n				controls\n				poster="{{ video.image_cover }}"\n				data-setup="{}"\n			>\n			    <source src="{{ video.source }}" type="video/mp4">\n\n			    <p class="vjs-no-js">\n			    	To view this video please enable JavaScript, and consider upgrading to a web browser that\n			    	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>\n			    </p>\n			 </video>\n		</div>\n\n		<div class="Video__details Box">\n			<div class="Video__details_title">\n				<h3>\n					{{ video.title }}\n				</h3>\n			</div>\n		</div>\n	</div>\n</div>\n\n\n<div class="video-bg">\n<div class="container">\n\n	<div class="video-container">\n\n	</div>\n\n	<div class="video-details">\n		<h3>\n\n		</h3>\n		<hr>\n		<div class="video-details-container">\n			<p>\n			</p>\n		</div>\n	</div>\n\n	<hr>\n\n	<div class="video-listing">\n		<h3>\n			Related Videos\n		</h3>\n	</div>\n</div>\n</div>\n\n<slot name="bottom"></slot>\n';
-},{}]},{},[26]);
+},{}]},{},[19]);

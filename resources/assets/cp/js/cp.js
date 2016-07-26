@@ -8,6 +8,11 @@ window.cp_url = function(url){
 	return url;
 }
 
+window.site_url = function(url){
+	url = '//' + App.siteRoot + '/' + url;
+	return url;
+}
+
 window.resource_url = function(url){
 	url = '//' + App.siteRoot + '/build/backend/' + url;
 	return url;

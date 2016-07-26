@@ -10,6 +10,13 @@ Route::group(['namespace' => 'Site'],function()
 
 	// Videos
 	Route::get('v','VideosController@index')->name('vidoes');
-	Route::get('v/{video}','VideosController@show')->name('video.show');
+	Route::get('watch/{video}','VideosController@watch')->name('video.watch');
+	Route::get('categories/{category}','VideosController@getVideosByCategory')->name('video.category');
 
+
+	Route::post('video/related','VideosController@getRelated');
+	Route::post('video/related/count','VideosController@getRelatedCount');
+
+	// Search
+	Route::get('search','SearchController@search')->name('search');
 });

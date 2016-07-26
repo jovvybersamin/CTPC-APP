@@ -22,7 +22,7 @@
 	</template>
 
 	<template slot="body">
-		<assets-listing v-if="!loading"
+		<assets-listing v-if="!loading && showModalBrowser"
 			name="browse"
 			:assets="assets"
 			:folders="folders"

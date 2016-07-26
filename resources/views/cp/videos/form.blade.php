@@ -69,7 +69,7 @@
 							placeholder="Select an image cover"
 							:container="container"
 							:path="folder"
-							:selected-asset.sync="form.video.data.image_cover"
+							:selected-asset.sync="form.video.data.poster"
 							>
 						</asset-field-browser >
 					</div>

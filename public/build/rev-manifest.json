@@ -1,10 +1,11 @@
 {
   "backend/css/cp.css": "backend/css/cp-1c6c61c419.css",
-  "backend/js/cp.js": "backend/js/cp-658042deb0.js",
-  "frontend/css/site.css": "frontend/css/site-cbe627de95.css",
-  "frontend/js/site.js": "frontend/js/site-3b70b8af5f.js",
+  "backend/js/cp.js": "backend/js/cp-c6fb515926.js",
+  "frontend/css/site.css": "frontend/css/site-cfe7898a49.css",
+  "frontend/js/site.js": "frontend/js/site-51fb344d2f.js",
   "vendors/css/all.css": "vendors/css/all-c58d49a615.css",
   "vendors/css/videojs/all.css": "vendors/css/videojs/all-3db0d3363a.css",
   "vendors/js/all.js": "vendors/js/all-e567abaf40.js",
+  "vendors/js/site/all.js": "vendors/js/site/all-21c410f27b.js",
   "vendors/js/videojs/all.js": "vendors/js/videojs/all-09610be748.js"
 }

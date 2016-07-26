@@ -19,7 +19,7 @@
         <!-- /.row -->
 
         <!-- Content Row -->
-        <div class="row">
+        <div class="row Card Box">
             <!-- Map Column -->
             <div class="col-md-8">
                 <!-- Embedded Google Map -->
@@ -54,14 +54,4 @@
                 </ul>
             </div>
         </div>
-
-        <hr>
-
-         <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Copyright &copy; Your Website 2014</p>
-                </div>
-            </div>
-        </footer>
 @stop

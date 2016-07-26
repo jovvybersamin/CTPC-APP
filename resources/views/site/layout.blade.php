@@ -19,7 +19,8 @@
 
 		</div>
 
-
+		@include('site.partials.footer')
 		@yield('footer-scripts')
+
 	</body>
 </html>

@@ -21,7 +21,7 @@
         <div class="carousel-inner">
             <div class="item active">
                 <div class="fill">
-                    <img src="assets/images/bg_1.jpg" alt="Flower" width="1400" height="450">
+                    <img src="assets/images/bg1.jpg" alt="Flower" width="1400" height="450">
                 </div>
                 <div class="carousel-caption">
                     <h2>Caption 1</h2>
@@ -29,15 +29,14 @@
             </div>
             <div class="item">
                 <div class="fill">
-                    <img src="assets/images/bg_2.jpg" alt="Flower" width="1400" height="450">
+                    <img src="assets/images/bg2.jpg" alt="Flower" width="1400" height="450">
                 </div>
                 <div class="carousel-caption">
-                    <h2>Caption 2</h2>
-                </div>
+                    <h2>Caption 2</h2>                </div>
             </div>
             <div class="item">
                 <div class="fill">
-                    <img src="assets/images/bg_3.jpg" alt="Flower" width="1400" height="450">
+                    <img src="assets/images/bg3.jpg" alt="Flower" width="1400" height="450">
                 </div>
                 <div class="carousel-caption">
                     <h2>Caption 3</h2>
@@ -54,18 +53,9 @@
         </a>
     </header>
 
-		<div class="home-content">
-			<h3>Checkout our Latest Videos Below</h3>
-			@include('site.videos.listing')
-		</div>
+	<div class="home-content">
+		@include('site.videos.listing')
+	</div>
 
-  <hr>
 
-         <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Copyright &copy; Your Website 2014</p>
-                </div>
-            </div>
-        </footer>
 @stop

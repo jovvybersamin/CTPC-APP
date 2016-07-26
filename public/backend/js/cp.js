@@ -26621,6 +26621,7 @@ module.exports = {
 	},
 
 	ready: function ready() {
+
 		if (!this.assets) {
 			// No assets ? what should we do.
 			// can we not just call the loadAssets of the parent component (asset-browser)?
@@ -26633,6 +26634,8 @@ module.exports = {
 		});
 
 		this.$on('folder.updated', function (folder) {});
+
+		this.$on('load.assets', function () {});
 	},
 
 	methods: {
@@ -27288,7 +27291,7 @@ module.exports = {
 					'description': '',
 					'duration': '',
 					'source': '',
-					'image_cover': '',
+					'poster': '',
 					'status': false,
 					'featured': false,
 					'category_id': null,
@@ -27351,7 +27354,8 @@ module.exports = {
 				primary: 'category',
 				category: new AppForm({
 					id: '',
-					name: ''
+					name: '',
+					description: ''
 				})
 			},
 			ajax: {
@@ -27447,7 +27451,7 @@ module.exports = {
 				sortOrder: 'asc',
 				partials: {
 					actions: '',
-					'cell': '\n\t\t\t\t\t\t<a v-if="$index === 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="">\n\t\t\t\t\t\t\t\t{{ item.name }}\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t'
+					'cell': '\n\t\t\t\t\t\t<a v-if="$index === 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="">\n\t\t\t\t\t\t\t\t{{ item.name }}\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t<span v-else>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</span>\n\t\t\t\t\t'
 				}
 			}
 		};
@@ -27788,6 +27792,11 @@ window.cp_url = function (url) {
 	return url;
 };
 
+window.site_url = function (url) {
+	url = '//' + App.siteRoot + '/' + url;
+	return url;
+};
+
 window.resource_url = function (url) {
 	url = '//' + App.siteRoot + '/build/backend/' + url;
 	return url;
@@ -27812,9 +27821,15 @@ module.exports = {
 
 	data: function data() {
 		return {
+			onSelect: false,
 			assets: [],
 			folders: [],
 			folder: {},
+			rootFolder: {
+				parent_path: '',
+				path: '/',
+				title: ''
+			},
 			loading: true,
 			showModalBrowser: false
 		};
@@ -27822,8 +27837,6 @@ module.exports = {
 
 	ready: function ready() {
 		var self = this;
-
-		this.loadAssets();
 
 		this.$on('path.updated', function (newPath) {
 			this.updatedPath(newPath);
@@ -27833,15 +27846,15 @@ module.exports = {
 			self.selectedAsset = asset;
 			self.showModalBrowser = false;
 			self.path = '/';
-			self.folder = {};
+			self.folder = self.rootFolder;
 		});
 	},
 
 	methods: {
 
 		select: function select() {
-			this.path = '/';
 			this.showModalBrowser = true;
+			this.loadAssets();
 		},
 
 		loadAssets: function loadAssets() {
@@ -27869,7 +27882,7 @@ module.exports = {
 };
 
 },{"./browser.template.html":47}],47:[function(require,module,exports){
-module.exports = '<div class="input-group">\n	<label class="sr-only">{{ label }}</label>\n	<input type="text" class="form-control" v-model="selectedAsset" :placeholder="placeholder" disabled>\n	<div class="input-group-addon" style="padding:0 !important">\n		<button class="btn" @click.prevent="select">Select</button>\n	</div>\n</div>\n\n<modal\n	:show.sync="showModalBrowser"\n	class="asset-modal"\n	:full="true"\n	v-if="showModalBrowser"\n>\n\n	<template slot="header">\n		<h1>\n			Select an Asset\n			<strong v-if="path !== \'/\'"><small>{{ path }}</small></strong>\n		</h1>\n\n	</template>\n\n	<template slot="body">\n		<assets-listing v-if="!loading"\n			name="browse"\n			:assets="assets"\n			:folders="folders"\n			:folder="folder"\n			:container="container"\n			:path="path"\n			:mode="table"\n		 >\n		</assets-listing>\n	</template>\n\n</modal>\n';
+module.exports = '<div class="input-group">\n	<label class="sr-only">{{ label }}</label>\n	<input type="text" class="form-control" v-model="selectedAsset" :placeholder="placeholder" disabled>\n	<div class="input-group-addon" style="padding:0 !important">\n		<button class="btn" @click.prevent="select">Select</button>\n	</div>\n</div>\n\n<modal\n	:show.sync="showModalBrowser"\n	class="asset-modal"\n	:full="true"\n	v-if="showModalBrowser"\n>\n\n	<template slot="header">\n		<h1>\n			Select an Asset\n			<strong v-if="path !== \'/\'"><small>{{ path }}</small></strong>\n		</h1>\n\n	</template>\n\n	<template slot="body">\n		<assets-listing v-if="!loading && showModalBrowser"\n			name="browse"\n			:assets="assets"\n			:folders="folders"\n			:folder="folder"\n			:container="container"\n			:path="path"\n			:mode="table"\n		 >\n		</assets-listing>\n	</template>\n\n</modal>\n';
 },{}],48:[function(require,module,exports){
 'use strict';
 

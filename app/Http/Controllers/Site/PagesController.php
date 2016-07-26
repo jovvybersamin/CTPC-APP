@@ -2,20 +2,27 @@
 
 namespace OneStop\Http\Controllers\Site;
 
-use OneStop\Http\Controllers\SiteController;
+use OneStop\Core\Repositories\VideoCategories\Eloquent\VideoCategoryRepository;
 use OneStop\Core\Repositories\Videos\Eloquent\VideoRepository;
+use OneStop\Http\Controllers\SiteController;
 
 class PagesController extends SiteController
 {
 
 	/**
-	 * @var OneStop\Core\Repositories\Videos\Eloquent\VideoRepository;
+	 * @var OneStop\Core\Repositories\Videos\Eloquent\VideoRepository
 	 */
 	protected $videos;
 
-	public function __construct(VideoRepository $videos)
+	/**
+	 * @var OneStop\Core\Repositories\VideoCategories\Eloquent\VideoCategoryRepository
+	 */
+	protected $categories;
+
+	public function __construct(VideoRepository $videos,VideoCategoryRepository $categories)
 	{
 		$this->videos = $videos;
+		$this->categories = $categories;
 	}
 	/**
 	 * Show the Home Page.
@@ -26,7 +33,8 @@ class PagesController extends SiteController
 	{
 		// inject videos
 		$videos = $this->videos->getAll();
-		return view('site.pages.home',compact('videos'));
+		$categories = $this->categories->getAllWithVideos();
+		return view('site.pages.home',compact('videos','categories'));
 	}
 
 

@@ -20,9 +20,9 @@ class SetupUsersTableSeeder extends Seeder
         DB::table('roles')->truncate();
         DB::table('user_roles')->truncate();
 
-        $user = User::create([
+        $admin_user = User::create([
         	'name'				=> 'Administrator',
-        	'email'				=>	'jovvy.bersamin@gmail.com',
+        	'email'				=>	'jovvybersamin99@gmail.com',
         	'username'			=>	'admin',
         	'password'			=>  bcrypt('password2016'),
         	'status'			=> 1,
@@ -32,11 +32,26 @@ class SetupUsersTableSeeder extends Seeder
         	'profile'			=> null
         ]);
 
-        $admin = Role::create([
+        $super_user = User::create([
+            'name'              => 'Super User',
+            'email'             =>  'jovvy.bersamin@gmail.com',
+            'username'          =>  'superuser2016',
+            'password'          =>  bcrypt('password2016'),
+            'status'            => 1,
+            'confirmation_code' => null,
+            'confirmed'         => true,
+            'about'             => null,
+            'profile'           => null,
+            'deletable'        => false
+        ]);
+
+        $admin_role = Role::create([
             'name'  => 'Administrator'
         ]);
 
-        $user->roles()->attach($admin);
+        $super_user->roles()->attach($admin_role);
+
+        $admin_user->roles()->attach($admin_role);
 
 
     }

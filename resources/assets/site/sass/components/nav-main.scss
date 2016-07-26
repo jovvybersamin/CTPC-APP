@@ -1,13 +1,13 @@
 .navbar-reddish{
-	@extend .navbar-default;
-	background-color:#f4645f;
-	margin-bottom:0px;
 
+	@extend .navbar-default;
+	margin-bottom:0px;
 	a{
 		color:#fff !important;
 	}
 
 	border-radius:0px !important;
+	border-color:#f4645f;
 }
 
 

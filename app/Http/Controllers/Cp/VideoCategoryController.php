@@ -123,7 +123,7 @@ class VideoCategoryController extends Controller
 		});
 
 		$data = [
-			'columns' 	=> ['name'],
+			'columns' 	=> ['name','description'],
 			'items'		=> $categories
 		];
 

@@ -1,15 +1,15 @@
 <div class="Video">
 	<div class="video">
-		<div class="Video__player Box">
+		<div class="Watch__player Box Card">
 			<video
 				id="app-video"
 				class="video-js vjs-big-play-centered vjs-paused ctpc-video-dimensions vjs-fluid vjs-controls-enabled vjs-workinghover vjs-user-inactive "
 				fluid
 				controls
-				poster="{{ video.image_cover }}"
+				:poster="video.poster"
 				data-setup="{}"
 			>
-			    <source src="{{ video.source }}" type="video/mp4">
+			    <source :src="video.source" type="video/mp4">
 
 			    <p class="vjs-no-js">
 			    	To view this video please enable JavaScript, and consider upgrading to a web browser that
@@ -18,43 +18,57 @@
 			 </video>
 		</div>
 
-		<div class="Video__details Box">
-			<div class="Video__details_title">
-				<h3>
-					{{ video.title }}
-				</h3>
+		<div class="Watch__header Box Card">
+
+			<div class="Watch__header-headline">
+				<div class="title">
+					<h1>
+						{{ video.title }}
+					</h1>
+				</div>
+			</div>
+
+			<div class="Watch__header-user">
+				<span>
+					from <strong>{{ video.publisher.name }}</strong> &nbsp; {{ video.human_published_at }}
+				</span>
+			</div>
+
+			<div class="Watch__header-actions">
+				<div class="">
+					<div class="views-info">
+						<div class="views-count">
+							<span>
+								{{ video.views }} views
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="Watch__details Box Card">
+			<div class="extras">
+				<ul class="extras-list">
+					<li>
+						<h4 class="title">Category</h4>
+						<ul class="watch-tag-list">
+							<li>
+								<a href="">
+									{{ video.category }}
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="description">
+				{{ video.description }}
 			</div>
 		</div>
-	</div>
-</div>
-
-
-<div class="video-bg">
-<div class="container">
-
-	<div class="video-container">
 
 	</div>
-
-	<div class="video-details">
-		<h3>
-
-		</h3>
-		<hr>
-		<div class="video-details-container">
-			<p>
-			</p>
-		</div>
-	</div>
-
-	<hr>
-
-	<div class="video-listing">
-		<h3>
-			Related Videos
-		</h3>
-	</div>
-</div>
 </div>
 
 <slot name="bottom"></slot>

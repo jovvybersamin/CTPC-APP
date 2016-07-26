@@ -25,6 +25,7 @@ var configurations = {
 elixir(function(mix) {
     mix.sass('app.scss');
     vendors(mix);
+    site_vendors(mix);
     cp(mix);
     site(mix);
     versions(mix);
@@ -38,9 +39,11 @@ elixir(function(mix) {
  * @return {[type]}     [description]
  */
 function cp(mix){
-	mix.sass('../cp/sass/cp.scss','public/backend/css/cp.css')
-	   .copy('../cp/fonts','public/backend/fonts/') // This is not working I do not know why.
-	   .browserify('../cp/js/app.js','public/backend/js/cp.js');
+	if(configurations.run.cp){
+		mix.sass('../cp/sass/cp.scss','public/backend/css/cp.css')
+		   .copy('../cp/fonts','public/backend/fonts/') // This is not working I do not know why.
+		   .browserify('../cp/js/app.js','public/backend/js/cp.js');
+	}
 }
 
 /**
@@ -54,8 +57,14 @@ function site(mix){
 		.browserify('../site/js/app.js','public/frontend/js/site.js');
 }
 
+/**
+ * Include all your site vendors here.
+ *
+ */
 function site_vendors(mix){
-
+	mix.scripts([
+		'../vendors/headroom.min.js'
+	],'public/vendors/js/site');
 }
 
 /**
@@ -68,6 +77,9 @@ function vendors(mix){
 	if(configurations.run.vendors){
 		mix.copy('node_modules/sweetalert/dist','resources/assets/vendors/sweetalert/');
 		mix.copy('node_modules/select2/dist','resources/assets/vendors/select2/');
+		mix.copy('node_modules/font-awesome/fonts','public/frontend/fonts');
+
+
 		mix.styles([
 			'../vendors/sweetalert/sweetalert.css',
 			'../vendors/select2/css/select2.min.css'
@@ -76,6 +88,7 @@ function vendors(mix){
 		mix.scripts([
 			'../vendors/sweetalert/sweetalert.min.js',
 			'../vendors/dmuploader.js',
+
 			// '../vendors/select2/js/select2.full.min.js'// This is already loaded in core/bootstrap.js
 		],'public/vendors/js');
 
@@ -111,6 +124,8 @@ function versions(mix){
 		// ( Third Party assets.)
 		'vendors/css/all.css','vendors/js/all.js',
 
-		'vendors/css/videojs/all.css','vendors/js/videojs/all.js'
+		'vendors/css/videojs/all.css','vendors/js/videojs/all.js',
+
+		'vendors/js/site/all.js'
 	]);
 }
