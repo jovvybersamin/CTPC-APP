@@ -79,6 +79,9 @@ class UserController extends Controller
 	 */
 	public function store(StoreNewUser $request)
 	{
+
+		dd($request->all());
+
 		$this->users->createUserFromBackend($request);
 
 		session()->flash('success','User was successfully created.');

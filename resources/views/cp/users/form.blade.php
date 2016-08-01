@@ -72,6 +72,11 @@
 						</div>
 
 						<div class="form-group">
+							<label>Profile Image</label>
+							<input class="form-control" type="file" name="profile" v-model="form.user.data.profile"/>
+						</div>
+
+						<div class="form-group">
 							<label for="name">About</label>
 							<textarea name="about" cols="30" rows="10" class="form-control" v-model="form.user.data.about"></textarea>
 						</div>

@@ -10,6 +10,7 @@ module.exports = {
 					password:'',
 					password_confirmation:'',
 					email:'',
+					profile:'',
 					about:'',
 					roles:[]
 				}),

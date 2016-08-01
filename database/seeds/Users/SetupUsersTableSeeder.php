@@ -15,7 +15,6 @@ class SetupUsersTableSeeder extends Seeder
      */
     public function run()
     {
-
         DB::table('users')->truncate();
         DB::table('roles')->truncate();
         DB::table('user_roles')->truncate();
@@ -47,6 +46,14 @@ class SetupUsersTableSeeder extends Seeder
 
         $admin_role = Role::create([
             'name'  => 'Administrator'
+        ]);
+
+        $discount_prov_user = Role::create([
+            'name'  => 'Discount Provider'
+        ]);
+
+        $user_role = Role::create([
+            'name'  => 'User'
         ]);
 
         $super_user->roles()->attach($admin_role);
