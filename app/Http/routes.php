@@ -3,7 +3,8 @@
 use OneStop\Core\Support\Menu\Menu;
 
 Route::get('test',function(){
-	return base64_encode(1 + time());
+	$user = Auth::loginUsingId(1);
+
 });
 
 Route::get('menu',function()
@@ -22,6 +23,11 @@ Route::get('menu',function()
 	dump($menu->getContainers());
 });
 
+
+
+require_once __DIR__ . '/Routes/utilities.php';
+
+require_once __DIR__ . '/Routes/api.php';
 
 require_once __DIR__ . '/Routes/cp/cp.php';
 

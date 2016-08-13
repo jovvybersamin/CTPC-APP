@@ -1,0 +1,18 @@
+<div class="avatar_wrapper" :class="{'loading':loading}">
+	<a href="" @click.prevent="changeAvatar">
+		<div class="thumb">
+			<img class="avatar" :src="photoAvatar">
+			 <div v-if="loading" class="loading">
+		        <span class="icon icon-circular-graph animation-spin"></span> Loading..
+		    </div>
+		</div>
+	</a>
+
+	<input type="file"
+	   :name="name"
+	   :id="id"
+	   class="avatar-upload hide"
+	   @change="file"
+	   v-el:avatar
+/>
+</div>

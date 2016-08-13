@@ -167,7 +167,7 @@ class VideoController extends CpController
 		return response()->json([
 				'success'	=> false,
 				'message'	=> 'There was an error deleting the video.'
-			],400);
+		],400);
 	}
 
 	/**

@@ -28,7 +28,7 @@ class SetupUsersTableSeeder extends Seeder
         	'confirmation_code' => null,
         	'confirmed'			=> true,
         	'about'				=> null,
-        	'profile'			=> null
+        	'profile'			=> 'default.png'
         ]);
 
         $super_user = User::create([
@@ -40,7 +40,7 @@ class SetupUsersTableSeeder extends Seeder
             'confirmation_code' => null,
             'confirmed'         => true,
             'about'             => null,
-            'profile'           => null,
+            'profile'           => 'default.png',
             'deletable'        => false
         ]);
 

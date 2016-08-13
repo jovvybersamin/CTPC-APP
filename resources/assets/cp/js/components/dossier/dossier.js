@@ -61,6 +61,10 @@ module.exports = {
 							var item = _.findWhere(self.items,{id:id});
 							var index = _.indexOf(self.items,item);
 							self.items.splice(item,1);
+
+							this.$dispatch('show.messages',[data.message]);
+						} else {
+							this.$dispatch('show.errors',[data.message]);
 						}
 
 					});

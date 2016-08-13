@@ -2,27 +2,37 @@
 
 namespace OneStop\Http\Controllers\Cp;
 
-use OneStop\Http\Requests;
 use Illuminate\Http\Request;
-use OneStop\Core\Models\User;
-use OneStop\Core\Models\Role;
 use Illuminate\Support\Facades\Auth;
-use OneStop\Http\Requests\UpdateUser;
-use OneStop\Http\Requests\StoreNewUser;
-use OneStop\Http\Controllers\Controller;
-use OneStop\Core\Support\Traits\FormAjax;
 use OneStop\Core\Contracts\Repositories\UserRepositoryInterface as UserRepositoryContract;
+use OneStop\Core\Models\Role;
+use OneStop\Core\Models\User;
+use OneStop\Core\Repositories\Business\Categories\Eloquent\CategoryRepository as BusinessCategoryRepository;
+use OneStop\Core\Support\Traits\FormAjax;
+use OneStop\Http\Controllers\Controller;
+use OneStop\Http\Requests;
+use OneStop\Http\Requests\StoreNewUser;
+use OneStop\Http\Requests\UpdateUser;
 
 
 class UserController extends Controller
 {
 	use FormAjax;
 
+	/**
+	 * @var OneStop\Core\Repositories\Users\Eloquent\UserRepository
+	 */
 	protected $users;
 
-	public function __construct(UserRepositoryContract $users)
+	/**
+	 * @var OneStop\Core\Repositories\Business\Categories\Eloquent\CategoryRepository
+	 */
+	protected $categories;
+
+	public function __construct(UserRepositoryContract $users,BusinessCategoryRepository $categories)
 	{
 		$this->users = $users;
+		$this->categories = $categories;
 	}
 
 	/**
@@ -57,11 +67,15 @@ class UserController extends Controller
 	public function create(Request $request)
 	{
 		if($result = $this->isCreating($request,function($creating){
-			$user = User::with('roles')->where('id',1)->first()->toArray();
+			$categories = $this->categories
+							->getWhereNotIn('id',[])
+							->get();
+
 			return [
 					  'headerTitle' => 'Create User',
 					  'user' => null,
-					  'roles' => Role::all()
+					  'roles' => Role::all(),
+					  'categories' => $categories,
 				   ];
 		}))
 		{
@@ -79,8 +93,6 @@ class UserController extends Controller
 	 */
 	public function store(StoreNewUser $request)
 	{
-
-		dd($request->all());
 
 		$this->users->createUserFromBackend($request);
 
@@ -100,10 +112,16 @@ class UserController extends Controller
 
 		if($result = $this->isEditing($request,function($creating) use ($username){
 			$user = $this->users->getUserByUsername($username,true);
+
+			$categories = $this->categories
+					->getWhereNotIn('id',$user->getCategoriesIds()->toArray())
+					->get();
+
 			return [
 					  'headerTitle' => 'Edit ' . $user->name,
 					  'user' => $user->toArray(),
-					  'roles' => Role::all()
+					  'roles' => Role::all(),
+  					  'categories' => $categories->toArray(),
 				   ];
 		}))
 		{
@@ -122,11 +140,8 @@ class UserController extends Controller
 	 */
 	public function update($username,UpdateUser $request)
 	{
-
 		$this->users->updateByUsername($username,$request);
-
 		session()->flash('success','User was successfully updated.');
-
 		return response()->json(['path' => route('cp.users.index')]);
 	}
 

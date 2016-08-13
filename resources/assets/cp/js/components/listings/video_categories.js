@@ -7,7 +7,7 @@ module.exports = {
 		return {
 			ajax:{
 				get:cp_url('videos/categories/get'),
-				delete:''
+				delete:cp_url('videos/categories/delete')
 			},
 			tableOptions:{
 				hasHeader:true,
@@ -38,7 +38,6 @@ module.exports = {
 
 
 	methods:{
-
 		addActionPartial:function(){
 			var str = '';
 			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';

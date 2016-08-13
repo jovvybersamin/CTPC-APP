@@ -167,6 +167,7 @@ return [
          */
 
         HieuLe\Active\ActiveServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -220,6 +221,8 @@ return [
 
         'Active' => HieuLe\Active\Facades\Active::class,
         'Uuid' => Webpatser\Uuid\Uuid::class,
+        'Image' => Intervention\Image\Facades\Image::class,
+
     ],
 
 ];

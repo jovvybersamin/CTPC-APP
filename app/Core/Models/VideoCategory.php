@@ -33,9 +33,38 @@ class VideoCategory extends Model
 	 * @param  integer $limit [description]
 	 * @return [type]         [description]
 	 */
-	public function limitVideos($limit = 3)
+	public function limitVideos($isCollection = false,$limit = 3)
 	{
-		return new VideoCollection($this->videos()->published()->limit($limit)->orderByRaw('RAND()')->get()->toArray());
+		if($isCollection){
+			return new VideoCollection(
+					$this->videos()
+						 ->published()
+						 ->limit($limit)
+						 ->orderByRaw('RAND()')->
+						 get()
+						 ->toArray()
+			);
+		}
+
+		return 	$this->videos()
+					 ->published()
+					 ->limit($limit)
+					 ->orderByRaw('RAND()')->
+					 get();
+	}
+
+	/**
+	 *
+	 * @param  integer $limit [description]
+	 * @return [type]         [description]
+	 */
+	public function limitVideosEloquent($limit = 3)
+	{
+		return $this->videos()
+					 ->published()
+					 ->limit($limit)
+					 ->orderByRaw('RAND()')->
+					 get();
 	}
 
 	/**

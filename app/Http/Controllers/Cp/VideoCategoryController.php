@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use OneStop\Core\Contracts\Repositories\VideoCategoryRepositoryInterface as CategoriesContract;
 use OneStop\Core\Support\Traits\FormAjax;
 use OneStop\Http\Controllers\Controller;
+use OneStop\Http\Controllers\CpController;
 use OneStop\Http\Requests\StoreNewVideoCategory;
 use OneStop\Http\Requests\UpdateVideoCategory;
 
-class VideoCategoryController extends Controller
+class VideoCategoryController extends CpController
 {
 	use FormAjax;
 
@@ -23,9 +24,10 @@ class VideoCategoryController extends Controller
 	/**
 	 * Create new instance of VideoCategory.
 	 */
-	public function __construct(CategoriesContract $categories)
+	public function __construct(CategoriesContract $categories,Request $request)
 	{
 		$this->categories = $categories;
+		parent::__construct($request);
 	}
 
 	/**
@@ -87,6 +89,7 @@ class VideoCategoryController extends Controller
 	public function edit(Request $request,$slug)
 	{
 		if($result = $this->isEditing($request,function($editing) use ($slug) {
+
 			$category = $this->categories->getBySlug($slug);
 
 			return [
@@ -102,6 +105,8 @@ class VideoCategoryController extends Controller
 
 	public function update($category,UpdateVideoCategory $request)
 	{
+
+
 		$this->categories->update($category,$request);
 
 		session()->flash('success','Video Category has been successfully updated.');
@@ -131,4 +136,26 @@ class VideoCategoryController extends Controller
 	}
 
 
+	/**
+	 * Delete a categories by a given ids.
+	 *
+	 * @return
+	 */
+	public function delete()
+	{
+		$ids = $this->request->get('ids');
+
+		if(count($ids)){
+		$this->categories->delete($ids);
+			return response()->json([
+				'success'	=> true,
+				'message'	=> 'The category was successfully deleted.'
+			]);
+		}
+
+		return response()->json([
+				'success'	=> false,
+				'message'	=> 'There was an error deleting the category.'
+		],400);
+	}
 }

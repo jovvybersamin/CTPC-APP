@@ -5,7 +5,7 @@ namespace OneStop\Http\Controllers\Site;
 use Illuminate\Http\Request;
 use OneStop\Core\Repositories\Videos\Eloquent\VideoRepository;
 use OneStop\Http\Controllers\SiteController;
-use OneStop\Http\Requests;
+
 
 class SearchController extends SiteController
 {
@@ -22,7 +22,8 @@ class SearchController extends SiteController
 	{
 		$keyword = $this->request->get('q');
 		$videos = $this->videos->getVideosBySearchKeyword($keyword,30);
-		return view('site.videos.search',compact('videos','keyword'));
+		$count = number_format($videos->count(),0,'.',',');
+		return view('site.videos.search',compact('videos','keyword','count'));
 	}
 
 }

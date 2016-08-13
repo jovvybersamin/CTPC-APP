@@ -5,6 +5,7 @@ module.exports = {
 			form:{
 				primary:'user',
 				user:new AppForm({
+					id:0,
 					name:'',
 					username:'',
 					password:'',
@@ -12,9 +13,11 @@ module.exports = {
 					email:'',
 					profile:'',
 					about:'',
-					roles:[]
+					roles:[],
+					categories:[]
 				}),
-				roles:[]
+				roles:[],
+				categories:[]
 			},
 			ajax:{
 				method:'store',
@@ -51,14 +54,47 @@ module.exports = {
 					}
 				}
 			}
-		}
+		},
+		'user-categories':{
+			props:['categories','userCategories'],
+			ready:function(){
+
+			},
+
+			computed:{
+				hasCategories:function(){
+					return (this.categories.length > 0) ? true : false;
+				},
+
+				hasUserCategories:function(){
+					return (this.userCategories.length > 0) ? true : false;
+				}
+			},
+
+			methods:{
+				addCategory:function(category){
+					this.userCategories.push(category);
+					var idx = _.indexOf(this.categories,category);
+					this.categories.splice(idx,1);
+				},
+
+				removeCategory:function(category){
+					this.categories.push(category);
+					var idx = _.indexOf(this.userCategories,category);
+					this.userCategories.splice(idx,1);
+				}
+
+			}
+		},
+
+
 	},
 
 	ready:function(){
 		var self = this;
 			self.form.ready = true;
 		this.whenReady(function( data ){
-			console.log( data );
+
 			self.form.user.set( data.user );
 
 			if(data.user !== null){
@@ -66,6 +102,7 @@ module.exports = {
 			}
 
 			self.form.roles = data.roles;
+			self.form.categories = data.categories;
 
 			return true;
 		});

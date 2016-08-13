@@ -169,6 +169,17 @@ class VideoRepository implements VideoRepositoryContract
 	}
 
 	/**
+	 * Get the all videos of the uploader.
+	 *
+	 * @param  int $uploaderId
+	 * @return
+	 */
+	public function getVideosByUploaderId($uploaderId)
+	{
+		return $this->model->published()->byUploader($uploaderId)->paginate(15);
+	}
+
+	/**
 	 *
 	 * @param  array  $ids [description]
 	 * @return bool

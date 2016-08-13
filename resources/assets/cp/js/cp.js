@@ -18,3 +18,7 @@ window.resource_url = function(url){
 	return url;
 }
 
+window.api_url = function(url){
+	url = '//' + App.siteRoot + '/api/' + url;
+	return url;
+}

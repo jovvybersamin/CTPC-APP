@@ -70,14 +70,18 @@ class VideoCategoryRepository implements CategoryRepositoryContract
 
 
 	/**
-	 * [getAllNotCollection description]
-	 * @return [type] [description]
+	 *
+	 * @param  boolean $isCollection [description]
+	 * @return Collection | Eloqeunt
 	 */
-	public function getAllWithVideos()
+	public function getAllWithVideos($isCollection = false)
 	{
-		return new VideoCategoryCollection(
+		if($isCollection){
+			return new VideoCategoryCollection(
 			  $this->model->has('videos')->get()
-		);
+			);
+		}
+		return $this->model->has('videos')->get();
 	}
 
 
@@ -96,5 +100,16 @@ class VideoCategoryRepository implements CategoryRepositoryContract
 		$category->slug = str_slug($request->get('name'));
 		$category->description = $request->get('description');
 		return $category->save();
+	}
+
+	/**
+	 * Delete a categories by id.
+	 *
+	 * @param  array  $ids [description]
+	 * @return int
+	 */
+	public function delete(array $ids)
+	{
+		return $this->model->destroy($ids);
 	}
 }

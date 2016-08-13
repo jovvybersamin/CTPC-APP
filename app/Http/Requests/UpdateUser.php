@@ -33,8 +33,14 @@ class UpdateUser extends Request
 
         $password = trim($this->get('password'));
 
+        $data = $this->all();
+
         if(!empty($password)){
             $rules['password'] = 'required|confirmed';
+        }else{
+            unset($data['password']);
+            unset($data['password_confirmation']);
+            $this->replace($data);
         }
 
         return $rules;

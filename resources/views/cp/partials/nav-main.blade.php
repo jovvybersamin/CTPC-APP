@@ -43,6 +43,21 @@
 				</li>
 			</ul>
 		</li>
+		<li class="section">CONFIGURE BUSINESS</li>
+		<li class="nav-users root has-sub {{ nav_is_active('cp.business.categories.*','active') }}">
+			<a href="#" title="Users" >
+				<span class="title">Categories</span>
+				<span class="icon icon-chevron-left pull-right"></span>
+			</a>
+			<ul class="{{ nav_is_active('cp.business.categories.*','nav_open') }}" style="{{ nav_is_active('cp.business.categories.*','','display:none') }}">
+				<li class="{{ nav_is_active('cp.business.categories.index')}}">
+					<a href="{{ route('cp.business.categories.index') }}">All Categories</a>
+				</li>
+				<li class="{{ nav_is_active('cp.business.categories.create') }}">
+					<a href="{{ route('cp.business.categories.create') }}">Add New Category</a>
+				</li>
+			</ul>
+		</li>
 		<li class="section">CONFIGURE</li>
 		<li class="nav-users root has-sub {{ nav_is_active('cp.users.*','active') }}">
 			<a href="#" title="Users" >

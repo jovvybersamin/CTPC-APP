@@ -9,7 +9,7 @@ trait FormAjax
 
 	/**
 	 *  Determine if the request is creating a new instance.
-	 *  TODO: We can separate this to a trait.
+	 *
 	 *
 	 * @param  Request $request [description]
 	 * @return Array
@@ -30,7 +30,13 @@ trait FormAjax
 		return false;
 	}
 
-	public function isEditing(Request $request,$callback){
+	/**
+	 *
+	 * @param  Request $request  [description]
+	 * @param  callable  $callback [description]
+	 * @return boolean           [description]
+	 */
+	public function isEditing(Request $request,callable $callback){
 		if($request->ajax()){
 
 			$return = [

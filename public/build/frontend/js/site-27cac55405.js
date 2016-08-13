@@ -292,8 +292,8 @@ rawAsap.makeRequestCallFromTimer = makeRequestCallFromTimer;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under the MIT license
  */
 
@@ -304,16 +304,16 @@ if (typeof jQuery === 'undefined') {
 +function ($) {
   'use strict';
   var version = $.fn.jquery.split(' ')[0].split('.')
-  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] > 2)) {
-    throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher, but lower than version 3')
+  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] > 3)) {
+    throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher, but lower than version 4')
   }
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: transition.js v3.3.6
+ * Bootstrap: transition.js v3.3.7
  * http://getbootstrap.com/javascript/#transitions
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -370,10 +370,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: alert.js v3.3.6
+ * Bootstrap: alert.js v3.3.7
  * http://getbootstrap.com/javascript/#alerts
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -389,7 +389,7 @@ if (typeof jQuery === 'undefined') {
     $(el).on('click', dismiss, this.close)
   }
 
-  Alert.VERSION = '3.3.6'
+  Alert.VERSION = '3.3.7'
 
   Alert.TRANSITION_DURATION = 150
 
@@ -402,7 +402,7 @@ if (typeof jQuery === 'undefined') {
       selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
     }
 
-    var $parent = $(selector)
+    var $parent = $(selector === '#' ? [] : selector)
 
     if (e) e.preventDefault()
 
@@ -465,10 +465,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: button.js v3.3.6
+ * Bootstrap: button.js v3.3.7
  * http://getbootstrap.com/javascript/#buttons
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -485,7 +485,7 @@ if (typeof jQuery === 'undefined') {
     this.isLoading = false
   }
 
-  Button.VERSION  = '3.3.6'
+  Button.VERSION  = '3.3.7'
 
   Button.DEFAULTS = {
     loadingText: 'loading...'
@@ -507,10 +507,10 @@ if (typeof jQuery === 'undefined') {
 
       if (state == 'loadingText') {
         this.isLoading = true
-        $el.addClass(d).attr(d, d)
+        $el.addClass(d).attr(d, d).prop(d, true)
       } else if (this.isLoading) {
         this.isLoading = false
-        $el.removeClass(d).removeAttr(d)
+        $el.removeClass(d).removeAttr(d).prop(d, false)
       }
     }, this), 0)
   }
@@ -574,10 +574,15 @@ if (typeof jQuery === 'undefined') {
 
   $(document)
     .on('click.bs.button.data-api', '[data-toggle^="button"]', function (e) {
-      var $btn = $(e.target)
-      if (!$btn.hasClass('btn')) $btn = $btn.closest('.btn')
+      var $btn = $(e.target).closest('.btn')
       Plugin.call($btn, 'toggle')
-      if (!($(e.target).is('input[type="radio"]') || $(e.target).is('input[type="checkbox"]'))) e.preventDefault()
+      if (!($(e.target).is('input[type="radio"], input[type="checkbox"]'))) {
+        // Prevent double click on radios, and the double selections (so cancellation) on checkboxes
+        e.preventDefault()
+        // The target component still receive the focus
+        if ($btn.is('input,button')) $btn.trigger('focus')
+        else $btn.find('input:visible,button:visible').first().trigger('focus')
+      }
     })
     .on('focus.bs.button.data-api blur.bs.button.data-api', '[data-toggle^="button"]', function (e) {
       $(e.target).closest('.btn').toggleClass('focus', /^focus(in)?$/.test(e.type))
@@ -586,10 +591,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: carousel.js v3.3.6
+ * Bootstrap: carousel.js v3.3.7
  * http://getbootstrap.com/javascript/#carousel
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -617,7 +622,7 @@ if (typeof jQuery === 'undefined') {
       .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
   }
 
-  Carousel.VERSION  = '3.3.6'
+  Carousel.VERSION  = '3.3.7'
 
   Carousel.TRANSITION_DURATION = 600
 
@@ -824,13 +829,14 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: collapse.js v3.3.6
+ * Bootstrap: collapse.js v3.3.7
  * http://getbootstrap.com/javascript/#collapse
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
+/* jshint latedef: false */
 
 +function ($) {
   'use strict';
@@ -854,7 +860,7 @@ if (typeof jQuery === 'undefined') {
     if (this.options.toggle) this.toggle()
   }
 
-  Collapse.VERSION  = '3.3.6'
+  Collapse.VERSION  = '3.3.7'
 
   Collapse.TRANSITION_DURATION = 350
 
@@ -1036,10 +1042,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: dropdown.js v3.3.6
+ * Bootstrap: dropdown.js v3.3.7
  * http://getbootstrap.com/javascript/#dropdowns
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -1056,7 +1062,7 @@ if (typeof jQuery === 'undefined') {
     $(element).on('click.bs.dropdown', this.toggle)
   }
 
-  Dropdown.VERSION = '3.3.6'
+  Dropdown.VERSION = '3.3.7'
 
   function getParent($this) {
     var selector = $this.attr('data-target')
@@ -1202,10 +1208,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: modal.js v3.3.6
+ * Bootstrap: modal.js v3.3.7
  * http://getbootstrap.com/javascript/#modals
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -1236,7 +1242,7 @@ if (typeof jQuery === 'undefined') {
     }
   }
 
-  Modal.VERSION  = '3.3.6'
+  Modal.VERSION  = '3.3.7'
 
   Modal.TRANSITION_DURATION = 300
   Modal.BACKDROP_TRANSITION_DURATION = 150
@@ -1343,7 +1349,9 @@ if (typeof jQuery === 'undefined') {
     $(document)
       .off('focusin.bs.modal') // guard against infinite focus loop
       .on('focusin.bs.modal', $.proxy(function (e) {
-        if (this.$element[0] !== e.target && !this.$element.has(e.target).length) {
+        if (document !== e.target &&
+            this.$element[0] !== e.target &&
+            !this.$element.has(e.target).length) {
           this.$element.trigger('focus')
         }
       }, this))
@@ -1540,11 +1548,11 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tooltip.js v3.3.6
+ * Bootstrap: tooltip.js v3.3.7
  * http://getbootstrap.com/javascript/#tooltip
  * Inspired by the original jQuery.tipsy by Jason Frame
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -1567,7 +1575,7 @@ if (typeof jQuery === 'undefined') {
     this.init('tooltip', element, options)
   }
 
-  Tooltip.VERSION  = '3.3.6'
+  Tooltip.VERSION  = '3.3.7'
 
   Tooltip.TRANSITION_DURATION = 150
 
@@ -1858,9 +1866,11 @@ if (typeof jQuery === 'undefined') {
 
     function complete() {
       if (that.hoverState != 'in') $tip.detach()
-      that.$element
-        .removeAttr('aria-describedby')
-        .trigger('hidden.bs.' + that.type)
+      if (that.$element) { // TODO: Check whether guarding this code with this `if` is really necessary.
+        that.$element
+          .removeAttr('aria-describedby')
+          .trigger('hidden.bs.' + that.type)
+      }
       callback && callback()
     }
 
@@ -1903,7 +1913,10 @@ if (typeof jQuery === 'undefined') {
       // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
       elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
     }
-    var elOffset  = isBody ? { top: 0, left: 0 } : $element.offset()
+    var isSvg = window.SVGElement && el instanceof window.SVGElement
+    // Avoid using $.offset() on SVGs since it gives incorrect results in jQuery 3.
+    // See https://github.com/twbs/bootstrap/issues/20280
+    var elOffset  = isBody ? { top: 0, left: 0 } : (isSvg ? null : $element.offset())
     var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
     var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
 
@@ -2019,6 +2032,7 @@ if (typeof jQuery === 'undefined') {
       that.$tip = null
       that.$arrow = null
       that.$viewport = null
+      that.$element = null
     })
   }
 
@@ -2055,10 +2069,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: popover.js v3.3.6
+ * Bootstrap: popover.js v3.3.7
  * http://getbootstrap.com/javascript/#popovers
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -2075,7 +2089,7 @@ if (typeof jQuery === 'undefined') {
 
   if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
 
-  Popover.VERSION  = '3.3.6'
+  Popover.VERSION  = '3.3.7'
 
   Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
     placement: 'right',
@@ -2164,10 +2178,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: scrollspy.js v3.3.6
+ * Bootstrap: scrollspy.js v3.3.7
  * http://getbootstrap.com/javascript/#scrollspy
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -2193,7 +2207,7 @@ if (typeof jQuery === 'undefined') {
     this.process()
   }
 
-  ScrollSpy.VERSION  = '3.3.6'
+  ScrollSpy.VERSION  = '3.3.7'
 
   ScrollSpy.DEFAULTS = {
     offset: 10
@@ -2337,10 +2351,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tab.js v3.3.6
+ * Bootstrap: tab.js v3.3.7
  * http://getbootstrap.com/javascript/#tabs
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -2357,7 +2371,7 @@ if (typeof jQuery === 'undefined') {
     // jscs:enable requireDollarBeforejQueryAssignment
   }
 
-  Tab.VERSION = '3.3.6'
+  Tab.VERSION = '3.3.7'
 
   Tab.TRANSITION_DURATION = 150
 
@@ -2493,10 +2507,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: affix.js v3.3.6
+ * Bootstrap: affix.js v3.3.7
  * http://getbootstrap.com/javascript/#affix
  * ========================================================================
- * Copyright 2011-2015 Twitter, Inc.
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -2522,7 +2536,7 @@ if (typeof jQuery === 'undefined') {
     this.checkPosition()
   }
 
-  Affix.VERSION  = '3.3.6'
+  Affix.VERSION  = '3.3.7'
 
   Affix.RESET    = 'affix affix-top affix-bottom'
 
@@ -12473,8 +12487,46 @@ return jQuery;
 
 },{}],5:[function(require,module,exports){
 // shim for using process in browser
-
 var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+(function () {
+    try {
+        cachedSetTimeout = setTimeout;
+    } catch (e) {
+        cachedSetTimeout = function () {
+            throw new Error('setTimeout is not defined');
+        }
+    }
+    try {
+        cachedClearTimeout = clearTimeout;
+    } catch (e) {
+        cachedClearTimeout = function () {
+            throw new Error('clearTimeout is not defined');
+        }
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        return setTimeout(fun, 0);
+    } else {
+        return cachedSetTimeout.call(null, fun, 0);
+    }
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        clearTimeout(marker);
+    } else {
+        cachedClearTimeout.call(null, marker);
+    }
+}
 var queue = [];
 var draining = false;
 var currentQueue;
@@ -12499,7 +12551,7 @@ function drainQueue() {
     if (draining) {
         return;
     }
-    var timeout = setTimeout(cleanUpNextTick);
+    var timeout = runTimeout(cleanUpNextTick);
     draining = true;
 
     var len = queue.length;
@@ -12516,7 +12568,7 @@ function drainQueue() {
     }
     currentQueue = null;
     draining = false;
-    clearTimeout(timeout);
+    runClearTimeout(timeout);
 }
 
 process.nextTick = function (fun) {
@@ -12528,7 +12580,7 @@ process.nextTick = function (fun) {
     }
     queue.push(new Item(fun, args));
     if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
+        runTimeout(drainQueue);
     }
 };
 
@@ -14690,1667 +14742,1386 @@ if(this.$element.prop("multiple"))this.current(function(d){var e=[];a=[a],a.push
 }.call(this));
 
 },{}],16:[function(require,module,exports){
-/**
- * vue-resource v0.7.2
+/*!
+ * vue-resource v0.7.4
  * https://github.com/vuejs/vue-resource
  * Released under the MIT License.
  */
 
-module.exports =
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+};
 
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
-/******/ 			return installedModules[moduleId].exports;
+/**
+ * Utility functions.
+ */
 
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			exports: {},
-/******/ 			id: moduleId,
-/******/ 			loaded: false
-/******/ 		};
+var util = {};
+var config = {};
+var array = [];
+var console = window.console;
+function Util (Vue) {
+    util = Vue.util;
+    config = Vue.config;
+}
 
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+var isArray = Array.isArray;
+
+function warn(msg) {
+    if (console && util.warn && (!config.silent || config.debug)) {
+        console.warn('[VueResource warn]: ' + msg);
+    }
+}
+
+function error(msg) {
+    if (console) {
+        console.error(msg);
+    }
+}
+
+function nextTick(cb, ctx) {
+    return util.nextTick(cb, ctx);
+}
+
+function trim(str) {
+    return str.replace(/^\s*|\s*$/g, '');
+}
+
+function toLower(str) {
+    return str ? str.toLowerCase() : '';
+}
+
+function isString(val) {
+    return typeof val === 'string';
+}
+
+function isFunction(val) {
+    return typeof val === 'function';
+}
+
+function isObject(obj) {
+    return obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object';
+}
+
+function isPlainObject(obj) {
+    return isObject(obj) && Object.getPrototypeOf(obj) == Object.prototype;
+}
+
+function options(fn, obj, opts) {
 
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
+    opts = opts || {};
 
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
+    if (isFunction(opts)) {
+        opts = opts.call(obj);
+    }
 
-
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(0);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Install plugin.
-	 */
-
-	function plugin(Vue) {
+    return merge(fn.bind({ $vm: obj, $options: opts }), fn, { $options: opts });
+}
 
-	    if (plugin.installed) {
-	        return;
-	    }
+function each(obj, iterator) {
 
-	    var _ = __webpack_require__(1);
-
-	    _.config = Vue.config;
-	    _.warning = Vue.util.warn;
-	    _.nextTick = Vue.util.nextTick;
+    var i, key;
 
-	    Vue.url = __webpack_require__(2);
-	    Vue.http = __webpack_require__(8);
-	    Vue.resource = __webpack_require__(23);
-	    Vue.Promise = __webpack_require__(10);
+    if (typeof obj.length == 'number') {
+        for (i = 0; i < obj.length; i++) {
+            iterator.call(obj[i], obj[i], i);
+        }
+    } else if (isObject(obj)) {
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                iterator.call(obj[key], obj[key], key);
+            }
+        }
+    }
 
-	    Object.defineProperties(Vue.prototype, {
+    return obj;
+}
 
-	        $url: {
-	            get: function get() {
-	                return _.options(Vue.url, this, this.$options.url);
-	            }
-	        },
+function extend(target) {
 
-	        $http: {
-	            get: function get() {
-	                return _.options(Vue.http, this, this.$options.http);
-	            }
-	        },
+    var args = array.slice.call(arguments, 1);
 
-	        $resource: {
-	            get: function get() {
-	                return Vue.resource.bind(this);
-	            }
-	        },
+    args.forEach(function (arg) {
+        _merge(target, arg);
+    });
 
-	        $promise: {
-	            get: function get() {
-	                var _this = this;
+    return target;
+}
 
-	                return function (executor) {
-	                    return new Vue.Promise(executor, _this);
-	                };
-	            }
-	        }
+function merge(target) {
 
-	    });
-	}
+    var args = array.slice.call(arguments, 1);
 
-	if (typeof window !== 'undefined' && window.Vue) {
-	    window.Vue.use(plugin);
-	}
+    args.forEach(function (arg) {
+        _merge(target, arg, true);
+    });
 
-	module.exports = plugin;
+    return target;
+}
 
-/***/ },
-/* 1 */
-/***/ function(module, exports) {
+function _merge(target, source, deep) {
+    for (var key in source) {
+        if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
+            if (isPlainObject(source[key]) && !isPlainObject(target[key])) {
+                target[key] = {};
+            }
+            if (isArray(source[key]) && !isArray(target[key])) {
+                target[key] = [];
+            }
+            _merge(target[key], source[key], deep);
+        } else if (source[key] !== undefined) {
+            target[key] = source[key];
+        }
+    }
+}
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+function root (options, next) {
 
-	/**
-	 * Utility functions.
-	 */
+    var url = next(options);
 
-	var _ = exports,
-	    array = [],
-	    console = window.console;
+    if (isString(options.root) && !url.match(/^(https?:)?\//)) {
+        url = options.root + '/' + url;
+    }
 
-	_.warn = function (msg) {
-	    if (console && _.warning && (!_.config.silent || _.config.debug)) {
-	        console.warn('[VueResource warn]: ' + msg);
-	    }
-	};
+    return url;
+}
 
-	_.error = function (msg) {
-	    if (console) {
-	        console.error(msg);
-	    }
-	};
+function query (options, next) {
 
-	_.trim = function (str) {
-	    return str.replace(/^\s*|\s*$/g, '');
-	};
+    var urlParams = Object.keys(Url.options.params),
+        query = {},
+        url = next(options);
 
-	_.toLower = function (str) {
-	    return str ? str.toLowerCase() : '';
-	};
+    each(options.params, function (value, key) {
+        if (urlParams.indexOf(key) === -1) {
+            query[key] = value;
+        }
+    });
 
-	_.isArray = Array.isArray;
+    query = Url.params(query);
 
-	_.isString = function (val) {
-	    return typeof val === 'string';
-	};
+    if (query) {
+        url += (url.indexOf('?') == -1 ? '?' : '&') + query;
+    }
 
-	_.isFunction = function (val) {
-	    return typeof val === 'function';
-	};
+    return url;
+}
 
-	_.isObject = function (obj) {
-	    return obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object';
-	};
+function legacy (options, next) {
 
-	_.isPlainObject = function (obj) {
-	    return _.isObject(obj) && Object.getPrototypeOf(obj) == Object.prototype;
-	};
+    var variables = [],
+        url = next(options);
 
-	_.options = function (fn, obj, options) {
+    url = url.replace(/(\/?):([a-z]\w*)/gi, function (match, slash, name) {
 
-	    options = options || {};
+        warn('The `:' + name + '` parameter syntax has been deprecated. Use the `{' + name + '}` syntax instead.');
 
-	    if (_.isFunction(options)) {
-	        options = options.call(obj);
-	    }
+        if (options.params[name]) {
+            variables.push(name);
+            return slash + encodeUriSegment(options.params[name]);
+        }
 
-	    return _.merge(fn.bind({ $vm: obj, $options: options }), fn, { $options: options });
-	};
+        return '';
+    });
 
-	_.each = function (obj, iterator) {
+    variables.forEach(function (key) {
+        delete options.params[key];
+    });
 
-	    var i, key;
+    return url;
+}
 
-	    if (typeof obj.length == 'number') {
-	        for (i = 0; i < obj.length; i++) {
-	            iterator.call(obj[i], obj[i], i);
-	        }
-	    } else if (_.isObject(obj)) {
-	        for (key in obj) {
-	            if (obj.hasOwnProperty(key)) {
-	                iterator.call(obj[key], obj[key], key);
-	            }
-	        }
-	    }
+function encodeUriSegment(value) {
 
-	    return obj;
-	};
+    return encodeUriQuery(value, true).replace(/%26/gi, '&').replace(/%3D/gi, '=').replace(/%2B/gi, '+');
+}
 
-	_.defaults = function (target, source) {
+function encodeUriQuery(value, spaces) {
 
-	    for (var key in source) {
-	        if (target[key] === undefined) {
-	            target[key] = source[key];
-	        }
-	    }
+    return encodeURIComponent(value).replace(/%40/gi, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, spaces ? '%20' : '+');
+}
 
-	    return target;
-	};
+/**
+ * URL Template v2.0.6 (https://github.com/bramstein/url-template)
+ */
+
+function expand(url, params, variables) {
+
+    var tmpl = parse(url),
+        expanded = tmpl.expand(params);
+
+    if (variables) {
+        variables.push.apply(variables, tmpl.vars);
+    }
+
+    return expanded;
+}
+
+function parse(template) {
+
+    var operators = ['+', '#', '.', '/', ';', '?', '&'],
+        variables = [];
+
+    return {
+        vars: variables,
+        expand: function expand(context) {
+            return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function (_, expression, literal) {
+                if (expression) {
+
+                    var operator = null,
+                        values = [];
+
+                    if (operators.indexOf(expression.charAt(0)) !== -1) {
+                        operator = expression.charAt(0);
+                        expression = expression.substr(1);
+                    }
+
+                    expression.split(/,/g).forEach(function (variable) {
+                        var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
+                        values.push.apply(values, getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
+                        variables.push(tmp[1]);
+                    });
+
+                    if (operator && operator !== '+') {
+
+                        var separator = ',';
+
+                        if (operator === '?') {
+                            separator = '&';
+                        } else if (operator !== '#') {
+                            separator = operator;
+                        }
+
+                        return (values.length !== 0 ? operator : '') + values.join(separator);
+                    } else {
+                        return values.join(',');
+                    }
+                } else {
+                    return encodeReserved(literal);
+                }
+            });
+        }
+    };
+}
+
+function getValues(context, operator, key, modifier) {
+
+    var value = context[key],
+        result = [];
+
+    if (isDefined(value) && value !== '') {
+        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+            value = value.toString();
+
+            if (modifier && modifier !== '*') {
+                value = value.substring(0, parseInt(modifier, 10));
+            }
+
+            result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : null));
+        } else {
+            if (modifier === '*') {
+                if (Array.isArray(value)) {
+                    value.filter(isDefined).forEach(function (value) {
+                        result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : null));
+                    });
+                } else {
+                    Object.keys(value).forEach(function (k) {
+                        if (isDefined(value[k])) {
+                            result.push(encodeValue(operator, value[k], k));
+                        }
+                    });
+                }
+            } else {
+                var tmp = [];
+
+                if (Array.isArray(value)) {
+                    value.filter(isDefined).forEach(function (value) {
+                        tmp.push(encodeValue(operator, value));
+                    });
+                } else {
+                    Object.keys(value).forEach(function (k) {
+                        if (isDefined(value[k])) {
+                            tmp.push(encodeURIComponent(k));
+                            tmp.push(encodeValue(operator, value[k].toString()));
+                        }
+                    });
+                }
+
+                if (isKeyOperator(operator)) {
+                    result.push(encodeURIComponent(key) + '=' + tmp.join(','));
+                } else if (tmp.length !== 0) {
+                    result.push(tmp.join(','));
+                }
+            }
+        }
+    } else {
+        if (operator === ';') {
+            result.push(encodeURIComponent(key));
+        } else if (value === '' && (operator === '&' || operator === '?')) {
+            result.push(encodeURIComponent(key) + '=');
+        } else if (value === '') {
+            result.push('');
+        }
+    }
+
+    return result;
+}
+
+function isDefined(value) {
+    return value !== undefined && value !== null;
+}
+
+function isKeyOperator(operator) {
+    return operator === ';' || operator === '&' || operator === '?';
+}
+
+function encodeValue(operator, value, key) {
+
+    value = operator === '+' || operator === '#' ? encodeReserved(value) : encodeURIComponent(value);
+
+    if (key) {
+        return encodeURIComponent(key) + '=' + value;
+    } else {
+        return value;
+    }
+}
+
+function encodeReserved(str) {
+    return str.split(/(%[0-9A-Fa-f]{2})/g).map(function (part) {
+        if (!/%[0-9A-Fa-f]/.test(part)) {
+            part = encodeURI(part);
+        }
+        return part;
+    }).join('');
+}
+
+function template (options) {
+
+    var variables = [],
+        url = expand(options.url, options.params, variables);
+
+    variables.forEach(function (key) {
+        delete options.params[key];
+    });
+
+    return url;
+}
+
+/**
+ * Service for URL templating.
+ */
+
+var ie = document.documentMode;
+var el = document.createElement('a');
+
+function Url(url, params) {
+
+    var self = this || {},
+        options = url,
+        transform;
+
+    if (isString(url)) {
+        options = { url: url, params: params };
+    }
+
+    options = merge({}, Url.options, self.$options, options);
+
+    Url.transforms.forEach(function (handler) {
+        transform = factory(handler, transform, self.$vm);
+    });
+
+    return transform(options);
+}
+
+/**
+ * Url options.
+ */
+
+Url.options = {
+    url: '',
+    root: null,
+    params: {}
+};
+
+/**
+ * Url transforms.
+ */
+
+Url.transforms = [template, legacy, query, root];
+
+/**
+ * Encodes a Url parameter string.
+ *
+ * @param {Object} obj
+ */
+
+Url.params = function (obj) {
+
+    var params = [],
+        escape = encodeURIComponent;
+
+    params.add = function (key, value) {
+
+        if (isFunction(value)) {
+            value = value();
+        }
+
+        if (value === null) {
+            value = '';
+        }
+
+        this.push(escape(key) + '=' + escape(value));
+    };
+
+    serialize(params, obj);
+
+    return params.join('&').replace(/%20/g, '+');
+};
+
+/**
+ * Parse a URL and return its components.
+ *
+ * @param {String} url
+ */
+
+Url.parse = function (url) {
+
+    if (ie) {
+        el.href = url;
+        url = el.href;
+    }
+
+    el.href = url;
+
+    return {
+        href: el.href,
+        protocol: el.protocol ? el.protocol.replace(/:$/, '') : '',
+        port: el.port,
+        host: el.host,
+        hostname: el.hostname,
+        pathname: el.pathname.charAt(0) === '/' ? el.pathname : '/' + el.pathname,
+        search: el.search ? el.search.replace(/^\?/, '') : '',
+        hash: el.hash ? el.hash.replace(/^#/, '') : ''
+    };
+};
+
+function factory(handler, next, vm) {
+    return function (options) {
+        return handler.call(vm, options, next);
+    };
+}
+
+function serialize(params, obj, scope) {
+
+    var array = isArray(obj),
+        plain = isPlainObject(obj),
+        hash;
+
+    each(obj, function (value, key) {
+
+        hash = isObject(value) || isArray(value);
+
+        if (scope) {
+            key = scope + '[' + (plain || hash ? key : '') + ']';
+        }
+
+        if (!scope && array) {
+            params.add(value.name, value.value);
+        } else if (hash) {
+            serialize(params, value, key);
+        } else {
+            params.add(key, value);
+        }
+    });
+}
+
+/**
+ * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
+ */
+
+var RESOLVED = 0;
+var REJECTED = 1;
+var PENDING = 2;
+
+function Promise$2(executor) {
+
+    this.state = PENDING;
+    this.value = undefined;
+    this.deferred = [];
+
+    var promise = this;
+
+    try {
+        executor(function (x) {
+            promise.resolve(x);
+        }, function (r) {
+            promise.reject(r);
+        });
+    } catch (e) {
+        promise.reject(e);
+    }
+}
+
+Promise$2.reject = function (r) {
+    return new Promise$2(function (resolve, reject) {
+        reject(r);
+    });
+};
+
+Promise$2.resolve = function (x) {
+    return new Promise$2(function (resolve, reject) {
+        resolve(x);
+    });
+};
+
+Promise$2.all = function all(iterable) {
+    return new Promise$2(function (resolve, reject) {
+        var count = 0,
+            result = [];
+
+        if (iterable.length === 0) {
+            resolve(result);
+        }
+
+        function resolver(i) {
+            return function (x) {
+                result[i] = x;
+                count += 1;
+
+                if (count === iterable.length) {
+                    resolve(result);
+                }
+            };
+        }
+
+        for (var i = 0; i < iterable.length; i += 1) {
+            Promise$2.resolve(iterable[i]).then(resolver(i), reject);
+        }
+    });
+};
+
+Promise$2.race = function race(iterable) {
+    return new Promise$2(function (resolve, reject) {
+        for (var i = 0; i < iterable.length; i += 1) {
+            Promise$2.resolve(iterable[i]).then(resolve, reject);
+        }
+    });
+};
+
+var p$1 = Promise$2.prototype;
+
+p$1.resolve = function resolve(x) {
+    var promise = this;
+
+    if (promise.state === PENDING) {
+        if (x === promise) {
+            throw new TypeError('Promise settled with itself.');
+        }
+
+        var called = false;
+
+        try {
+            var then = x && x['then'];
+
+            if (x !== null && (typeof x === 'undefined' ? 'undefined' : _typeof(x)) === 'object' && typeof then === 'function') {
+                then.call(x, function (x) {
+                    if (!called) {
+                        promise.resolve(x);
+                    }
+                    called = true;
+                }, function (r) {
+                    if (!called) {
+                        promise.reject(r);
+                    }
+                    called = true;
+                });
+                return;
+            }
+        } catch (e) {
+            if (!called) {
+                promise.reject(e);
+            }
+            return;
+        }
+
+        promise.state = RESOLVED;
+        promise.value = x;
+        promise.notify();
+    }
+};
+
+p$1.reject = function reject(reason) {
+    var promise = this;
+
+    if (promise.state === PENDING) {
+        if (reason === promise) {
+            throw new TypeError('Promise settled with itself.');
+        }
+
+        promise.state = REJECTED;
+        promise.value = reason;
+        promise.notify();
+    }
+};
+
+p$1.notify = function notify() {
+    var promise = this;
+
+    nextTick(function () {
+        if (promise.state !== PENDING) {
+            while (promise.deferred.length) {
+                var deferred = promise.deferred.shift(),
+                    onResolved = deferred[0],
+                    onRejected = deferred[1],
+                    resolve = deferred[2],
+                    reject = deferred[3];
+
+                try {
+                    if (promise.state === RESOLVED) {
+                        if (typeof onResolved === 'function') {
+                            resolve(onResolved.call(undefined, promise.value));
+                        } else {
+                            resolve(promise.value);
+                        }
+                    } else if (promise.state === REJECTED) {
+                        if (typeof onRejected === 'function') {
+                            resolve(onRejected.call(undefined, promise.value));
+                        } else {
+                            reject(promise.value);
+                        }
+                    }
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        }
+    });
+};
+
+p$1.then = function then(onResolved, onRejected) {
+    var promise = this;
+
+    return new Promise$2(function (resolve, reject) {
+        promise.deferred.push([onResolved, onRejected, resolve, reject]);
+        promise.notify();
+    });
+};
+
+p$1.catch = function (onRejected) {
+    return this.then(undefined, onRejected);
+};
+
+var PromiseObj = window.Promise || Promise$2;
+
+function Promise$1(executor, context) {
+
+    if (executor instanceof PromiseObj) {
+        this.promise = executor;
+    } else {
+        this.promise = new PromiseObj(executor.bind(context));
+    }
+
+    this.context = context;
+}
+
+Promise$1.all = function (iterable, context) {
+    return new Promise$1(PromiseObj.all(iterable), context);
+};
+
+Promise$1.resolve = function (value, context) {
+    return new Promise$1(PromiseObj.resolve(value), context);
+};
+
+Promise$1.reject = function (reason, context) {
+    return new Promise$1(PromiseObj.reject(reason), context);
+};
+
+Promise$1.race = function (iterable, context) {
+    return new Promise$1(PromiseObj.race(iterable), context);
+};
+
+var p = Promise$1.prototype;
+
+p.bind = function (context) {
+    this.context = context;
+    return this;
+};
+
+p.then = function (fulfilled, rejected) {
+
+    if (fulfilled && fulfilled.bind && this.context) {
+        fulfilled = fulfilled.bind(this.context);
+    }
+
+    if (rejected && rejected.bind && this.context) {
+        rejected = rejected.bind(this.context);
+    }
+
+    this.promise = this.promise.then(fulfilled, rejected);
+
+    return this;
+};
+
+p.catch = function (rejected) {
+
+    if (rejected && rejected.bind && this.context) {
+        rejected = rejected.bind(this.context);
+    }
+
+    this.promise = this.promise.catch(rejected);
+
+    return this;
+};
+
+p.finally = function (callback) {
+
+    return this.then(function (value) {
+        callback.call(this);
+        return value;
+    }, function (reason) {
+        callback.call(this);
+        return PromiseObj.reject(reason);
+    });
+};
+
+p.success = function (callback) {
+
+    warn('The `success` method has been deprecated. Use the `then` method instead.');
+
+    return this.then(function (response) {
+        return callback.call(this, response.data, response.status, response) || response;
+    });
+};
+
+p.error = function (callback) {
+
+    warn('The `error` method has been deprecated. Use the `catch` method instead.');
+
+    return this.catch(function (response) {
+        return callback.call(this, response.data, response.status, response) || response;
+    });
+};
+
+p.always = function (callback) {
+
+    warn('The `always` method has been deprecated. Use the `finally` method instead.');
+
+    var cb = function cb(response) {
+        return callback.call(this, response.data, response.status, response) || response;
+    };
+
+    return this.then(cb, cb);
+};
+
+function xdrClient (request) {
+    return new Promise$1(function (resolve) {
+
+        var xdr = new XDomainRequest(),
+            response = { request: request },
+            handler;
+
+        request.cancel = function () {
+            xdr.abort();
+        };
+
+        xdr.open(request.method, Url(request), true);
+
+        handler = function handler(event) {
+
+            response.data = xdr.responseText;
+            response.status = xdr.status;
+            response.statusText = xdr.statusText || '';
+
+            resolve(response);
+        };
+
+        xdr.timeout = 0;
+        xdr.onload = handler;
+        xdr.onabort = handler;
+        xdr.onerror = handler;
+        xdr.ontimeout = function () {};
+        xdr.onprogress = function () {};
+
+        xdr.send(request.data);
+    });
+}
+
+var originUrl = Url.parse(location.href);
+var supportCors = 'withCredentials' in new XMLHttpRequest();
+
+var exports$1 = {
+    request: function request(_request) {
+
+        if (_request.crossOrigin === null) {
+            _request.crossOrigin = crossOrigin(_request);
+        }
+
+        if (_request.crossOrigin) {
+
+            if (!supportCors) {
+                _request.client = xdrClient;
+            }
+
+            _request.emulateHTTP = false;
+        }
+
+        return _request;
+    }
+};
+
+function crossOrigin(request) {
+
+    var requestUrl = Url.parse(Url(request));
+
+    return requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host;
+}
+
+var exports$2 = {
+    request: function request(_request) {
+
+        if (_request.emulateJSON && isPlainObject(_request.data)) {
+            _request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            _request.data = Url.params(_request.data);
+        }
+
+        if (isObject(_request.data) && /FormData/i.test(_request.data.toString())) {
+            delete _request.headers['Content-Type'];
+        }
+
+        if (isPlainObject(_request.data)) {
+            _request.data = JSON.stringify(_request.data);
+        }
+
+        return _request;
+    },
+    response: function response(_response) {
+
+        try {
+            _response.data = JSON.parse(_response.data);
+        } catch (e) {}
+
+        return _response;
+    }
+};
+
+function jsonpClient (request) {
+    return new Promise$1(function (resolve) {
+
+        var callback = '_jsonp' + Math.random().toString(36).substr(2),
+            response = { request: request, data: null },
+            handler,
+            script;
+
+        request.params[request.jsonp] = callback;
+        request.cancel = function () {
+            handler({ type: 'cancel' });
+        };
+
+        script = document.createElement('script');
+        script.src = Url(request);
+        script.type = 'text/javascript';
+        script.async = true;
+
+        window[callback] = function (data) {
+            response.data = data;
+        };
+
+        handler = function handler(event) {
+
+            if (event.type === 'load' && response.data !== null) {
+                response.status = 200;
+            } else if (event.type === 'error') {
+                response.status = 404;
+            } else {
+                response.status = 0;
+            }
+
+            resolve(response);
+
+            delete window[callback];
+            document.body.removeChild(script);
+        };
+
+        script.onload = handler;
+        script.onerror = handler;
+
+        document.body.appendChild(script);
+    });
+}
+
+var exports$3 = {
+    request: function request(_request) {
+
+        if (_request.method == 'JSONP') {
+            _request.client = jsonpClient;
+        }
+
+        return _request;
+    }
+};
+
+var exports$4 = {
+    request: function request(_request) {
+
+        if (isFunction(_request.beforeSend)) {
+            _request.beforeSend.call(this, _request);
+        }
+
+        return _request;
+    }
+};
+
+/**
+ * HTTP method override Interceptor.
+ */
+
+var exports$5 = {
+    request: function request(_request) {
+
+        if (_request.emulateHTTP && /^(PUT|PATCH|DELETE)$/i.test(_request.method)) {
+            _request.headers['X-HTTP-Method-Override'] = _request.method;
+            _request.method = 'POST';
+        }
+
+        return _request;
+    }
+};
+
+var exports$6 = {
+    request: function request(_request) {
+
+        _request.method = _request.method.toUpperCase();
+        _request.headers = extend({}, Http.headers.common, !_request.crossOrigin ? Http.headers.custom : {}, Http.headers[_request.method.toLowerCase()], _request.headers);
+
+        if (isPlainObject(_request.data) && /^(GET|JSONP)$/i.test(_request.method)) {
+            extend(_request.params, _request.data);
+            delete _request.data;
+        }
+
+        return _request;
+    }
+};
+
+/**
+ * Timeout Interceptor.
+ */
+
+var exports$7 = function exports() {
+
+    var timeout;
+
+    return {
+        request: function request(_request) {
+
+            if (_request.timeout) {
+                timeout = setTimeout(function () {
+                    _request.cancel();
+                }, _request.timeout);
+            }
+
+            return _request;
+        },
+        response: function response(_response) {
+
+            clearTimeout(timeout);
+
+            return _response;
+        }
+    };
+};
+
+function interceptor (handler, vm) {
+
+    return function (client) {
+
+        if (isFunction(handler)) {
+            handler = handler.call(vm, Promise$1);
+        }
+
+        return function (request) {
+
+            if (isFunction(handler.request)) {
+                request = handler.request.call(vm, request);
+            }
 
-	_.extend = function (target) {
+            return when(request, function (request) {
+                return when(client(request), function (response) {
+
+                    if (isFunction(handler.response)) {
+                        response = handler.response.call(vm, response);
+                    }
+
+                    return response;
+                });
+            });
+        };
+    };
+}
 
-	    var args = array.slice.call(arguments, 1);
+function when(value, fulfilled, rejected) {
 
-	    args.forEach(function (arg) {
-	        merge(target, arg);
-	    });
+    var promise = Promise$1.resolve(value);
+
+    if (arguments.length < 2) {
+        return promise;
+    }
+
+    return promise.then(fulfilled, rejected);
+}
+
+function xhrClient (request) {
+    return new Promise$1(function (resolve) {
+
+        var xhr = new XMLHttpRequest(),
+            response = { request: request },
+            handler;
+
+        request.cancel = function () {
+            xhr.abort();
+        };
 
-	    return target;
-	};
+        xhr.open(request.method, Url(request), true);
 
-	_.merge = function (target) {
+        handler = function handler(event) {
 
-	    var args = array.slice.call(arguments, 1);
+            response.data = 'response' in xhr ? xhr.response : xhr.responseText;
+            response.status = xhr.status === 1223 ? 204 : xhr.status; // IE9 status bug
+            response.statusText = trim(xhr.statusText || '');
+            response.headers = xhr.getAllResponseHeaders();
 
-	    args.forEach(function (arg) {
-	        merge(target, arg, true);
-	    });
+            resolve(response);
+        };
 
-	    return target;
-	};
+        xhr.timeout = 0;
+        xhr.onload = handler;
+        xhr.onabort = handler;
+        xhr.onerror = handler;
+        xhr.ontimeout = function () {};
+        xhr.onprogress = function () {};
 
-	function merge(target, source, deep) {
-	    for (var key in source) {
-	        if (deep && (_.isPlainObject(source[key]) || _.isArray(source[key]))) {
-	            if (_.isPlainObject(source[key]) && !_.isPlainObject(target[key])) {
-	                target[key] = {};
-	            }
-	            if (_.isArray(source[key]) && !_.isArray(target[key])) {
-	                target[key] = [];
-	            }
-	            merge(target[key], source[key], deep);
-	        } else if (source[key] !== undefined) {
-	            target[key] = source[key];
-	        }
-	    }
-	}
+        if (isPlainObject(request.xhr)) {
+            extend(xhr, request.xhr);
+        }
 
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
+        if (isPlainObject(request.upload)) {
+            extend(xhr.upload, request.upload);
+        }
 
-	/**
-	 * Service for URL templating.
-	 */
+        each(request.headers || {}, function (value, header) {
+            xhr.setRequestHeader(header, value);
+        });
 
-	var _ = __webpack_require__(1);
-	var ie = document.documentMode;
-	var el = document.createElement('a');
+        xhr.send(request.data);
+    });
+}
 
-	function Url(url, params) {
+function Client (request) {
 
-	    var options = url,
-	        transform;
+    var response = (request.client || xhrClient)(request);
 
-	    if (_.isString(url)) {
-	        options = { url: url, params: params };
-	    }
+    return Promise$1.resolve(response).then(function (response) {
 
-	    options = _.merge({}, Url.options, this.$options, options);
+        if (response.headers) {
+
+            var headers = parseHeaders(response.headers);
+
+            response.headers = function (name) {
+
+                if (name) {
+                    return headers[toLower(name)];
+                }
+
+                return headers;
+            };
+        }
+
+        response.ok = response.status >= 200 && response.status < 300;
+
+        return response;
+    });
+}
+
+function parseHeaders(str) {
+
+    var headers = {},
+        value,
+        name,
+        i;
+
+    if (isString(str)) {
+        each(str.split('\n'), function (row) {
+
+            i = row.indexOf(':');
+            name = trim(toLower(row.slice(0, i)));
+            value = trim(row.slice(i + 1));
+
+            if (headers[name]) {
+
+                if (isArray(headers[name])) {
+                    headers[name].push(value);
+                } else {
+                    headers[name] = [headers[name], value];
+                }
+            } else {
+
+                headers[name] = value;
+            }
+        });
+    }
 
-	    Url.transforms.forEach(function (handler) {
-	        transform = factory(handler, transform, this.$vm);
-	    }, this);
+    return headers;
+}
 
-	    return transform(options);
-	};
+/**
+ * Service for sending network requests.
+ */
 
-	/**
-	 * Url options.
-	 */
+var jsonType = { 'Content-Type': 'application/json' };
+
+function Http(url, options) {
 
-	Url.options = {
-	    url: '',
-	    root: null,
-	    params: {}
-	};
+    var self = this || {},
+        client = Client,
+        request,
+        promise;
 
-	/**
-	 * Url transforms.
-	 */
+    Http.interceptors.forEach(function (handler) {
+        client = interceptor(handler, self.$vm)(client);
+    });
 
-	Url.transforms = [__webpack_require__(3), __webpack_require__(5), __webpack_require__(6), __webpack_require__(7)];
+    options = isObject(url) ? url : extend({ url: url }, options);
+    request = merge({}, Http.options, self.$options, options);
+    promise = client(request).bind(self.$vm).then(function (response) {
 
-	/**
-	 * Encodes a Url parameter string.
-	 *
-	 * @param {Object} obj
-	 */
+        return response.ok ? response : Promise$1.reject(response);
+    }, function (response) {
 
-	Url.params = function (obj) {
+        if (response instanceof Error) {
+            error(response);
+        }
 
-	    var params = [],
-	        escape = encodeURIComponent;
+        return Promise$1.reject(response);
+    });
 
-	    params.add = function (key, value) {
+    if (request.success) {
+        promise.success(request.success);
+    }
 
-	        if (_.isFunction(value)) {
-	            value = value();
-	        }
+    if (request.error) {
+        promise.error(request.error);
+    }
 
-	        if (value === null) {
-	            value = '';
-	        }
+    return promise;
+}
 
-	        this.push(escape(key) + '=' + escape(value));
-	    };
+Http.options = {
+    method: 'get',
+    data: '',
+    params: {},
+    headers: {},
+    xhr: null,
+    upload: null,
+    jsonp: 'callback',
+    beforeSend: null,
+    crossOrigin: null,
+    emulateHTTP: false,
+    emulateJSON: false,
+    timeout: 0
+};
 
-	    serialize(params, obj);
+Http.headers = {
+    put: jsonType,
+    post: jsonType,
+    patch: jsonType,
+    delete: jsonType,
+    common: { 'Accept': 'application/json, text/plain, */*' },
+    custom: { 'X-Requested-With': 'XMLHttpRequest' }
+};
 
-	    return params.join('&').replace(/%20/g, '+');
-	};
+Http.interceptors = [exports$4, exports$7, exports$3, exports$5, exports$2, exports$6, exports$1];
 
-	/**
-	 * Parse a URL and return its components.
-	 *
-	 * @param {String} url
-	 */
+['get', 'put', 'post', 'patch', 'delete', 'jsonp'].forEach(function (method) {
 
-	Url.parse = function (url) {
+    Http[method] = function (url, data, success, options) {
 
-	    if (ie) {
-	        el.href = url;
-	        url = el.href;
-	    }
+        if (isFunction(data)) {
+            options = success;
+            success = data;
+            data = undefined;
+        }
 
-	    el.href = url;
+        if (isObject(success)) {
+            options = success;
+            success = undefined;
+        }
 
-	    return {
-	        href: el.href,
-	        protocol: el.protocol ? el.protocol.replace(/:$/, '') : '',
-	        port: el.port,
-	        host: el.host,
-	        hostname: el.hostname,
-	        pathname: el.pathname.charAt(0) === '/' ? el.pathname : '/' + el.pathname,
-	        search: el.search ? el.search.replace(/^\?/, '') : '',
-	        hash: el.hash ? el.hash.replace(/^#/, '') : ''
-	    };
-	};
+        return this(url, extend({ method: method, data: data, success: success }, options));
+    };
+});
 
-	function factory(handler, next, vm) {
-	    return function (options) {
-	        return handler.call(vm, options, next);
-	    };
-	}
+function Resource(url, params, actions, options) {
 
-	function serialize(params, obj, scope) {
+    var self = this || {},
+        resource = {};
 
-	    var array = _.isArray(obj),
-	        plain = _.isPlainObject(obj),
-	        hash;
+    actions = extend({}, Resource.actions, actions);
 
-	    _.each(obj, function (value, key) {
+    each(actions, function (action, name) {
 
-	        hash = _.isObject(value) || _.isArray(value);
+        action = merge({ url: url, params: params || {} }, options, action);
 
-	        if (scope) {
-	            key = scope + '[' + (plain || hash ? key : '') + ']';
-	        }
+        resource[name] = function () {
+            return (self.$http || Http)(opts(action, arguments));
+        };
+    });
 
-	        if (!scope && array) {
-	            params.add(value.name, value.value);
-	        } else if (hash) {
-	            serialize(params, value, key);
-	        } else {
-	            params.add(key, value);
-	        }
-	    });
-	}
+    return resource;
+}
 
-	module.exports = _.url = Url;
+function opts(action, args) {
 
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
+    var options = extend({}, action),
+        params = {},
+        data,
+        success,
+        error;
 
-	/**
-	 * URL Template (RFC 6570) Transform.
-	 */
+    switch (args.length) {
 
-	var UrlTemplate = __webpack_require__(4);
+        case 4:
 
-	module.exports = function (options) {
+            error = args[3];
+            success = args[2];
 
-	    var variables = [],
-	        url = UrlTemplate.expand(options.url, options.params, variables);
+        case 3:
+        case 2:
 
-	    variables.forEach(function (key) {
-	        delete options.params[key];
-	    });
+            if (isFunction(args[1])) {
 
-	    return url;
-	};
+                if (isFunction(args[0])) {
 
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	/**
-	 * URL Template v2.0.6 (https://github.com/bramstein/url-template)
-	 */
-
-	exports.expand = function (url, params, variables) {
-
-	    var tmpl = this.parse(url),
-	        expanded = tmpl.expand(params);
-
-	    if (variables) {
-	        variables.push.apply(variables, tmpl.vars);
-	    }
-
-	    return expanded;
-	};
-
-	exports.parse = function (template) {
-
-	    var operators = ['+', '#', '.', '/', ';', '?', '&'],
-	        variables = [];
-
-	    return {
-	        vars: variables,
-	        expand: function expand(context) {
-	            return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function (_, expression, literal) {
-	                if (expression) {
-
-	                    var operator = null,
-	                        values = [];
-
-	                    if (operators.indexOf(expression.charAt(0)) !== -1) {
-	                        operator = expression.charAt(0);
-	                        expression = expression.substr(1);
-	                    }
-
-	                    expression.split(/,/g).forEach(function (variable) {
-	                        var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
-	                        values.push.apply(values, exports.getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
-	                        variables.push(tmp[1]);
-	                    });
-
-	                    if (operator && operator !== '+') {
-
-	                        var separator = ',';
-
-	                        if (operator === '?') {
-	                            separator = '&';
-	                        } else if (operator !== '#') {
-	                            separator = operator;
-	                        }
-
-	                        return (values.length !== 0 ? operator : '') + values.join(separator);
-	                    } else {
-	                        return values.join(',');
-	                    }
-	                } else {
-	                    return exports.encodeReserved(literal);
-	                }
-	            });
-	        }
-	    };
-	};
-
-	exports.getValues = function (context, operator, key, modifier) {
-
-	    var value = context[key],
-	        result = [];
-
-	    if (this.isDefined(value) && value !== '') {
-	        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-	            value = value.toString();
-
-	            if (modifier && modifier !== '*') {
-	                value = value.substring(0, parseInt(modifier, 10));
-	            }
-
-	            result.push(this.encodeValue(operator, value, this.isKeyOperator(operator) ? key : null));
-	        } else {
-	            if (modifier === '*') {
-	                if (Array.isArray(value)) {
-	                    value.filter(this.isDefined).forEach(function (value) {
-	                        result.push(this.encodeValue(operator, value, this.isKeyOperator(operator) ? key : null));
-	                    }, this);
-	                } else {
-	                    Object.keys(value).forEach(function (k) {
-	                        if (this.isDefined(value[k])) {
-	                            result.push(this.encodeValue(operator, value[k], k));
-	                        }
-	                    }, this);
-	                }
-	            } else {
-	                var tmp = [];
-
-	                if (Array.isArray(value)) {
-	                    value.filter(this.isDefined).forEach(function (value) {
-	                        tmp.push(this.encodeValue(operator, value));
-	                    }, this);
-	                } else {
-	                    Object.keys(value).forEach(function (k) {
-	                        if (this.isDefined(value[k])) {
-	                            tmp.push(encodeURIComponent(k));
-	                            tmp.push(this.encodeValue(operator, value[k].toString()));
-	                        }
-	                    }, this);
-	                }
-
-	                if (this.isKeyOperator(operator)) {
-	                    result.push(encodeURIComponent(key) + '=' + tmp.join(','));
-	                } else if (tmp.length !== 0) {
-	                    result.push(tmp.join(','));
-	                }
-	            }
-	        }
-	    } else {
-	        if (operator === ';') {
-	            result.push(encodeURIComponent(key));
-	        } else if (value === '' && (operator === '&' || operator === '?')) {
-	            result.push(encodeURIComponent(key) + '=');
-	        } else if (value === '') {
-	            result.push('');
-	        }
-	    }
+                    success = args[0];
+                    error = args[1];
 
-	    return result;
-	};
-
-	exports.isDefined = function (value) {
-	    return value !== undefined && value !== null;
-	};
+                    break;
+                }
 
-	exports.isKeyOperator = function (operator) {
-	    return operator === ';' || operator === '&' || operator === '?';
-	};
+                success = args[1];
+                error = args[2];
+            } else {
 
-	exports.encodeValue = function (operator, value, key) {
-
-	    value = operator === '+' || operator === '#' ? this.encodeReserved(value) : encodeURIComponent(value);
+                params = args[0];
+                data = args[1];
+                success = args[2];
 
-	    if (key) {
-	        return encodeURIComponent(key) + '=' + value;
-	    } else {
-	        return value;
-	    }
-	};
+                break;
+            }
 
-	exports.encodeReserved = function (str) {
-	    return str.split(/(%[0-9A-Fa-f]{2})/g).map(function (part) {
-	        if (!/%[0-9A-Fa-f]/.test(part)) {
-	            part = encodeURI(part);
-	        }
-	        return part;
-	    }).join('');
-	};
+        case 1:
 
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
+            if (isFunction(args[0])) {
+                success = args[0];
+            } else if (/^(POST|PUT|PATCH)$/i.test(options.method)) {
+                data = args[0];
+            } else {
+                params = args[0];
+            }
 
-	/**
-	 * Legacy Transform.
-	 */
+            break;
 
-	var _ = __webpack_require__(1);
+        case 0:
 
-	module.exports = function (options, next) {
+            break;
 
-	    var variables = [],
-	        url = next(options);
+        default:
 
-	    url = url.replace(/(\/?):([a-z]\w*)/gi, function (match, slash, name) {
+            throw 'Expected up to 4 arguments [params, data, success, error], got ' + args.length + ' arguments';
+    }
 
-	        _.warn('The `:' + name + '` parameter syntax has been deprecated. Use the `{' + name + '}` syntax instead.');
+    options.data = data;
+    options.params = extend({}, options.params, params);
 
-	        if (options.params[name]) {
-	            variables.push(name);
-	            return slash + encodeUriSegment(options.params[name]);
-	        }
+    if (success) {
+        options.success = success;
+    }
 
-	        return '';
-	    });
+    if (error) {
+        options.error = error;
+    }
 
-	    variables.forEach(function (key) {
-	        delete options.params[key];
-	    });
+    return options;
+}
 
-	    return url;
-	};
+Resource.actions = {
 
-	function encodeUriSegment(value) {
+    get: { method: 'GET' },
+    save: { method: 'POST' },
+    query: { method: 'GET' },
+    update: { method: 'PUT' },
+    remove: { method: 'DELETE' },
+    delete: { method: 'DELETE' }
 
-	    return encodeUriQuery(value, true).replace(/%26/gi, '&').replace(/%3D/gi, '=').replace(/%2B/gi, '+');
-	}
+};
 
-	function encodeUriQuery(value, spaces) {
+function plugin(Vue) {
 
-	    return encodeURIComponent(value).replace(/%40/gi, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, spaces ? '%20' : '+');
-	}
+    if (plugin.installed) {
+        return;
+    }
 
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
+    Util(Vue);
 
-	/**
-	 * Query Parameter Transform.
-	 */
+    Vue.url = Url;
+    Vue.http = Http;
+    Vue.resource = Resource;
+    Vue.Promise = Promise$1;
 
-	var _ = __webpack_require__(1);
+    Object.defineProperties(Vue.prototype, {
 
-	module.exports = function (options, next) {
+        $url: {
+            get: function get() {
+                return options(Vue.url, this, this.$options.url);
+            }
+        },
 
-	    var urlParams = Object.keys(_.url.options.params),
-	        query = {},
-	        url = next(options);
-
-	    _.each(options.params, function (value, key) {
-	        if (urlParams.indexOf(key) === -1) {
-	            query[key] = value;
-	        }
-	    });
-
-	    query = _.url.params(query);
-
-	    if (query) {
-	        url += (url.indexOf('?') == -1 ? '?' : '&') + query;
-	    }
-
-	    return url;
-	};
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Root Prefix Transform.
-	 */
-
-	var _ = __webpack_require__(1);
-
-	module.exports = function (options, next) {
-
-	    var url = next(options);
-
-	    if (_.isString(options.root) && !url.match(/^(https?:)?\//)) {
-	        url = options.root + '/' + url;
-	    }
-
-	    return url;
-	};
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Service for sending network requests.
-	 */
-
-	var _ = __webpack_require__(1);
-	var Client = __webpack_require__(9);
-	var Promise = __webpack_require__(10);
-	var interceptor = __webpack_require__(13);
-	var jsonType = { 'Content-Type': 'application/json' };
+        $http: {
+            get: function get() {
+                return options(Vue.http, this, this.$options.http);
+            }
+        },
 
-	function Http(url, options) {
-	    var _this = this;
+        $resource: {
+            get: function get() {
+                return Vue.resource.bind(this);
+            }
+        },
 
-	    var client = Client,
-	        request,
-	        promise;
+        $promise: {
+            get: function get() {
+                var _this = this;
 
-	    Http.interceptors.forEach(function (handler) {
-	        client = interceptor(handler, _this.$vm)(client);
-	    });
+                return function (executor) {
+                    return new Vue.Promise(executor, _this);
+                };
+            }
+        }
 
-	    options = _.isObject(url) ? url : _.extend({ url: url }, options);
-	    request = _.merge({}, Http.options, this.$options, options);
-	    promise = client(request).bind(this.$vm).then(function (response) {
+    });
+}
 
-	        return response.ok ? response : Promise.reject(response);
-	    }, function (response) {
+if (typeof window !== 'undefined' && window.Vue) {
+    window.Vue.use(plugin);
+}
 
-	        if (response instanceof Error) {
-	            _.error(response);
-	        }
-
-	        return Promise.reject(response);
-	    });
-
-	    if (request.success) {
-	        promise.success(request.success);
-	    }
-
-	    if (request.error) {
-	        promise.error(request.error);
-	    }
-
-	    return promise;
-	}
-
-	Http.options = {
-	    method: 'get',
-	    data: '',
-	    params: {},
-	    headers: {},
-	    xhr: null,
-	    upload: null,
-	    jsonp: 'callback',
-	    beforeSend: null,
-	    crossOrigin: null,
-	    emulateHTTP: false,
-	    emulateJSON: false,
-	    timeout: 0
-	};
-
-	Http.interceptors = [__webpack_require__(14), __webpack_require__(15), __webpack_require__(16), __webpack_require__(18), __webpack_require__(19), __webpack_require__(20), __webpack_require__(21)];
-
-	Http.headers = {
-	    put: jsonType,
-	    post: jsonType,
-	    patch: jsonType,
-	    delete: jsonType,
-	    common: { 'Accept': 'application/json, text/plain, */*' },
-	    custom: { 'X-Requested-With': 'XMLHttpRequest' }
-	};
-
-	['get', 'put', 'post', 'patch', 'delete', 'jsonp'].forEach(function (method) {
-
-	    Http[method] = function (url, data, success, options) {
-
-	        if (_.isFunction(data)) {
-	            options = success;
-	            success = data;
-	            data = undefined;
-	        }
-
-	        if (_.isObject(success)) {
-	            options = success;
-	            success = undefined;
-	        }
-
-	        return this(url, _.extend({ method: method, data: data, success: success }, options));
-	    };
-	});
-
-	module.exports = _.http = Http;
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Base client.
-	 */
-
-	var _ = __webpack_require__(1);
-	var Promise = __webpack_require__(10);
-	var xhrClient = __webpack_require__(12);
-
-	module.exports = function (request) {
-
-	    var response = (request.client || xhrClient)(request);
-
-	    return Promise.resolve(response).then(function (response) {
-
-	        if (response.headers) {
-
-	            var headers = parseHeaders(response.headers);
-
-	            response.headers = function (name) {
-
-	                if (name) {
-	                    return headers[_.toLower(name)];
-	                }
-
-	                return headers;
-	            };
-	        }
-
-	        response.ok = response.status >= 200 && response.status < 300;
-
-	        return response;
-	    });
-	};
-
-	function parseHeaders(str) {
-
-	    var headers = {},
-	        value,
-	        name,
-	        i;
-
-	    if (_.isString(str)) {
-	        _.each(str.split('\n'), function (row) {
-
-	            i = row.indexOf(':');
-	            name = _.trim(_.toLower(row.slice(0, i)));
-	            value = _.trim(row.slice(i + 1));
-
-	            if (headers[name]) {
-
-	                if (_.isArray(headers[name])) {
-	                    headers[name].push(value);
-	                } else {
-	                    headers[name] = [headers[name], value];
-	                }
-	            } else {
-
-	                headers[name] = value;
-	            }
-	        });
-	    }
-
-	    return headers;
-	}
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Promise adapter.
-	 */
-
-	var _ = __webpack_require__(1);
-	var PromiseObj = window.Promise || __webpack_require__(11);
-
-	function Promise(executor, context) {
-
-	    if (executor instanceof PromiseObj) {
-	        this.promise = executor;
-	    } else {
-	        this.promise = new PromiseObj(executor.bind(context));
-	    }
-
-	    this.context = context;
-	}
-
-	Promise.all = function (iterable, context) {
-	    return new Promise(PromiseObj.all(iterable), context);
-	};
-
-	Promise.resolve = function (value, context) {
-	    return new Promise(PromiseObj.resolve(value), context);
-	};
-
-	Promise.reject = function (reason, context) {
-	    return new Promise(PromiseObj.reject(reason), context);
-	};
-
-	Promise.race = function (iterable, context) {
-	    return new Promise(PromiseObj.race(iterable), context);
-	};
-
-	var p = Promise.prototype;
-
-	p.bind = function (context) {
-	    this.context = context;
-	    return this;
-	};
-
-	p.then = function (fulfilled, rejected) {
-
-	    if (fulfilled && fulfilled.bind && this.context) {
-	        fulfilled = fulfilled.bind(this.context);
-	    }
-
-	    if (rejected && rejected.bind && this.context) {
-	        rejected = rejected.bind(this.context);
-	    }
-
-	    this.promise = this.promise.then(fulfilled, rejected);
-
-	    return this;
-	};
-
-	p.catch = function (rejected) {
-
-	    if (rejected && rejected.bind && this.context) {
-	        rejected = rejected.bind(this.context);
-	    }
-
-	    this.promise = this.promise.catch(rejected);
-
-	    return this;
-	};
-
-	p.finally = function (callback) {
-
-	    return this.then(function (value) {
-	        callback.call(this);
-	        return value;
-	    }, function (reason) {
-	        callback.call(this);
-	        return PromiseObj.reject(reason);
-	    });
-	};
-
-	p.success = function (callback) {
-
-	    _.warn('The `success` method has been deprecated. Use the `then` method instead.');
-
-	    return this.then(function (response) {
-	        return callback.call(this, response.data, response.status, response) || response;
-	    });
-	};
-
-	p.error = function (callback) {
-
-	    _.warn('The `error` method has been deprecated. Use the `catch` method instead.');
-
-	    return this.catch(function (response) {
-	        return callback.call(this, response.data, response.status, response) || response;
-	    });
-	};
-
-	p.always = function (callback) {
-
-	    _.warn('The `always` method has been deprecated. Use the `finally` method instead.');
-
-	    var cb = function cb(response) {
-	        return callback.call(this, response.data, response.status, response) || response;
-	    };
-
-	    return this.then(cb, cb);
-	};
-
-	module.exports = Promise;
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	/**
-	 * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
-	 */
-
-	var _ = __webpack_require__(1);
-
-	var RESOLVED = 0;
-	var REJECTED = 1;
-	var PENDING = 2;
-
-	function Promise(executor) {
-
-	    this.state = PENDING;
-	    this.value = undefined;
-	    this.deferred = [];
-
-	    var promise = this;
-
-	    try {
-	        executor(function (x) {
-	            promise.resolve(x);
-	        }, function (r) {
-	            promise.reject(r);
-	        });
-	    } catch (e) {
-	        promise.reject(e);
-	    }
-	}
-
-	Promise.reject = function (r) {
-	    return new Promise(function (resolve, reject) {
-	        reject(r);
-	    });
-	};
-
-	Promise.resolve = function (x) {
-	    return new Promise(function (resolve, reject) {
-	        resolve(x);
-	    });
-	};
-
-	Promise.all = function all(iterable) {
-	    return new Promise(function (resolve, reject) {
-	        var count = 0,
-	            result = [];
-
-	        if (iterable.length === 0) {
-	            resolve(result);
-	        }
-
-	        function resolver(i) {
-	            return function (x) {
-	                result[i] = x;
-	                count += 1;
-
-	                if (count === iterable.length) {
-	                    resolve(result);
-	                }
-	            };
-	        }
-
-	        for (var i = 0; i < iterable.length; i += 1) {
-	            Promise.resolve(iterable[i]).then(resolver(i), reject);
-	        }
-	    });
-	};
-
-	Promise.race = function race(iterable) {
-	    return new Promise(function (resolve, reject) {
-	        for (var i = 0; i < iterable.length; i += 1) {
-	            Promise.resolve(iterable[i]).then(resolve, reject);
-	        }
-	    });
-	};
-
-	var p = Promise.prototype;
-
-	p.resolve = function resolve(x) {
-	    var promise = this;
-
-	    if (promise.state === PENDING) {
-	        if (x === promise) {
-	            throw new TypeError('Promise settled with itself.');
-	        }
-
-	        var called = false;
-
-	        try {
-	            var then = x && x['then'];
-
-	            if (x !== null && (typeof x === 'undefined' ? 'undefined' : _typeof(x)) === 'object' && typeof then === 'function') {
-	                then.call(x, function (x) {
-	                    if (!called) {
-	                        promise.resolve(x);
-	                    }
-	                    called = true;
-	                }, function (r) {
-	                    if (!called) {
-	                        promise.reject(r);
-	                    }
-	                    called = true;
-	                });
-	                return;
-	            }
-	        } catch (e) {
-	            if (!called) {
-	                promise.reject(e);
-	            }
-	            return;
-	        }
-
-	        promise.state = RESOLVED;
-	        promise.value = x;
-	        promise.notify();
-	    }
-	};
-
-	p.reject = function reject(reason) {
-	    var promise = this;
-
-	    if (promise.state === PENDING) {
-	        if (reason === promise) {
-	            throw new TypeError('Promise settled with itself.');
-	        }
-
-	        promise.state = REJECTED;
-	        promise.value = reason;
-	        promise.notify();
-	    }
-	};
-
-	p.notify = function notify() {
-	    var promise = this;
-
-	    _.nextTick(function () {
-	        if (promise.state !== PENDING) {
-	            while (promise.deferred.length) {
-	                var deferred = promise.deferred.shift(),
-	                    onResolved = deferred[0],
-	                    onRejected = deferred[1],
-	                    resolve = deferred[2],
-	                    reject = deferred[3];
-
-	                try {
-	                    if (promise.state === RESOLVED) {
-	                        if (typeof onResolved === 'function') {
-	                            resolve(onResolved.call(undefined, promise.value));
-	                        } else {
-	                            resolve(promise.value);
-	                        }
-	                    } else if (promise.state === REJECTED) {
-	                        if (typeof onRejected === 'function') {
-	                            resolve(onRejected.call(undefined, promise.value));
-	                        } else {
-	                            reject(promise.value);
-	                        }
-	                    }
-	                } catch (e) {
-	                    reject(e);
-	                }
-	            }
-	        }
-	    });
-	};
-
-	p.then = function then(onResolved, onRejected) {
-	    var promise = this;
-
-	    return new Promise(function (resolve, reject) {
-	        promise.deferred.push([onResolved, onRejected, resolve, reject]);
-	        promise.notify();
-	    });
-	};
-
-	p.catch = function (onRejected) {
-	    return this.then(undefined, onRejected);
-	};
-
-	module.exports = Promise;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * XMLHttp client.
-	 */
-
-	var _ = __webpack_require__(1);
-	var Promise = __webpack_require__(10);
-
-	module.exports = function (request) {
-	    return new Promise(function (resolve) {
-
-	        var xhr = new XMLHttpRequest(),
-	            response = { request: request },
-	            handler;
-
-	        request.cancel = function () {
-	            xhr.abort();
-	        };
-
-	        xhr.open(request.method, _.url(request), true);
-
-	        handler = function handler(event) {
-
-	            response.data = xhr.responseText;
-	            response.status = xhr.status;
-	            response.statusText = xhr.statusText;
-	            response.headers = xhr.getAllResponseHeaders();
-
-	            resolve(response);
-	        };
-
-	        xhr.timeout = 0;
-	        xhr.onload = handler;
-	        xhr.onabort = handler;
-	        xhr.onerror = handler;
-	        xhr.ontimeout = function () {};
-	        xhr.onprogress = function () {};
-
-	        if (_.isPlainObject(request.xhr)) {
-	            _.extend(xhr, request.xhr);
-	        }
-
-	        if (_.isPlainObject(request.upload)) {
-	            _.extend(xhr.upload, request.upload);
-	        }
-
-	        _.each(request.headers || {}, function (value, header) {
-	            xhr.setRequestHeader(header, value);
-	        });
-
-	        xhr.send(request.data);
-	    });
-	};
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Interceptor factory.
-	 */
-
-	var _ = __webpack_require__(1);
-	var Promise = __webpack_require__(10);
-
-	module.exports = function (handler, vm) {
-
-	    return function (client) {
-
-	        if (_.isFunction(handler)) {
-	            handler = handler.call(vm, Promise);
-	        }
-
-	        return function (request) {
-
-	            if (_.isFunction(handler.request)) {
-	                request = handler.request.call(vm, request);
-	            }
-
-	            return when(request, function (request) {
-	                return when(client(request), function (response) {
-
-	                    if (_.isFunction(handler.response)) {
-	                        response = handler.response.call(vm, response);
-	                    }
-
-	                    return response;
-	                });
-	            });
-	        };
-	    };
-	};
-
-	function when(value, fulfilled, rejected) {
-
-	    var promise = Promise.resolve(value);
-
-	    if (arguments.length < 2) {
-	        return promise;
-	    }
-
-	    return promise.then(fulfilled, rejected);
-	}
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Before Interceptor.
-	 */
-
-	var _ = __webpack_require__(1);
-
-	module.exports = {
-
-	    request: function request(_request) {
-
-	        if (_.isFunction(_request.beforeSend)) {
-	            _request.beforeSend.call(this, _request);
-	        }
-
-	        return _request;
-	    }
-
-	};
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	/**
-	 * Timeout Interceptor.
-	 */
-
-	module.exports = function () {
-
-	    var timeout;
-
-	    return {
-
-	        request: function request(_request) {
-
-	            if (_request.timeout) {
-	                timeout = setTimeout(function () {
-	                    _request.cancel();
-	                }, _request.timeout);
-	            }
-
-	            return _request;
-	        },
-
-	        response: function response(_response) {
-
-	            clearTimeout(timeout);
-
-	            return _response;
-	        }
-
-	    };
-	};
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * JSONP Interceptor.
-	 */
-
-	var jsonpClient = __webpack_require__(17);
-
-	module.exports = {
-
-	    request: function request(_request) {
-
-	        if (_request.method == 'JSONP') {
-	            _request.client = jsonpClient;
-	        }
-
-	        return _request;
-	    }
-
-	};
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * JSONP client.
-	 */
-
-	var _ = __webpack_require__(1);
-	var Promise = __webpack_require__(10);
-
-	module.exports = function (request) {
-	    return new Promise(function (resolve) {
-
-	        var callback = '_jsonp' + Math.random().toString(36).substr(2),
-	            response = { request: request, data: null },
-	            handler,
-	            script;
-
-	        request.params[request.jsonp] = callback;
-	        request.cancel = function () {
-	            handler({ type: 'cancel' });
-	        };
-
-	        script = document.createElement('script');
-	        script.src = _.url(request);
-	        script.type = 'text/javascript';
-	        script.async = true;
-
-	        window[callback] = function (data) {
-	            response.data = data;
-	        };
-
-	        handler = function handler(event) {
-
-	            if (event.type === 'load' && response.data !== null) {
-	                response.status = 200;
-	            } else if (event.type === 'error') {
-	                response.status = 404;
-	            } else {
-	                response.status = 0;
-	            }
-
-	            resolve(response);
-
-	            delete window[callback];
-	            document.body.removeChild(script);
-	        };
-
-	        script.onload = handler;
-	        script.onerror = handler;
-
-	        document.body.appendChild(script);
-	    });
-	};
-
-/***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	/**
-	 * HTTP method override Interceptor.
-	 */
-
-	module.exports = {
-
-	    request: function request(_request) {
-
-	        if (_request.emulateHTTP && /^(PUT|PATCH|DELETE)$/i.test(_request.method)) {
-	            _request.headers['X-HTTP-Method-Override'] = _request.method;
-	            _request.method = 'POST';
-	        }
-
-	        return _request;
-	    }
-
-	};
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Mime Interceptor.
-	 */
-
-	var _ = __webpack_require__(1);
-
-	module.exports = {
-
-	    request: function request(_request) {
-
-	        if (_request.emulateJSON && _.isPlainObject(_request.data)) {
-	            _request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-	            _request.data = _.url.params(_request.data);
-	        }
-
-	        if (_.isObject(_request.data) && /FormData/i.test(_request.data.toString())) {
-	            delete _request.headers['Content-Type'];
-	        }
-
-	        if (_.isPlainObject(_request.data)) {
-	            _request.data = JSON.stringify(_request.data);
-	        }
-
-	        return _request;
-	    },
-
-	    response: function response(_response) {
-
-	        try {
-	            _response.data = JSON.parse(_response.data);
-	        } catch (e) {}
-
-	        return _response;
-	    }
-
-	};
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Header Interceptor.
-	 */
-
-	var _ = __webpack_require__(1);
-
-	module.exports = {
-
-	    request: function request(_request) {
-
-	        _request.method = _request.method.toUpperCase();
-	        _request.headers = _.extend({}, _.http.headers.common, !_request.crossOrigin ? _.http.headers.custom : {}, _.http.headers[_request.method.toLowerCase()], _request.headers);
-
-	        if (_.isPlainObject(_request.data) && /^(GET|JSONP)$/i.test(_request.method)) {
-	            _.extend(_request.params, _request.data);
-	            delete _request.data;
-	        }
-
-	        return _request;
-	    }
-
-	};
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * CORS Interceptor.
-	 */
-
-	var _ = __webpack_require__(1);
-	var xdrClient = __webpack_require__(22);
-	var xhrCors = 'withCredentials' in new XMLHttpRequest();
-	var originUrl = _.url.parse(location.href);
-
-	module.exports = {
-
-	    request: function request(_request) {
-
-	        if (_request.crossOrigin === null) {
-	            _request.crossOrigin = crossOrigin(_request);
-	        }
-
-	        if (_request.crossOrigin) {
-
-	            if (!xhrCors) {
-	                _request.client = xdrClient;
-	            }
-
-	            _request.emulateHTTP = false;
-	        }
-
-	        return _request;
-	    }
-
-	};
-
-	function crossOrigin(request) {
-
-	    var requestUrl = _.url.parse(_.url(request));
-
-	    return requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host;
-	}
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * XDomain client (Internet Explorer).
-	 */
-
-	var _ = __webpack_require__(1);
-	var Promise = __webpack_require__(10);
-
-	module.exports = function (request) {
-	    return new Promise(function (resolve) {
-
-	        var xdr = new XDomainRequest(),
-	            response = { request: request },
-	            handler;
-
-	        request.cancel = function () {
-	            xdr.abort();
-	        };
-
-	        xdr.open(request.method, _.url(request), true);
-
-	        handler = function handler(event) {
-
-	            response.data = xdr.responseText;
-	            response.status = xdr.status;
-	            response.statusText = xdr.statusText;
-
-	            resolve(response);
-	        };
-
-	        xdr.timeout = 0;
-	        xdr.onload = handler;
-	        xdr.onabort = handler;
-	        xdr.onerror = handler;
-	        xdr.ontimeout = function () {};
-	        xdr.onprogress = function () {};
-
-	        xdr.send(request.data);
-	    });
-	};
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Service for interacting with RESTful services.
-	 */
-
-	var _ = __webpack_require__(1);
-
-	function Resource(url, params, actions, options) {
-
-	    var self = this,
-	        resource = {};
-
-	    actions = _.extend({}, Resource.actions, actions);
-
-	    _.each(actions, function (action, name) {
-
-	        action = _.merge({ url: url, params: params || {} }, options, action);
-
-	        resource[name] = function () {
-	            return (self.$http || _.http)(opts(action, arguments));
-	        };
-	    });
-
-	    return resource;
-	}
-
-	function opts(action, args) {
-
-	    var options = _.extend({}, action),
-	        params = {},
-	        data,
-	        success,
-	        error;
-
-	    switch (args.length) {
-
-	        case 4:
-
-	            error = args[3];
-	            success = args[2];
-
-	        case 3:
-	        case 2:
-
-	            if (_.isFunction(args[1])) {
-
-	                if (_.isFunction(args[0])) {
-
-	                    success = args[0];
-	                    error = args[1];
-
-	                    break;
-	                }
-
-	                success = args[1];
-	                error = args[2];
-	            } else {
-
-	                params = args[0];
-	                data = args[1];
-	                success = args[2];
-
-	                break;
-	            }
-
-	        case 1:
-
-	            if (_.isFunction(args[0])) {
-	                success = args[0];
-	            } else if (/^(POST|PUT|PATCH)$/i.test(options.method)) {
-	                data = args[0];
-	            } else {
-	                params = args[0];
-	            }
-
-	            break;
-
-	        case 0:
-
-	            break;
-
-	        default:
-
-	            throw 'Expected up to 4 arguments [params, data, success, error], got ' + args.length + ' arguments';
-	    }
-
-	    options.data = data;
-	    options.params = _.extend({}, options.params, params);
-
-	    if (success) {
-	        options.success = success;
-	    }
-
-	    if (error) {
-	        options.error = error;
-	    }
-
-	    return options;
-	}
-
-	Resource.actions = {
-
-	    get: { method: 'GET' },
-	    save: { method: 'POST' },
-	    query: { method: 'GET' },
-	    update: { method: 'PUT' },
-	    remove: { method: 'DELETE' },
-	    delete: { method: 'DELETE' }
-
-	};
-
-	module.exports = _.resource = Resource;
-
-/***/ }
-/******/ ]);
+module.exports = plugin;
 },{}],17:[function(require,module,exports){
 (function (process,global){
 /*!
- * Vue.js v1.0.25
+ * Vue.js v1.0.26
  * (c) 2016 Evan You
  * Released under the MIT License.
  */
@@ -19760,7 +19531,7 @@ function traverse(val, seen) {
   }
   var isA = isArray(val);
   var isO = isObject(val);
-  if (isA || isO) {
+  if ((isA || isO) && Object.isExtensible(val)) {
     if (val.__ob__) {
       var depId = val.__ob__.dep.id;
       if (seen.has(depId)) {
@@ -21246,13 +21017,13 @@ var select = {
     this.vm.$on('hook:attached', function () {
       nextTick(_this.forceUpdate);
     });
+    if (!inDoc(el)) {
+      nextTick(this.forceUpdate);
+    }
   },
 
   update: function update(value) {
     var el = this.el;
-    if (!inDoc(el)) {
-      return nextTick(this.forceUpdate);
-    }
     el.selectedIndex = -1;
     var multi = this.multiple && isArray(value);
     var options = el.options;
@@ -26200,7 +25971,13 @@ var filters = {
 
   pluralize: function pluralize(value) {
     var args = toArray(arguments, 1);
-    return args.length > 1 ? args[value % 10 - 1] || args[args.length - 1] : args[0] + (value === 1 ? '' : 's');
+    var length = args.length;
+    if (length > 1) {
+      var index = value % 10 - 1;
+      return index in args ? args[index] : args[length - 1];
+    } else {
+      return args[0] + (value === 1 ? '' : 's');
+    }
   },
 
   /**
@@ -26402,7 +26179,7 @@ function installGlobalAPI (Vue) {
 
 installGlobalAPI(Vue);
 
-Vue.version = '1.0.25';
+Vue.version = '1.0.26';
 
 // devtools global hook
 /* istanbul ignore next */
@@ -26419,1169 +26196,6 @@ setTimeout(function () {
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"_process":5}],18:[function(require,module,exports){
-'use strict';
-
-require('./core/bootstrap');
-
-// Mixins.
-window.Dossier = require('./components/dossier/dossier');
-window.Form = require('./components/forms/form');
-
-// Plugins
-Vue.use(require('./plugins/resource_url'));
-
-// Components
-Vue.component('modal', require('./components/modal/modal'));
-Vue.component('assets-listing', require('./components/assets/listing/listing'));
-Vue.component('assets-folder-editor', require('./components/assets/modals/folder-editor'));
-
-//fieldtypes
-Vue.component('asset-field-browser', require('./fieldtypes/assets/browser/browser'));
-
-},{"./components/assets/listing/listing":22,"./components/assets/modals/folder-editor":24,"./components/dossier/dossier":28,"./components/forms/form":31,"./components/modal/modal":38,"./core/bootstrap":40,"./fieldtypes/assets/browser/browser":46,"./plugins/resource_url":52}],19:[function(require,module,exports){
-'use strict';
-
-require('./app.globals');
-
-new Vue({
-	el: '#app',
-	data: {
-		navVisible: false,
-		errors: [],
-		messages: []
-	},
-
-	components: {
-		'app-error': require('./components/common/errors'),
-		'app-message': require('./components/common/messages'),
-		'assets-browser': require('./components/assets/browser/browser'),
-		'user-form': require('./components/forms/user'),
-		'user-listing': require('./components/listings/users'),
-		'video-form': require('./components/forms/video'),
-		'video-listing': require('./components/listings/videos'),
-		'video-category-form': require('./components/forms/video_category'),
-		'video-category-listing': require('./components/listings/video_categories')
-	},
-
-	ready: function ready() {
-		var self = this;
-
-		this.$on('show.errors', function (errors) {
-			self.errors = errors;
-		});
-	},
-
-	methods: {
-		toggleNav: function toggleNav() {
-			this.navVisible = !this.navVisible;
-		}
-	},
-
-	events: {
-		'errors-changed': function errorsChanged(errors) {
-			this.errors = errors;
-		}
-	}
-});
-
-},{"./app.globals":18,"./components/assets/browser/browser":20,"./components/common/errors":26,"./components/common/messages":27,"./components/forms/user":32,"./components/forms/video":33,"./components/forms/video_category":34,"./components/listings/users":35,"./components/listings/video_categories":36,"./components/listings/videos":37}],20:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	template: require('./browser.template.html'),
-
-	props: {
-		container: String,
-		uuid: String,
-		path: String
-	},
-
-	data: function data() {
-		return {
-			assets: [],
-			folders: [],
-			folder: {},
-			loading: true
-		};
-	},
-
-	ready: function ready() {
-		this.loadAssets();
-
-		this.$on('path.updated', function (newPath) {
-			this.updatedPath(newPath);
-			this.pushState();
-		});
-	},
-
-	methods: {
-
-		loadAssets: function loadAssets() {
-			this.loading = true;
-
-			this.$http.post(cp_url('assets/browse'), {
-				container: this.container,
-				path: this.path
-			}).then(function (response) {
-				var data = response.data;
-				this.assets = data.assets;
-				this.folder = data.folder;
-				this.folders = data.folders;
-				this.loading = false;
-			});
-		},
-
-		openFinder: function openFinder() {
-			$('.system-file-upload').click();
-		},
-
-		updatedPath: function updatedPath(newPath) {
-			this.path = newPath;
-			this.loadAssets();
-		},
-
-		pushState: function pushState() {
-			var path = this.path === '/' ? '' : this.path;
-			window.history.pushState({ path: this.path }, '', cp_url('assets/browse/' + this.container + path));
-		}
-	}
-
-};
-
-},{"./browser.template.html":21}],21:[function(require,module,exports){
-module.exports = '<div class="card">\n	<div class="head">\n		<h1>\n			{{ container }}\n			<strong v-if="path !== \'/\'"><small>{{ path }}</small></strong>\n		</h1>\n		<button class="btn btn-primary" @click="openFinder">Upload</button>\n	</div>\n\n	<hr>\n\n	<assets-listing v-if="!loading"\n			name="browse"\n			allow-actions="true"\n			:assets="assets"\n			:folders="folders"\n			:folder="folder"\n			:container="container"\n			:path="path"\n			:mode="table"\n	>\n	</assets-listing>\n</div>\n\n';
-},{}],22:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	template: require('./listing.template.html'),
-
-	props: {
-		name: String,
-		container: String,
-		path: String,
-		allowActions: true,
-		assets: {
-			type: Array,
-			required: false,
-			default: function _default() {
-				return null;
-			}
-		},
-		folders: {
-			type: Array,
-			required: false,
-			default: function _default() {
-				return null;
-			}
-		},
-		folder: {
-			type: Object,
-			required: false,
-			default: function _default() {
-				return null;
-			}
-		}
-	},
-
-	data: function data() {
-		return {
-			assetQueue: [],
-			loading: true,
-			creatingFolder: false,
-			showFolderEditor: false,
-			folderModalPath: '',
-			plugin: null
-		};
-	},
-
-	partials: {
-
-		'actions-asset': '\n\t\t\t<div class="btn-group" v-if="allowActions">\n\t\t\t\t\t<button type="button" class="btn-more dropdown-toggle"\n\t\t\t\t\t\t\t data-toggle="dropdown" aria-haspopup="true"\n\t\t\t\t\t\t\t aria-expanded="true" aria-expanded="false">\n\t\t\t\t\t\t<i class="icon icon-dots-three-vertical"></i>\n\t\t\t\t\t</button>\n\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li><a href="">Edit</a></li>\n\t\t\t\t\t\t<li><a href="#" @click.prevent="copyUrl(asset)">Copy Url</a></li>\n\t\t\t\t\t\t<li class="warning"><a href="" @click.prevent=\'deleteAsset(asset)\'>Delete</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t\t',
-
-		'actions-folder': '\n\t\t\t<div class="btn-group" v-if="allowActions">\n\t\t\t\t\t<button type="button" class="btn-more dropdown-toggle"\n\t\t\t\t\t\t\t data-toggle="dropdown" aria-haspopup="true"\n\t\t\t\t\t\t\t aria-expanded="true" aria-expanded="false">\n\t\t\t\t\t\t<i class="icon icon-dots-three-vertical"></i>\n\t\t\t\t\t</button>\n\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li class="warning"><a href="" @click.prevent="deleteFolder(folder)">Delete</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t\t'
-
-	},
-
-	computed: {
-
-		hasParent: function hasParent() {
-			if (!this.folder) {
-				return false;
-			}
-			return this.folder.parent_path;
-		},
-
-		hasItems: function hasItems() {
-			return this.folders.length || this.assets.length;
-		}
-
-	},
-
-	ready: function ready() {
-
-		if (!this.assets) {
-			// No assets ? what should we do.
-			// can we not just call the loadAssets of the parent component (asset-browser)?
-		} else {
-				this.loadingComplete();
-			}
-
-		this.$on('folder.created', function (folder) {
-			this.folders.push(folder);
-		});
-
-		this.$on('folder.updated', function (folder) {});
-
-		this.$on('load.assets', function () {});
-	},
-
-	methods: {
-
-		copyUrl: function copyUrl(asset) {
-			swal({
-				'title': 'Copy URL!',
-				'text': 'Copy the url link in the textbox.',
-				type: 'input',
-				showCancelButton: true,
-				showConfirmButton: false,
-				closeOnConfirm: false,
-				animation: 'slide-from-top',
-				inputValue: asset.url
-			}, function () {});
-		},
-
-		createFolder: function createFolder() {
-			this.showFolderEditor = true;
-			this.creatingFolder = true;
-			this.folderModalPath = this.path;
-		},
-
-		deleteFolder: function deleteFolder(folder) {
-
-			var url = cp_url('assets/folders/delete'),
-			    self = this;
-
-			swal({
-				type: 'warning',
-				title: 'Are you sure?',
-				text: "This folder will be deleted.",
-				showCancelButton: true,
-				confirmButtonText: "Yes, I'm sure."
-			}, function () {
-				this.loading = true;
-
-				self.$http.delete(url, {
-					container: self.container,
-					path: folder.path
-				}).then(function (response) {
-					var data = response.data;
-					if (data.success) {
-						var item = _.findWhere(self.folders, { path: folder.path }),
-						    index = _.indexOf(self.folders, item);
-						self.folders.$remove(folder);
-						self.folders.slice(index, 1);
-					}
-					self.loadingComplete();
-				});
-			});
-		},
-
-		deleteAsset: function deleteAsset(asset) {
-			var self = this;
-
-			var url = cp_url('assets/delete');
-
-			swal({
-				type: 'warning',
-				title: 'Are you sure?',
-				text: "This file will be deleted.",
-				showCancelButton: true,
-				confirmButtonText: "Yes, I'm sure."
-			}, function () {
-				this.loading = true;
-
-				self.$http.delete(url, {
-					container: self.container,
-					folder: self.folder.path,
-					paths: [asset.path]
-				}).then(function (response) {
-					var data = response.data;
-					if (data.success) {
-						self.assets.$remove(asset);
-					}
-					self.loadingComplete();
-				});
-			});
-		},
-
-		editFolder: function editFolder(path) {
-			this.showFolderEditor = true;
-			this.createFolder = false;
-			this.folderModalPath = path;
-		},
-
-		goToFolder: function goToFolder(path) {
-			this.$dispatch('path.updated', path);
-		},
-
-		selectAsset: function selectAsset(asset) {
-			this.$dispatch('asset.selected', asset.url);
-		},
-
-		loadingComplete: function loadingComplete() {
-			this.loading = false;
-			this.$dispatch('asset-listing.loading-complete');
-			this.bindUploader();
-		},
-
-		fileIcon: function fileIcon(extension) {
-			return resource_url('img/fieldtypes/' + extension + '.png');
-		},
-
-		bindUploader: function bindUploader() {
-			var self = this;
-			var $uploader = $(this.$el);
-
-			$uploader.dmUploader({
-				url: cp_url('assets'),
-				extraData: {
-					container: self.container,
-					folder: self.path
-				},
-
-				onNewFile: function onNewFile(id, file) {
-					self.assetQueue.push({
-						id: id,
-						basename: file.name,
-						extension: file.name.split('.').pop(),
-						percent: 0
-					});
-				},
-
-				onUploadProgress: function onUploadProgress(id, percent) {
-					var asset = _.findWhere(self.assetQueue, { id: id });
-					asset.percent = percent;
-				},
-
-				onUploadSuccess: function onUploadSuccess(id, data) {
-					self.assets.unshift(data.asset);
-
-					var asset = _.findWhere(self.assetQueue, { id: id });
-					var index = _.indexOf(self.assetQueue, asset);
-					self.assetQueue.splice(index, 1);
-				},
-
-				onUploaderError: function onUploaderError(id, message) {}
-			});
-		}
-
-	}
-
-};
-
-},{"./listing.template.html":23}],23:[function(require,module,exports){
-module.exports = '<div class="asset-listing">\n\n\n	 <input type="file" multiple="multiple" class="system-file-upload hide" v-if="allowActions">\n\n	 <div v-if="loading" class="loading">\n        <span class="icon icon-circular-graph animation-spin"></span> Loading..\n    </div>\n\n	<div v-if="!loading && allowActions" class="actions">\n		<div class="action-controls">\n			<button @click="createFolder" class="btn">\n				Create New Folder\n			</button>\n		</div>\n	</div>\n\n	<div class="asset-listing table asset-listing-uploads" v-if="assetQueue.length">\n		<table>\n			<thead>\n				<tr>\n					<th class="column-checkbox"></th>\n					<th colspan="2">Upload</th>\n				</tr>\n			</thead>\n			<tbody>\n				<tr v-for="asset in assetQueue">\n					<td class="column-checkbox">\n						<span class="icon icon-circular-graph animation-spin"></span>\n					</td>\n					<td class="column-filename">\n						{{ asset.basename }}\n					</td>\n					<td class="column-progress">\n						<div class="progress">\n							<div class="progress-bar" :style="{ width: asset.percent + \'%\'	 }"></div>\n						</div>\n					</td>\n				</tr>\n			</tbody>\n		</table>\n	</div>\n\n	<div v-if="!loading && (hasParent || hasItems)">\n		<div class="asset-listing table">\n			<table>\n				<thead>\n					<tr>\n						 <th class="column-checkbox"></th>\n						 <th>\n						 	Title\n						 </th>\n						 <th>\n						 	Filename\n						 </th>\n						 <th>\n						 	File size\n						 </th>\n						 <th>\n							Date Modified\n						 </th>\n						 <th>\n\n						 </th>\n					</tr>\n				</thead>\n				<tbody>\n					<tr v-if="hasParent">\n						<td></td>\n						<td>\n							<a href="" @click.prevent="goToFolder(folder.parent_path)">\n								<img :src="resource_url(\'img/fieldtypes/folder.png\')" class="folder">\n								Parent Folder\n							</a>\n						</td>\n						<td colspan=\'3\'></td>\n					</tr>\n					<tr v-for="folder in folders">\n						<td></td>\n						<td>\n							<a href="" @click.prevent="goToFolder(folder.path)">\n								<img :src="resource_url(\'img/fieldtypes/folder.png\')" class="folder">\n								{{ folder.title }}\n							</a>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n						<td>\n							<strong>...</strong>\n						</td>\n						<td class="column-actions">\n							<partial name="actions-folder"></partial>\n						</td>\n					</tr>\n					<tr v-for="asset in assets">\n						<td></td>\n						<td>\n							<span class="asset" @click="selectAsset(asset)">\n								<img :src="fileIcon(asset.extension)" class="file">\n								{{ asset.title }}\n							</span>\n\n						</td>\n						<td>\n							{{ asset.basename }}\n						</td>\n						<td>\n							{{ asset.human_size }}\n						</td>\n						<td>\n							{{ asset.last_modified }}\n						</td>\n						<td class="column-actions">\n							<partial name="actions-asset"></partial>\n						</td>\n					</tr>\n				</tbody>\n			</table>\n		</div>\n	</div>\n\n	<assets-folder-editor v-if="showFolderEditor"\n		:show.sync="showFolderEditor"\n		:container="container"\n		:path="folderModalPath"\n		:create.sync="creatingFolder"\n	>\n	</assets-folder-editor>\n</div>\n';
-},{}],24:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	template: require('./folder-editor.template.html'),
-
-	props: {
-		show: Boolean,
-		container: String,
-		path: String,
-		create: { type: Boolean, default: false }
-	},
-
-	data: function data() {
-		return {
-			form: {
-				folder: new AppForm({
-					id: null,
-					basename: '',
-					parent: '',
-					container: ''
-				})
-			},
-			ajax: {
-				method: 'store',
-				store: cp_url('assets/folders'),
-				update: cp_url('assets/folders')
-			},
-			folder: {},
-			loading: false,
-			saving: false
-		};
-	},
-
-	ready: function ready() {
-		this.getFolder();
-	},
-
-	methods: {
-
-		reset: function reset() {},
-
-		getFolder: function getFolder() {
-			if (this.create) {
-				this.getBlankFolder();
-			} else {
-				this.getExistingFolder();
-			}
-		},
-
-		getBlankFolder: function getBlankFolder() {
-			this.folder = {};
-
-			var form = {
-				container: this.container,
-				parent: this.path
-			};
-
-			_.extend(this.form.folder.data, form);
-			this.loading = false;
-		},
-
-		getExistingFolder: function getExistingFolder() {
-			var url = cp_url('assets/folders/' + this.container + this.path),
-			    self = this;
-
-			this.$http.get(url).then(function (response) {
-				var data = response.data;
-				if (data.success) {
-
-					var form = {
-						container: self.container,
-						path: self.path,
-						parent: data.folder.parent,
-						basename: data.folder.title
-					};
-
-					_.extend(this.form.folder.data, form);
-				}
-
-				this.loading = false;
-			});
-		},
-
-		saveNewFolder: function saveNewFolder() {
-			var method = 'store',
-			    self = this;
-			App[method](this.ajax[method], this.form.folder).then(function (response) {
-
-				self.saving = false;
-				self.creating = false;
-				self.show = false;
-
-				if (response.success) {
-					self.$dispatch('folder.created', response.folder);
-				} else {
-					alert('There was an error when we are trying to create the folder.');
-				}
-			});
-		},
-
-		saveExistingFolder: function saveExistingFolder() {
-			var method = 'update',
-			    self = this;
-			App[method](this.ajax[method], this.form.folder).then(function (response) {
-				var data = response.data;
-				self.$dispatch('folder.updated', data.folder);
-				self.saving = false;
-				self.creating = false;
-			});
-		},
-
-		save: function save() {
-			this.saving = true;
-
-			if (this.create) {
-				this.saveNewFolder();
-			} else {
-				this.saveExistingFolder();
-			}
-		}
-
-	}
-
-};
-
-},{"./folder-editor.template.html":25}],25:[function(require,module,exports){
-module.exports = '<modal\n	:show.sync="show"\n	class="asset-modal asset-folder-editor"\n	:saving="saving"\n	:loading="loading"\n	:full="false"\n>\n	<template slot="header">\n		<template v-if="create">\n			Create Folder\n		</template>\n	</template>\n\n	<template slot="body">\n		<div class="form-group">\n			<label class="block">Name</label>\n            <small class="help-block">The filesystem directory name</small>\n			<input type="text" class="form-control" v-model="form.folder.data.basename">\n		</div>\n	</template>\n\n	<template slot="footer">\n		<button type="button" @click.prevent="save" class="btn btn-primary">Save</button>\n	</template>\n\n</modal>\n';
-},{}],26:[function(require,module,exports){
-'use strict';
-
-// Error Components.
-module.exports = {
-	props: ['errors'],
-
-	computed: {
-
-		hasErrors: function hasErrors() {
-			return _.size(this.errors);
-		},
-
-		flatten: function flatten() {
-			return _.flatten(_.toArray(this.errors));
-		}
-
-	}
-};
-
-},{}],27:[function(require,module,exports){
-'use strict';
-
-// Message Components.
-module.exports = {
-	props: ['messages'],
-	computed: {
-		hasMessages: function hasMessages() {
-			return _.size(this.messages);
-		}
-	}
-};
-
-},{}],28:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	data: function data() {
-		return {
-			items: [],
-			columns: [],
-			loading: true
-		};
-	},
-
-	components: {
-		'dossier-table': require('./table')
-	},
-
-	ready: function ready() {
-		this.getItems();
-	},
-
-	computed: {
-		hasItems: function hasItems() {
-			return this.items !== null && !this.loading;
-		}
-	},
-
-	methods: {
-
-		getItems: function getItems() {
-			this.$http.get(this.ajax.get).then(function (response) {
-				var data = response.data,
-				    status = response.status,
-				    request = response.request;
-
-				this.columns = data.columns;
-				this.items = data.items;
-				this.loading = false;
-			}).catch(function () {
-				alert('There was a problem retrieving the data. Check your logs.');
-			});
-		},
-
-		deleteItem: function deleteItem(id) {
-			var self = this;
-
-			swal({
-				type: 'warning',
-				title: 'Are you sure?',
-				text: "This item will be deleted.",
-				showCancelButton: true,
-				confirmButtonText: "Yes, I'm sure."
-			}, function () {
-
-				if (arguments.length === 1) {
-
-					self.$http.delete(self.ajax.delete, {
-						ids: [id]
-					}).then(function (response) {
-						var data = response.data;
-
-						if (data.success) {
-							var item = _.findWhere(self.items, { id: id });
-							var index = _.indexOf(self.items, item);
-							self.items.splice(item, 1);
-						}
-					});
-				}
-			});
-		}
-
-	}
-
-};
-
-},{"./table":29}],29:[function(require,module,exports){
-'use strict';
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-// component
-
-module.exports = {
-
-	template: require('./table.template.html'),
-
-	props: ['options'],
-
-	data: function data() {
-		return _defineProperty({
-			items: [],
-			columns: [],
-			sortCol: this.options.sortCol || null,
-			sortOrder: this.options.sortOrder || 'asc',
-			sortOrders: {},
-			search: ''
-		}, 'sortOrders', {});
-	},
-
-	components: {
-		'search': {
-			props: ['term'],
-			template: '\n\t\t\t\t<input type="text" v-model="term" @keyup.esc="reset" placeholder="Search" class="search" >\n\t\t\t',
-			methods: {
-				reset: function reset() {
-					this.term = '';
-				}
-			}
-		}
-	},
-
-	partials: {
-
-		'cell': '\n\t\t\t<a v-if="$index === 0">\n\t\t\t\t<span class="status status-{{ (item.status) ? \'live\' : \'hidden\' }}"\n\t\t\t\t\t  :title=""\n\t\t\t\t></span>\n\t\t\t\t{{ item[column] }}\n\t\t\t</a>\n\t\t\t<span v-else>\n\t\t\t\t{{ item[column] }}\n\t\t\t</span>\n\t\t\t'
-	},
-
-	ready: function ready() {
-		this.items = this.$parent.items;
-		this.columns = this.$parent.columns;
-
-		this.setSortOrders();
-	},
-
-	beforeCompile: function beforeCompile() {
-		var self = this;
-		_.each(this.options.partials, function (value, key) {
-			self.$options.partials[key] = value;
-		});
-	},
-
-	computed: {
-
-		hasItems: function hasItems() {
-			return this.$parent.hasItems;
-		},
-
-		hasHeader: function hasHeader() {
-			return this.options.hasHeader;
-		},
-
-		computedSearch: function computedSearch() {
-			return this.search;
-		},
-
-		computedSortCol: function computedSortCol() {
-			return this.sortCol;
-		},
-
-		computedSortOrder: function computedSortOrder() {
-			return this.sortOrders[this.sortCol];
-		}
-
-	},
-
-	methods: {
-		call: function call(method) {
-			// Call any method from parent component.
-			var args = Array.prototype.slice.call(arguments, 1);
-			this.$parent[method].apply(this, args);
-		},
-
-		setSortOrders: function setSortOrders() {
-			var sortOrders = {};
-			_.each(this.columns, function (column) {
-				sortOrders[column] = 1;
-			});
-			sortOrders[this.sortCol] = this.sortOrder === 'asc' ? 1 : -1;
-			this.sortOrders = sortOrders;
-		},
-
-		sortBy: function sortBy(column) {
-			if (this.sortCol == column) {
-				this.sortOrders[column] = this.sortOrders[column] * -1;
-			}
-			this.sortCol = column;
-			return this.sortOrders[column];
-		}
-
-	}
-
-};
-
-},{"./table.template.html":30}],30:[function(require,module,exports){
-module.exports = '<div>\n	<div class="actions">\n		<search :term.sync="search"></search>\n	</div>\n	<table class="dossier">\n		<thead v-if="hasHeader">\n			<th></th>\n			<th v-for="column in columns"\n			    class="column-sortable column-{{ column }}"\n			    @click="sortBy(column)">\n				{{ column }}\n				<i v-if="sortCol == column"\n				   class="icon icon-chevron-{{ (sortOrders[column] > 0) ? \'up\' : \'down\' }}"></i>\n			</th>\n			<th></th>\n		</thead>\n		<tbody>\n			<tr v-for="item in items | filterBy computedSearch | orderBy computedSortCol computedSortOrder">\n				<td></td>\n					<td v-for="column in columns">\n						<partial name="cell"></partial>\n					</td>\n				<td class="column-actions">\n					<div class="btn-group">\n						<button type="button" class="btn-more dropdown-toggle"\n								 data-toggle="dropdown" aria-haspopup="true"\n								 aria-expanded="true" aria-expanded="false">\n							<i class="icon icon-dots-three-vertical"></i>\n						</button>\n						<ul class="dropdown-menu">\n							<partial name="actions"></partial>\n						</ul>\n					</div>\n				</td>\n			</tr>\n		</tbody>\n	</table>\n</div>\n';
-},{}],31:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-	props: ['errors'],
-	data: function data() {
-		return {
-			isNew: true,
-			formReady: false,
-			headerTitle: ''
-		};
-	},
-
-	ready: function ready() {},
-
-	methods: {
-		whenReady: function whenReady(callback) {
-			var self = this,
-			    url = window.location.href;
-
-			this.$http.get(url).then(function (response) {
-				var data = response.data;
-
-				self.isNew = data.type == 'store' ? true : false;
-				if (callback(data) === true) {
-					self.ajax.method = data.type;
-					self.formReady = true;
-					self.headerTitle = data.headerTitle;
-				} else {
-					alert('There was an error in the callback function in ready hook of the component. </br> Try to return a true to fix this.');
-				}
-			}).catch(function (error) {
-				alert('There was something wrong with this form. Error: ' + error);
-			});
-		}
-	},
-
-	watch: {
-		'form[form.primary].errors.errors': function formFormPrimaryErrorsErrors(newVal, oldVal) {
-			this.$dispatch('errors-changed', this.form[this.form.primary].errors.flatten());
-		}
-	}
-
-};
-
-},{}],32:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-	mixins: [Form],
-	data: function data() {
-		return {
-			form: {
-				primary: 'user',
-				user: new AppForm({
-					name: '',
-					username: '',
-					password: '',
-					password_confirmation: '',
-					email: '',
-					about: '',
-					roles: []
-				}),
-				roles: []
-			},
-			ajax: {
-				method: 'store',
-				store: cp_url('users'),
-				update: cp_url('users/update'),
-				delete: ''
-			}
-		};
-	},
-
-	components: {
-		'user-roles': {
-			props: ['roles', 'userRoles'],
-
-			ready: function ready() {
-				var userRoles = [];
-				_.each(this.userRoles, function (value) {
-					userRoles.push(value.id);
-				});
-				this.userRoles = userRoles;
-			},
-
-			methods: {
-				select: function select(role) {
-					if (this.userRoles.indexOf(role.id) === -1) {
-						this.userRoles.push(role.id);
-					} else {
-						this.userRoles.$remove(role.id);
-					}
-				},
-				selected: function selected(id) {
-					if (this.userRoles !== undefined || this.userRoles !== null) {
-						return this.userRoles.indexOf(id) > -1;
-					}
-				}
-			}
-		}
-	},
-
-	ready: function ready() {
-		var self = this;
-		self.form.ready = true;
-		this.whenReady(function (data) {
-			console.log(data);
-			self.form.user.set(data.user);
-
-			if (data.user !== null) {
-				self.ajax.update = cp_url('users/' + data.user.username);
-			}
-
-			self.form.roles = data.roles;
-
-			return true;
-		});
-	},
-
-	methods: {
-		save: function save() {
-			var method = this.ajax.method;
-			var self = this;
-			// Either POST,PUT or DELETE
-			App[method](this.ajax[method], this.form.user).then(function (response) {
-				if (response.path !== undefined) {
-					window.location = response.path;
-				}
-			}, function (response) {
-				self.$dispatch('show-error', response);
-			});
-		}
-	}
-};
-
-},{}],33:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	mixins: [Form],
-
-	components: {
-		'field-toggle': require('./../../fieldtypes/toggle/toggle'),
-		'field-select2': require('./../../fieldtypes/select2/select2')
-	},
-
-	data: function data() {
-		return {
-			container: 'assets',
-			folder: '/',
-			form: {
-				primary: 'video',
-				video: new AppForm({
-					id: null,
-					title: '',
-					'short_description': '',
-					'description': '',
-					'duration': '',
-					'source': '',
-					'poster': '',
-					'status': false,
-					'featured': false,
-					'category_id': null,
-					'uploaded_by': null
-				}, AppFormType.Each),
-				categories: [],
-				users: []
-			},
-			ajax: {
-				method: 'store',
-				store: cp_url('videos'),
-				update: cp_url('videos/update')
-			}
-		};
-	},
-
-	ready: function ready() {
-		var self = this;
-		this.whenReady(function (data) {
-
-			self.form.video.set(data.video);
-			self.form.categories = data.categories;
-			self.form.users = data.users;
-
-			if (data.video !== null) {
-				self.ajax.update = cp_url('videos/' + data.video.id);
-			}
-			return true;
-		});
-	},
-
-	methods: {
-
-		save: function save() {
-			var self = this;
-			var method = this.ajax.method;
-
-			App[method](this.ajax[method], this.form.video).then(function (response) {
-				if (response.path !== undefined) {
-					window.location = response.path;
-				}
-			}, function (response) {
-				console.log(response);
-				self.$dispatch('show.errors', response);
-			});
-		}
-
-	}
-
-};
-
-},{"./../../fieldtypes/select2/select2":48,"./../../fieldtypes/toggle/toggle":50}],34:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-	mixins: [Form],
-	data: function data() {
-		return {
-			form: {
-				primary: 'category',
-				category: new AppForm({
-					id: '',
-					name: '',
-					description: ''
-				})
-			},
-			ajax: {
-				method: 'store',
-				store: cp_url('videos/categories'),
-				update: cp_url('videos/categories/update')
-			}
-		};
-	},
-
-	ready: function ready() {
-		var self = this;
-		this.whenReady(function (data) {
-			self.form.category.set(data.category);
-			if (data.category !== null) {
-				self.ajax.update = cp_url('videos/categories/' + data.category.id);
-			}
-			return true;
-		});
-	},
-
-	methods: {
-		save: function save() {
-			var method = this.ajax.method;
-			App[method](this.ajax[method], this.form.category).then(function (response) {
-				if (response.path !== undefined) {
-					window.location = response.path;
-				}
-			});
-		}
-	}
-};
-
-},{}],35:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	mixins: [Dossier],
-
-	data: function data() {
-		return {
-			ajax: {
-				get: cp_url('users/get'),
-				delete: ''
-			},
-			tableOptions: {
-				hasHeader: true,
-				sortCol: 'name',
-				sortOrder: 'asc',
-				partials: {
-					actions: '',
-					cell: '\n\t\t\t\t\t\t<a v-if="$index === 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="status status-{{ (item.status) ? \'live\' : \'hidden\' }}">\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</a>\n\t\t\t\t\t\t<span v-else>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</span>\n\t\t\t\t\t'
-				}
-			}
-		};
-	},
-
-	ready: function ready() {
-		this.addActionPartial();
-	},
-
-	computed: {},
-
-	methods: {
-
-		addActionPartial: function addActionPartial() {
-			var str = '';
-			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
-			str += '\n\t\t\t\t\t<li class="warning">\n\t\t\t\t\t\t<a href="#" @click.prevent="call(\'deleteItem\',item.id)">Delete</a>\n\t\t\t\t\t</li>\n\t\t\t\t\t';
-			this.tableOptions.partials.actions = str;
-		}
-
-	}
-};
-
-},{}],36:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	mixins: [Dossier],
-
-	data: function data() {
-		return {
-			ajax: {
-				get: cp_url('videos/categories/get'),
-				delete: ''
-			},
-			tableOptions: {
-				hasHeader: true,
-				sortCol: 'name',
-				sortOrder: 'asc',
-				partials: {
-					actions: '',
-					'cell': '\n\t\t\t\t\t\t<a v-if="$index === 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="">\n\t\t\t\t\t\t\t\t{{ item.name }}\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t<span v-else>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</span>\n\t\t\t\t\t'
-				}
-			}
-		};
-	},
-
-	ready: function ready() {
-		this.addActionPartial();
-	},
-
-	methods: {
-
-		addActionPartial: function addActionPartial() {
-			var str = '';
-			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
-			str += '<li class="warning">\n\t\t\t\t\t\t<a href="" @click.prevent="call(\'deleteItem\',item.id)">Delete</a>\n\t\t\t\t\t</li>';
-
-			this.tableOptions.partials.actions = str;
-		}
-
-	}
-
-};
-
-},{}],37:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	mixins: [Dossier],
-
-	data: function data() {
-		return {
-			ajax: {
-				get: cp_url('videos/get'),
-				delete: cp_url('videos/delete')
-			},
-			tableOptions: {
-				hasHeader: true,
-				hasCheckbox: false,
-				sortCol: 'title',
-				sortOrder: 'asc',
-				partials: {
-					actions: '',
-					cell: '\n\t\t\t\t\t\t<a v-if="$index == 0" href="{{ item.edit_url }}">\n\t\t\t\t\t\t\t<span class="status status-{{ (item.status) ? \'live\' : \'hidden\' }}"></span>\n\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t</a>\n\n\t\t\t\t\t\t<template v-else>\n\t\t\t\t\t\t\t<span v-if="$index == 2" class="text-center status status-{{ (item.featured) ? \'live\' : \'hidden\' }} "></span>\n\t\t\t\t\t\t\t<span v-else>\n\t\t\t\t\t\t\t\t{{ item[column] }}\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</template>\n\t\t\t\t\t'
-				}
-			}
-		};
-	},
-
-	ready: function ready() {
-		this.addActionPartial();
-	},
-
-	methods: {
-
-		addActionPartial: function addActionPartial() {
-			var str = '';
-
-			str += '<li><a href="{{ item.edit_url }}">Edit</a></li>';
-			str += '\n\t\t\t\t\t<li class="warning">\n\t\t\t\t\t\t<a href="" @click.prevent="call(\'deleteItem\',item.id)">Delete</a>\n\t\t\t\t\t</li>\n\t\t\t\t';
-
-			this.tableOptions.partials.actions = str;
-		}
-
-	}
-
-};
-
-},{}],38:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	template: require('./modal.template.html'),
-
-	props: {
-		show: {
-			type: Boolean,
-			required: true,
-			default: false
-		},
-		full: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		class: {
-			required: false,
-			default: function _default() {
-				return {};
-			}
-		},
-		loading: Boolean,
-		saving: Boolean
-	},
-
-	methods: {
-		close: function close() {
-			this.show = false;
-		}
-	},
-
-	computed: {
-		classes: function classes() {
-
-			var defaults = {
-				'modal-full': this.full
-			};
-
-			var classes = {};
-
-			if (typeof this.class === 'string') {
-				_.each(this.class.split(' '), function (e) {
-					classes[e] = true;
-				});
-			} else {
-				classes = this.class;
-			}
-
-			return _.extend(defaults, classes);
-		}
-	},
-
-	ready: function ready() {}
-
-};
-
-},{"./modal.template.html":39}],39:[function(require,module,exports){
-module.exports = '<div class="modal" :class="classes" role="dialog" tabindex="-1" v-if="show">\n\n	<div class="modal-dialog">\n		<div class="modal-content">\n\n			<div class="saving" v-if="saving">\n				<div class="inner">\n                    <i class="icon icon-circular-graph animation-spin"></i> Saving..\n                </div>\n			</div>\n\n			<div class="modal-header">\n				<slot name="close">\n					<button type="button" class="close" aria-label="Close" @click="close"><span aria-hidden="true">&times;</span></button>\n				</slot>\n				<h3 class="modal-title">\n					<slot name="header"></slot>\n				</h3>\n			</div>\n\n			<div v-if="! loading" class="modal-body">\n				<slot name="body"></slot>\n			</div>\n\n			<div v-if="! loading" class="modal-footer">\n				<slot name="footer">\n					<button type="button" class="btn" @click="close">Close</button>\n				</slot>\n			</div>\n\n		</div>\n	</div>\n\n\n</div>\n';
-},{}],40:[function(require,module,exports){
 'use strict';
 
 /**
@@ -27636,7 +26250,7 @@ require('./../cp.js');
 // Load the Control Panel JS Theme.
 require('./../theme/theme');
 
-},{"./../cp.js":45,"./../theme/theme":53,"./forms/bootstrap":41,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"select2/dist/js/select2.full.min.js":14,"underscore":15,"vue":17,"vue-resource":16}],41:[function(require,module,exports){
+},{"./../cp.js":23,"./../theme/theme":24,"./forms/bootstrap":19,"bootstrap-sass/assets/javascripts/bootstrap":3,"jquery":4,"promise":6,"select2/dist/js/select2.full.min.js":14,"underscore":15,"vue":17,"vue-resource":16}],19:[function(require,module,exports){
 'use strict';
 
 // Load the AppForm class.
@@ -27647,7 +26261,7 @@ require('./errors');
 
 $.extend(App, require('./http'));
 
-},{"./errors":42,"./http":43,"./instances":44}],42:[function(require,module,exports){
+},{"./errors":20,"./http":21,"./instances":22}],20:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -27685,7 +26299,7 @@ window.AppErrors = function () {
 	};
 };
 
-},{}],43:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -27730,7 +26344,7 @@ module.exports = {
 
 };
 
-},{}],44:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 window.AppFormType = {
@@ -27779,7 +26393,7 @@ window.AppForm = function (data, type) {
 	};
 };
 
-},{}],45:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 window.cp_url = function (url) {
@@ -27802,173 +26416,12 @@ window.resource_url = function (url) {
 	return url;
 };
 
-},{}],46:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	mixins: [],
-
-	template: require('./browser.template.html'),
-
-	props: {
-		label: String,
-		placeholder: String,
-		container: String,
-		path: String,
-		selectedAsset: ''
-	},
-
-	data: function data() {
-		return {
-			onSelect: false,
-			assets: [],
-			folders: [],
-			folder: {},
-			rootFolder: {
-				parent_path: '',
-				path: '/',
-				title: ''
-			},
-			loading: true,
-			showModalBrowser: false
-		};
-	},
-
-	ready: function ready() {
-		var self = this;
-
-		this.$on('path.updated', function (newPath) {
-			this.updatedPath(newPath);
-		});
-
-		this.$on('asset.selected', function (asset) {
-			self.selectedAsset = asset;
-			self.showModalBrowser = false;
-			self.path = '/';
-			self.folder = self.rootFolder;
-		});
-	},
-
-	methods: {
-
-		select: function select() {
-			this.showModalBrowser = true;
-			this.loadAssets();
-		},
-
-		loadAssets: function loadAssets() {
-			this.loading = true;
-
-			this.$http.post(cp_url('assets/browse'), {
-				container: this.container,
-				path: this.path
-			}).then(function (response) {
-				var data = response.data;
-				this.assets = data.assets;
-				this.folder = data.folder;
-				this.folders = data.folders;
-				this.loading = false;
-			});
-		},
-
-		updatedPath: function updatedPath(newPath) {
-			this.path = newPath;
-			this.loadAssets();
-		}
-
-	}
-
+window.api_url = function (url) {
+	url = '//' + App.siteRoot + '/api/' + url;
+	return url;
 };
 
-},{"./browser.template.html":47}],47:[function(require,module,exports){
-module.exports = '<div class="input-group">\n	<label class="sr-only">{{ label }}</label>\n	<input type="text" class="form-control" v-model="selectedAsset" :placeholder="placeholder" disabled>\n	<div class="input-group-addon" style="padding:0 !important">\n		<button class="btn" @click.prevent="select">Select</button>\n	</div>\n</div>\n\n<modal\n	:show.sync="showModalBrowser"\n	class="asset-modal"\n	:full="true"\n	v-if="showModalBrowser"\n>\n\n	<template slot="header">\n		<h1>\n			Select an Asset\n			<strong v-if="path !== \'/\'"><small>{{ path }}</small></strong>\n		</h1>\n\n	</template>\n\n	<template slot="body">\n		<assets-listing v-if="!loading && showModalBrowser"\n			name="browse"\n			:assets="assets"\n			:folders="folders"\n			:folder="folder"\n			:container="container"\n			:path="path"\n			:mode="table"\n		 >\n		</assets-listing>\n	</template>\n\n</modal>\n';
-},{}],48:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-	template: require('./select2.template.html'),
-
-	props: ['selected', 'options', 'name', 'key', 'value', 'defaultText'],
-
-	computed: {
-
-		hasOptions: function hasOptions() {
-			return this.options !== null;
-		}
-
-	},
-
-	ready: function ready() {
-
-		var self = this;
-
-		$('.' + this.name).select2().on('change', function () {
-			self.selected = this.value;
-		});
-	},
-
-	methods: {
-
-		isSelected: function isSelected(option) {
-			var key = this.key;
-			if (_.isArray(this.selected)) {} else {
-				return option[key] == this.selected;
-			}
-		}
-	},
-
-	watch: {
-		options: function options(_options, oldVal) {
-			if (_.where(_options, { id: 0 }).length <= 0) {
-				if (this.selected === null) {
-					this.selected = "0";
-				}
-				_options.unshift({ id: 0, name: this.defaultText });
-			}
-		}
-	}
-
-};
-
-},{"./select2.template.html":49}],49:[function(require,module,exports){
-module.exports = '<div v-if="hasOptions">\n	<select :class="name">\n		<option v-for="option in options" :value="option[key]" :selected="isSelected(option)">\n			{{ option[value] }}\n		</option>\n	</select>\n</div>\n';
-},{}],50:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-	template: require('./toggle.template.html'),
-
-	props: ['name', 'data', 'config'],
-
-	computed: {
-		isOn: function isOn() {
-			return this.data === true || this.data === 1;
-		}
-	},
-
-	methods: {
-		toggle: function toggle() {
-			this.data = !this.data;
-		}
-	}
-
-};
-
-},{"./toggle.template.html":51}],51:[function(require,module,exports){
-module.exports = '<div>\n	<div class="toggle-container" :class="{\'on\': isOn }" @click.prevent="toggle">\n		<div class="toggle-slider">\n			<div class="toggle-knob"></div>\n		</div>\n	</div>\n</div>\n';
-},{}],52:[function(require,module,exports){
-"use strict";
-
-exports.install = function (Vue, options) {
-
-	Vue.prototype.resource_url = function (url) {
-		return resource_url(url);
-	};
-};
-
-},{}],53:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -28016,45 +26469,189 @@ function _init() {
 				liParent.removeClass('active');
 				// liParent.find('span.icon').removeClass(iconDown).addClass(iconLeft);
 			} else if (nextElement.is('ul') && !nextElement.is('ul.nav-open')) {
-					e.preventDefault();
-					// Now lets get the parent menu to close the open item.
-					var parent = $this.parents('ul').first();
-					// Close all open menus within the parent.
-					var ul = parent.find('ul.nav-open').slideUp(animationSpeed);
-					// Remove the nav-open class from the parent.
-					ul.removeClass('nav-open');
-					// Get the parent li
-					var liParent = $this.parent('li.has-sub');
+				e.preventDefault();
+				// Now lets get the parent menu to close the open item.
+				var parent = $this.parents('ul').first();
+				// Close all open menus within the parent.
+				var ul = parent.find('ul.nav-open').slideUp(animationSpeed);
+				// Remove the nav-open class from the parent.
+				ul.removeClass('nav-open');
+				// Get the parent li
+				var liParent = $this.parent('li.has-sub');
 
-					// Open the target menu and add nav-open class.
-					nextElement.slideDown(animationSpeed, function () {
-						nextElement.addClass('nav-open');
+				// Open the target menu and add nav-open class.
+				nextElement.slideDown(animationSpeed, function () {
+					nextElement.addClass('nav-open');
 
-						var activeMenu = parent.find('li.has-sub.active');
-						activeMenu.removeClass('active');
-						// Remove the active class of the child li element.
-						activeMenu.find('li.active').removeClass('active');
-						var activeMenuUL = activeMenu.find('ul.nav_open');
+					var activeMenu = parent.find('li.has-sub.active');
+					activeMenu.removeClass('active');
+					// Remove the active class of the child li element.
+					activeMenu.find('li.active').removeClass('active');
+					var activeMenuUL = activeMenu.find('ul.nav_open');
 
-						if (activeMenuUL !== null || activeMenuUL !== undefined) {
-							activeMenuUL.slideUp(function () {
-								activeMenuUL.removeClass('nav_open').css('display', 'none');
-							});
-						}
+					if (activeMenuUL !== null || activeMenuUL !== undefined) {
+						activeMenuUL.slideUp(function () {
+							activeMenuUL.removeClass('nav_open').css('display', 'none');
+						});
+					}
 
-						// parent.find('li.active').removeClass('active');
-						// .find('span.icon')
-						// .removeClass(iconDown)
-						// .addClass(iconLeft);
+					// parent.find('li.active').removeClass('active');
+					// .find('span.icon')
+					// .removeClass(iconDown)
+					// .addClass(iconLeft);
 
-						liParent.addClass('active');
-						// liParent.find('span.icon')
-						// 	    .removeClass(iconLeft)
-						// 	    .addClass(iconDown);
-					});
-				}
+					liParent.addClass('active');
+					// liParent.find('span.icon')
+					// 	    .removeClass(iconLeft)
+					// 	    .addClass(iconDown);
+				});
+			}
 		});
 	};
 }
 
-},{}]},{},[19]);
+},{}],25:[function(require,module,exports){
+'use strict';
+
+require('../../cp/js/core/bootstrap');
+
+},{"../../cp/js/core/bootstrap":18}],26:[function(require,module,exports){
+'use strict';
+
+require('./app.globals');
+
+$(document).ready(function () {
+	new Vue({
+		el: '#app',
+
+		components: {
+			'video-player': require('./components/video/video'),
+			'video-sidebar-listing': require('./components/videos/sidebar/listing')
+		},
+
+		data: {
+			navVisible: false,
+			errors: [],
+			messages: {}
+		},
+
+		methods: {
+			toggleNav: function toggleNav() {
+				this.navVisible = !this.navVisible;
+			}
+		}
+	});
+});
+
+},{"./app.globals":25,"./components/video/video":27,"./components/videos/sidebar/listing":29}],27:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./video.template.html'),
+
+	props: ['video'],
+
+	data: function data() {
+		return {};
+	},
+
+	ready: function ready() {},
+
+	methods: {}
+
+};
+
+},{"./video.template.html":28}],28:[function(require,module,exports){
+module.exports = '<div class="Video">\n	<div class="video">\n		<div class="Watch__player Box Card">\n			<video\n				id="app-video"\n				class="video-js vjs-big-play-centered vjs-paused ctpc-video-dimensions vjs-fluid vjs-controls-enabled vjs-workinghover vjs-user-inactive "\n				fluid\n				controls\n				:poster="video.poster"\n				data-setup="{}"\n			>\n			    <source :src="video.source" type="video/mp4">\n\n			    <p class="vjs-no-js">\n			    	To view this video please enable JavaScript, and consider upgrading to a web browser that\n			    	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>\n			    </p>\n			 </video>\n		</div>\n\n		<div class="Watch__header Box Card">\n\n			<div class="Watch__header-headline">\n				<div class="title">\n					<h1>\n						{{ video.title }}\n					</h1>\n				</div>\n			</div>\n\n			<div class="Watch__header-user">\n				<span>\n					from <strong>{{ video.publisher.name }}</strong> &nbsp; {{ video.human_published_at }}\n				</span>\n			</div>\n\n			<div class="Watch__header-actions">\n				<div class="">\n					<div class="views-info">\n						<div class="views-count">\n							<span>\n								{{ video.views }} views\n							</span>\n						</div>\n					</div>\n				</div>\n			</div>\n\n		</div>\n\n		<div class="Watch__details Box Card">\n			<div class="extras">\n				<ul class="extras-list">\n					<li>\n						<h4 class="title">Category</h4>\n						<ul class="watch-tag-list">\n							<li>\n								<a href="">\n									{{ video.category }}\n								</a>\n							</li>\n						</ul>\n					</li>\n				</ul>\n			</div>\n			<div class="description">\n				{{ video.description }}\n			</div>\n		</div>\n\n	</div>\n</div>\n\n<slot name="bottom"></slot>\n';
+},{}],29:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+
+	template: require('./listing.template.html'),
+
+	props: ['video'],
+
+	data: function data() {
+		return {
+			videos: [],
+			loading: true,
+			loading_more: false,
+			count: 0,
+			skip: 0,
+			take: 10,
+			ajax: {
+				get: site_url('video/related'),
+				count: site_url('video/related/count')
+			}
+		};
+	},
+
+	ready: function ready() {
+		this.getRelatedVideos();
+		this.getRelatedCount();
+	},
+
+	computed: {
+
+		showLoadMore: function showLoadMore() {
+			return this.videos.length < this.count;
+		}
+
+	},
+
+	methods: {
+
+		getRelatedVideos: function getRelatedVideos(callback) {
+			var self = this;
+			this.$http.post(this.ajax.get, {
+				video: self.video,
+				skip: self.skip,
+				take: self.take,
+				videos: self.videos
+			}).then(function (response) {
+
+				var data = response.data;
+				status = response.status;
+
+				if (!self.videos.length) {
+					self.videos = data.videos;
+				} else {
+					_.each(data.videos, function (video) {
+						self.videos.push(video);
+					});
+				}
+
+				this.loading = false;
+				self.skip = self.skip + 10;
+
+				if (callback && typeof callback === 'function') {
+					callback();
+				}
+			});
+		},
+
+		getRelatedCount: function getRelatedCount() {
+			var self = this;
+
+			this.$http.post(this.ajax.count, { video: this.video }).then(function (response) {
+				self.count = response.data;
+			});
+		},
+
+		loadMore: function loadMore() {
+			var self = this;
+			self.loading_more = true;
+
+			this.getRelatedVideos(function () {
+				self.loading_more = false;
+			});
+		}
+	}
+
+};
+
+},{"./listing.template.html":30}],30:[function(require,module,exports){
+module.exports = '<div class="Watch">\n\n	<div class="Watch__loading" v-if="loading">\n		<i class="fa fa-spinner fa-pulse fa-6x fa-fw"></i>\n		<span class="sr-only">Loading...</span>\n	</div>\n\n	<ul class="Video__list" v-if="!loading">\n		<li v-for="video in videos" class="Video__list-item">\n			<div class="content-wrapper">\n				<a :href="video.watch_url">\n\n					<span class="title">\n						{{ video.title }}\n					</span>\n\n					<span class="publisher">\n						from {{ video.publisher.name }} &nbsp; {{ video.human_published_at }}\n					</span>\n\n					<span class="stat view-count" v-if="video.hits">\n						{{ video.views }} views\n					</span>\n\n					<span class="stat view-count" v-else>\n						No views\n					</span>\n\n				</a>\n			</div>\n			<div class="thumb-wrapper">\n				<a :href="video.watch_url">\n					<span class="thumb-wrap" tabindex="0">\n						<img aria-hidden="true" width="120" height="90" :src="video.poster">\n					</span>\n					<span class="video-time">\n						{{ video.duration }}\n					</span>\n				</a>\n			</div>\n		</li>\n\n		<button @click.prevent="loadMore" class="ux-btn ux-btn-expander" type="button" v-if="showLoadMore">\n\n			<div class="Watch__loading" v-if="loading_more">\n				<i class="fa fa-spinner fa-pulse fa-6x fa-fw"></i>\n				<span class="sr-only">Loading...</span>\n			</div>\n\n			<span v-else>\n				SHOW MORE\n			</span>\n\n		</button>\n\n	</ul>\n</div>\n';
+},{}]},{},[26]);

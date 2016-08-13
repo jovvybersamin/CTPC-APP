@@ -6,7 +6,7 @@
         <div class="navbar-header">
               <a id="nav-toggle" href="#"><span></span></a>
               <a href="#" class="navbar-brand">
-              <img src="assets/images/logo.jpg" ;="">
+              <img src="logo/logo.png"></img>
               </a>
         </div>
         <div class="collapse navbar-collapse right" id="bs-example-navbar-collapse-1">
@@ -28,10 +28,14 @@
                     @endforeach
                </ul>
             </li>
+            <li>
+                <a href="{{ route('providers') }}">Discount Providers</a>
+            </li>
             <li class="dropdown">
                 <a href="{{ route('about') }}" class="dropdown-toggle">About</a>
             </li>
-            <li class="dropdown"><a href="{{ route('contact') }}" class="dropdown-toggle">Contact</a>
+            <li class="dropdown">
+                <a href="{{ route('contact') }}" class="dropdown-toggle">Contact</a>
             </li>
         </ul>
 

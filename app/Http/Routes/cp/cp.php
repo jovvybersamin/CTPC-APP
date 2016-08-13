@@ -4,6 +4,7 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 {
 
 	Route::get('login','AuthController@getLogin')->name('login');
+	Route::post('login','AuthController@postLogin');
 	// Login
 	Route::group(['prefix' => 'auth'], function()
 	{
@@ -82,6 +83,22 @@ Route::group(['namespace' => 'Cp','prefix' => 'cp','as' => 'cp.'],function()
 				Route::delete('{categories}','VideoCategoryController@delete')->name('videos.categories.delete');
 			});
 
+		});
+
+		// Business
+		Route::group(['prefix' => 'business','as' => 'business.'],function()
+		{
+			Route::group(['prefix' => 'categories','as' => 'categories.'],function()
+			{
+				Route::get('/','BusinessCategoryController@index')->name('index');
+				Route::get('get','BusinessCategoryController@get')->name('get');
+				Route::get('create','BusinessCategoryController@create')->name('create');
+				Route::get('{categories}/edit','BusinessCategoryController@edit')->name('edit');
+
+				Route::put('{categories}','BusinessCategoryController@update')->name('update');
+				Route::post('/','BusinessCategoryController@store')->name('store');
+				Route::delete('{categories}','BusinessCategoryController@delete')->name('delete');
+			});
 		});
 	});
 

@@ -15,3 +15,4 @@ Vue.component('assets-folder-editor',require('./components/assets/modals/folder-
 
 //fieldtypes
 Vue.component('asset-field-browser',require('./fieldtypes/assets/browser/browser'));
+Vue.component('avatar',require('./fieldtypes/avatar/avatar'));

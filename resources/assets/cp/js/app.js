@@ -17,7 +17,9 @@ new Vue({
 		'video-form':require('./components/forms/video'),
 		'video-listing':require('./components/listings/videos'),
 		'video-category-form':require('./components/forms/video_category'),
-		'video-category-listing':require('./components/listings/video_categories')
+		'video-category-listing':require('./components/listings/video_categories'),
+		'business-category-form':require('./components/forms/business_category'),
+		'business-categories-listing':require('./components/listings/business_categories')
 	},
 
 	ready:function(){
@@ -25,6 +27,12 @@ new Vue({
 
 		this.$on('show.errors', function( errors ) {
 			self.errors = errors;
+		});
+
+
+		this.$on('show.messages', function( messages)
+		{
+			self.messages = messages;
 		});
 
 	},

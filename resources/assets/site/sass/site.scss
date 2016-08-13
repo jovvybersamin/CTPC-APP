@@ -12,6 +12,7 @@ $fa-font-path:'/../../frontend/fonts';
 @import 'core/base';
 @import 'core/settings';
 @import 'core/typography';
+@import 'core/utils';
 
 // Pages
 @import 'pages/home';
@@ -26,7 +27,12 @@ $fa-font-path:'/../../frontend/fonts';
 @import 'components/videos/videos';
 @import 'components/videos/sidebar';
 @import 'components/videos/watch';
+@import 'components/videos/video';
 @import 'components/headroom';
+@import 'components/thumbnails';
+@import 'components/tags';
+@import 'components/providers';
+@import 'components/users';
 
 // Elements
 @import 'elements/button';

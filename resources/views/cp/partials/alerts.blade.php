@@ -9,7 +9,7 @@
 	@endif
 
 
-	<app-error inline-template :errors.sync="errors" v-cloak>
+	<app-error inline-template :errors="errors" v-cloak>
 		<div class="alert alert-danger alert-dismissible" role="alert" v-if="hasErrors">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
@@ -22,14 +22,14 @@
 		</div>
 	</app-error>
 
-	<app-message inline-template :messages:sync="messages" v-cloak>
+	<app-message inline-template :messages="messages" v-cloak>
 		<div class="alert alert-success alert-dismissible" role="alert" v-if="hasMessages">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<ul>
 				<li v-for="message in messages">
-					<strong>@{{ error}}</strong>
+					<strong>@{{ message }}</strong>
 				</li>
 			</ul>
 		</div>

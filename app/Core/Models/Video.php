@@ -113,6 +113,17 @@ class Video extends Model
 		return $query->where('status',1);
 	}
 
+	/**
+	 * Get all the videos by uploader.
+	 *
+	 * @param  $query
+	 * @param  $uploaderId [description]
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeByUploader($query,$uploaderId)
+	{
+		return $query->where('uploaded_by',$uploaderId);
+	}
 
 	public function popular()
 	{
@@ -176,12 +187,32 @@ class Video extends Model
 	}
 
 	/**
+	 * Get the published date in human format.
+	 *
+	 * @return string
+	 */
+	public function publishedDate()
+	{
+		return $this->created_at->diffForHumans();
+	}
+
+	/**
 	 *
 	 * @return string
 	 */
 	public function watchUrl()
 	{
 		return route('video.watch',$this->slug);
+	}
+
+	/**
+	 * Get the number of views in a formatted way.
+	 *
+	 * @return string
+	 */
+	public function numberOfViews()
+	{
+		return number_format($this->hits,0,'.',',');
 	}
 
 	/**
