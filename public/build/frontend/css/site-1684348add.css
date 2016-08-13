@@ -10231,6 +10231,11 @@ body.nav-visible {
   background: #333;
   transition: all 0.5s ease; }
 
+.navbar-brand {
+  padding: 0; }
+  .navbar-brand img {
+    height: 64px; }
+
 /*-------------------------------*/
 /*     Sidebar nav styles        */
 /*-------------------------------*/
@@ -10896,6 +10901,21 @@ body.nav-visible {
   margin: 0;
   margin-bottom: 5px;
   font-size: 28px; }
+
+.footer_auxiliary {
+  margin-top: 15px;
+  border-top: 1px solid #D0D8DB;
+  padding: 15px 0 15px 0;
+  font-size: 14px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  box-sizing: border-box;
+  background-color: #FFF; }
+
+.footer_auxiliary-content {
+  color: #8A9599; }
 
 .ux-btn {
   height: 28px;

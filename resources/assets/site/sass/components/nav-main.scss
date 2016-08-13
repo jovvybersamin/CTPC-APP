@@ -31,4 +31,10 @@ body.nav-visible{
     transition: all 0.5s ease;
 }
 
+.navbar-brand{
+	padding:0;
+	img{
+		height:64px;
+	}
+}
 

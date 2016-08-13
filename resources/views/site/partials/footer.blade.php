@@ -1,9 +1,8 @@
 <footer>
 		<div class="container">
-
 			<div class="row">
 				<div class="col-md-4">
-					              		<a href="/" class="logo"><img src="assets/images/logo.jpg"></a>
+          		<a href="/" class="logo"><img src="logo/logo.png" class="img-responsive"></img></a>
 					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
 					<a href="http://facebook.com/hellovideoapp" class="facebook social-link"><i class="fa fa-facebook"></i></a>
 					<a href="http://twitter.com/hellovideoapp" class="twitter social-link"><i class="fa fa-twitter"></i></a>
@@ -27,11 +26,21 @@
 				<div class="col-md-2">
 					<h4>Links</h4>
 					<ul>
-													<li><a href="{{ route('home') }}">Home</a></li>
-													<li><a href="{{ route('about') }}">About</a></li>
-													<li><a href="{{ route('contact') }}">Contact</a></li>
+						<li><a href="{{ route('home') }}">Home</a></li>
+						<li><a href="{{ route('about') }}">About</a></li>
+						<li><a href="{{ route('contact') }}">Contact</a></li>
 					</ul>
 				</div>
 			</div>
+		</div>
+		<div class="footer_auxiliary">
+			<div class="container">
+				<div class="row">
+					<div class="footer_auxiliary-content">
+						TM + © 2016 OneStop Tourism, Inc. All rights reserved.
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</footer>
