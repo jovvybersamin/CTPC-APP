@@ -2,13 +2,11 @@
 
 use OneStop\Core\Support\Menu\Menu;
 
-Route::get('123logout',function(){
+Route::get('00001111logout',function(){
 	Auth::logout();
 });
 
-Route::get('phpinfo',function(){
-	phpinfo();
-});
+
 
 Route::get('/',function(){
 	return view('site.home');
