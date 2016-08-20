@@ -55,7 +55,7 @@ class VideoCategoryRepository implements CategoryRepositoryContract
 	 */
 	public function getBySlug($slug = '')
 	{
-		return $this->model->where('slug',$slug)->first();
+		return $this->model->where('slug',$slug)->firstOrFail();
 	}
 
 	/**

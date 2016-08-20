@@ -115,7 +115,7 @@ class UserRepository implements UserRepositoryContract
 	public function getUserByUsernameWithVideos($username)
 	{
 		return User::with('videos')
-					->where('username',$username)->first();
+					->where('username',$username)->firstOrFail();
 	}
 
 	/**
