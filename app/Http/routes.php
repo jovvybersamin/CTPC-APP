@@ -2,6 +2,10 @@
 
 use OneStop\Core\Support\Menu\Menu;
 
+Route::get('/',function(){
+	return view('site.home');
+});
+
 Route::get('test',function(){
 	$user = Auth::loginUsingId(1);
 
@@ -25,12 +29,16 @@ Route::get('menu',function()
 
 
 
-require_once __DIR__ . '/Routes/utilities.php';
+Route::group(['middleware' => 'web'], function()
+{
+	require_once __DIR__ . '/Routes/utilities.php';
 
-require_once __DIR__ . '/Routes/api.php';
+	require_once __DIR__ . '/Routes/api.php';
 
-require_once __DIR__ . '/Routes/cp/cp.php';
+	require_once __DIR__ . '/Routes/cp/cp.php';
 
-require_once __DIR__ . '/Routes/site/site.php';
+	require_once __DIR__ . '/Routes/site/site.php';
+});
+
 
 

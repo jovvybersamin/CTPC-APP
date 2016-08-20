@@ -2,12 +2,11 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-4">
-          		<a href="/" class="logo"><img src="logo/logo.png" class="img-responsive"></img></a>
+          		<a href="/" class="logo"><img src="/logo/logo.png" class="img-responsive"></img></a>
 					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
-					<a href="http://facebook.com/hellovideoapp" class="facebook social-link"><i class="fa fa-facebook"></i></a>
-					<a href="http://twitter.com/hellovideoapp" class="twitter social-link"><i class="fa fa-twitter"></i></a>
-					<a href="http://plus.google.com/hellovideoapp" class="google social-link"><i class="fa fa-google-plus"></i></a>
-					<a href="http://youtube.com/hellovideoapp" class="youtube social-link"><i class="fa fa-youtube"></i></a>
+					<a href="http://facebook.com/" class="facebook social-link"><i class="fa fa-facebook"></i></a>
+					<a href="http://twitter.com" class="twitter social-link"><i class="fa fa-twitter"></i></a>
+					<a href="http://plus.google.com" class="google social-link"><i class="fa fa-google-plus"></i></a>
 					<div class="clear"></div>
 				</div>
 				<div class="col-md-3">

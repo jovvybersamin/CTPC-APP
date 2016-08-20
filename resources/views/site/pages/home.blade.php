@@ -21,25 +21,74 @@
         <div class="carousel-inner">
             <div class="item active">
                 <div class="fill">
-                    <img src="assets/images/bg1.jpg" alt="Flower" width="1400" height="450">
+                    <img src="assets/images/bg1.jpg" alt="" width="1400" height="450">
                 </div>
                 <div class="carousel-caption">
-                    <h2>Caption 1</h2>
+                    <div class="carousel-caption--meta_data">
+                        <header class="title">
+                            Sample Header
+                        </header>
+                        <div class="by">
+                            <span class="by__right">
+                                    <span class="by__spacer">from</span>
+                                    <a href="#" class="primary-link">
+                                        Barbeque First Shot.
+                                    </a>
+                            </span>
+
+                        </div>
+                        <p class="description">
+                            See the beaches of the world in this spectacularly fun surf film.
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="item">
                 <div class="fill">
-                    <img src="assets/images/bg2.jpg" alt="Flower" width="1400" height="450">
+                    <img src="assets/images/bg2.jpg" alt="" width="1400" height="450">
                 </div>
                 <div class="carousel-caption">
-                    <h2>Caption 2</h2>                </div>
+                        <div class="carousel-caption--meta_data">
+                        <header class="title">
+                            Sample Header
+                        </header>
+                        <div class="by">
+                            <span class="by__right">
+                                    <span class="by__spacer">from</span>
+                                    <a href="#" class="primary-link">
+                                        Barbeque First Shot.
+                                    </a>
+                            </span>
+
+                        </div>
+                        <p class="description">
+                            See the beaches of the world in this spectacularly fun surf film.
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="item">
                 <div class="fill">
-                    <img src="assets/images/bg3.jpg" alt="Flower" width="1400" height="450">
+                    <img src="assets/images/bg3.jpg" alt="" width="1400" height="450">
                 </div>
                 <div class="carousel-caption">
-                    <h2>Caption 3</h2>
+                        <div class="carousel-caption--meta_data">
+                        <header class="title">
+                            Sample Header
+                        </header>
+                        <div class="by">
+                            <span class="by__right">
+                                    <span class="by__spacer">from</span>
+                                    <a href="#" class="primary-link">
+                                        Barbeque First Shot.
+                                    </a>
+                            </span>
+
+                        </div>
+                        <p class="description">
+                            See the beaches of the world in this spectacularly fun surf film.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

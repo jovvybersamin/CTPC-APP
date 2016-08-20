@@ -9,3 +9,15 @@
 		display:inline-block;
 	}
 }
+
+
+.primary-link{
+	color:#337ab7;
+	font-weight: 700;
+	&:hover,
+	&:active,
+	&:focus{
+		color: #08C;
+    	text-decoration: none;
+	}
+}

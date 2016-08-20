@@ -6,7 +6,7 @@
         <div class="navbar-header">
               <a id="nav-toggle" href="#"><span></span></a>
               <a href="#" class="navbar-brand">
-              <img src="logo/logo.png"></img>
+              <img src="/logo/logo.png"></img>
               </a>
         </div>
         <div class="collapse navbar-collapse right" id="bs-example-navbar-collapse-1">

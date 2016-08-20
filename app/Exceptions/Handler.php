@@ -33,6 +33,16 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
+
+        if($this->isHttpException($e)){
+            if (view()->exists('errors.'.$e->getStatusCode()))
+            {
+
+                return response()->view('errors.'.$e->getStatusCode(), [], $e->getStatusCode());
+            }else{
+                return response()->view('errors.custom', [], $e->getStatusCode());
+            }
+        }
         parent::report($e);
     }
 
